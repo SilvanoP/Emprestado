@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Emprestado</string>
+
+    <string name="book">Book</string>
+    <string name="cd">CD</string>
+    <string name="clothe">Clothe</string>
+    <string name="dvd">DVD</string>
+    <string name="money">Money</string>
+    <string name="other">Other</string>
+</resources>
