@@ -8,10 +8,12 @@ interface ListItemContract {
 
     interface View : BaseView {
         fun showItem(items: List<Item>)
+        fun onItemRemoved()
     }
 
     interface Presenter : BasePresenter<View> {
         fun getAllItems()
-        fun getItemsByFilter(fitler: Map<String,String>)
+        fun getItemsByFilter(filter: Map<String,String>)
+        fun removeItem(item: Item)
     }
 }

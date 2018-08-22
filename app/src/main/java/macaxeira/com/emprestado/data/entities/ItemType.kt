@@ -1,10 +1,12 @@
 package macaxeira.com.emprestado.data.entities
 
+import macaxeira.com.emprestado.R
+
 enum class ItemType(val res: Int) {
-    BOOK(1),
-    CD(2),
-    DVD(3),
-    CLOTHE(4),
-    MONEY(5),
-    OTHER(6)
+    BOOK(R.string.book),
+    CD(R.string.cd),
+    DVD(R.string.dvd),
+    CLOTHE(R.string.clothe),
+    MONEY(R.string.money),
+    OTHER(R.string.other)
 }

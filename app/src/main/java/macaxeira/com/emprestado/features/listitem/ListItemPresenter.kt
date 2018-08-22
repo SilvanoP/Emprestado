@@ -1,22 +1,54 @@
 package macaxeira.com.emprestado.features.listitem
 
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import macaxeira.com.emprestado.data.DataRepository
-import java.lang.ref.WeakReference
+import macaxeira.com.emprestado.data.entities.Item
+import macaxeira.com.emprestado.features.shared.BasePresenterImpl
 
-class ListItemPresenter(dataRepository: DataRepository) : ListItemContract.Presenter {
-
-    lateinit var view: WeakReference<ListItemContract.View>
+class ListItemPresenter(private val repository: DataRepository) : BasePresenterImpl<ListItemContract.View>(),
+        ListItemContract.Presenter {
 
     override fun getAllItems() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        disposable.add(repository.getAllItems()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            view.get()?.showItem(it)
+                        },
+                        {
+                            view.get()?.showErrorMessage(it)
+                        }
+                ))
     }
 
-    override fun getItemsByFilter(fitler: Map<String, String>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getItemsByFilter(filter: Map<String, String>) {
+        disposable.add(repository.getItemsByFilter(filter)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            view.get()?.showItem(it)
+                        },
+                        {
+                            view.get()?.showErrorMessage(it)
+                        }
+                ))
     }
 
-    override fun setView(view: ListItemContract.View) {
-        this.view = WeakReference(view)
+    override fun removeItem(item: Item) {
+        disposable.add(repository.removeItem(item)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            view.get()?.onItemRemoved()
+                        },
+                        {
+                            view.get()?.showErrorMessage(it)
+                        }
+                ))
     }
 
 }
