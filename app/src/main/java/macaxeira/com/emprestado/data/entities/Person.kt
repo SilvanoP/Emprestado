@@ -1,11 +1,13 @@
 package macaxeira.com.emprestado.data.entities
 
+import android.arch.persistence.room.Entity
 import android.os.Parcel
 import android.os.Parcelable
 
+@Entity
 class Person() : Parcelable {
 
-    var id: Long = -1
+    var id: Long? = null
     var name: String = ""
     var telephone: String = ""
     var email: String = ""
@@ -15,14 +17,15 @@ class Person() : Parcelable {
     }
 
     constructor(parcel: Parcel) : this() {
-        id = parcel.readLong()
+        val tempId = parcel.readLong()
+        id = if (tempId == -1L) null else tempId
         name = parcel.readString()
         telephone = parcel.readString()
         email = parcel.readString()
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeLong(id)
+        dest?.writeLong(id ?: -1)
         dest?.writeString(name)
         dest?.writeString(telephone)
         dest?.writeString(email)

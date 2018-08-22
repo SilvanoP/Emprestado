@@ -5,10 +5,14 @@ import io.reactivex.Single
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.Person
 
-class DataRepository(val dataSourceLocal: DataSource) : DataSource {
+class DataRepository(private val dataSourceLocal: DataSource) : DataSource {
+
+    private var cachedItems: MutableList<Item> = mutableListOf()
 
     override fun saveItem(item: Item): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return dataSourceLocal.saveItem(item).doOnComplete {
+            cachedItems.add(item)
+        }
     }
 
     override fun savePerson(person: Person): Completable {
@@ -16,7 +20,9 @@ class DataRepository(val dataSourceLocal: DataSource) : DataSource {
     }
 
     override fun removeItem(item: Item): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return dataSourceLocal.removeItem(item).doOnComplete{
+            cachedItems.remove(item)
+        }
     }
 
     override fun getAllItems(): Single<List<Item>> {
