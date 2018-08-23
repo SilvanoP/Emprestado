@@ -1,10 +1,22 @@
 <resources>
     <string name="app_name">Emprestado</string>
 
+    <string name="all">All</string>
+    <string name="borrowed">Borrowed</string>
+    <string name="delete">Delete</string>
+    <string name="lent">Lent</string>
+    <string name="filter">Filter</string>
+    <string name="return_date">Return:</string>
+
+    <!-- Item Type -->
     <string name="book">Book</string>
     <string name="cd">CD</string>
     <string name="clothe">Clothe</string>
     <string name="dvd">DVD</string>
     <string name="money">Money</string>
     <string name="other">Other</string>
+
+    <!-- Tools -->
+    <string name="tools_date">01/01/2000</string>
+    <string name="tools_desc">Testing description...</string>
 </resources>

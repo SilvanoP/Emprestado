@@ -7,7 +7,7 @@ import macaxeira.com.emprestado.features.shared.BaseView
 interface ListItemContract {
 
     interface View : BaseView {
-        fun showItem(items: List<Item>)
+        fun showItems(items: List<Item>)
         fun onItemRemoved()
     }
 

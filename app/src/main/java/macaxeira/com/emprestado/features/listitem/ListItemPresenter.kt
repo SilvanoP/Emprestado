@@ -15,7 +15,7 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {
-                            view.get()?.showItem(it)
+                            view.get()?.showItems(it)
                         },
                         {
                             view.get()?.showErrorMessage(it)
@@ -29,7 +29,7 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {
-                            view.get()?.showItem(it)
+                            view.get()?.showItems(it)
                         },
                         {
                             view.get()?.showErrorMessage(it)
