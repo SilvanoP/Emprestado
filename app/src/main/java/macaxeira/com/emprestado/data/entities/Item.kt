@@ -1,14 +1,12 @@
 package macaxeira.com.emprestado.data.entities
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.ForeignKey
-import android.arch.persistence.room.PrimaryKey
+import android.arch.persistence.room.*
 import android.os.Parcel
 import android.os.Parcelable
 
 @Entity(foreignKeys = [ForeignKey(entity = Person::class, parentColumns = arrayOf("id"),
-        childColumns = arrayOf("person_id"), onDelete = ForeignKey.CASCADE)])
+            childColumns = arrayOf("person_id"), onDelete = ForeignKey.CASCADE)],
+        indices = [Index(value = arrayOf("person_id"))])
 class Item() : Parcelable {
 
     @PrimaryKey(autoGenerate = true)

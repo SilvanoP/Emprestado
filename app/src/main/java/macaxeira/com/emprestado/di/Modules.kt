@@ -7,6 +7,7 @@ import macaxeira.com.emprestado.data.database.DataSourceLocal
 import macaxeira.com.emprestado.data.database.EmprestadoDatabase
 import macaxeira.com.emprestado.features.listitem.ListItemContract
 import macaxeira.com.emprestado.features.listitem.ListItemPresenter
+import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module.applicationContext
 
 val dbName = "emprestado_db"
@@ -19,7 +20,7 @@ val EmprestadoModule = applicationContext {
 val RepositoryModule = applicationContext {
 
     bean { DataRepository(get()) }
-    bean { Room.databaseBuilder(get(), EmprestadoDatabase::class.java, dbName).build() }
+    bean { Room.databaseBuilder(androidApplication(), EmprestadoDatabase::class.java, dbName).build() }
     bean("dataSourceLocal") { DataSourceLocal(get()) as DataSource}
 }
 
