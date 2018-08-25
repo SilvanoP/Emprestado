@@ -23,7 +23,7 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                 ))
     }
 
-    override fun getItemsByFilter(filter: Map<String, String>) {
+    override fun getItemsByFilter(filter: Boolean) {
         disposable.add(repository.getItemsByFilter(filter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

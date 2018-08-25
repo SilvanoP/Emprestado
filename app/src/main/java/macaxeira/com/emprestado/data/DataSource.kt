@@ -13,5 +13,5 @@ interface DataSource {
     fun removeItem(item: Item): Completable
 
     fun getAllItems(): Single<List<Item>>
-    fun getItemsByFilter(filter: Map<String, String>): Single<List<Item>>
+    fun getItemsByFilter(filter: Boolean): Single<List<Item>>
 }

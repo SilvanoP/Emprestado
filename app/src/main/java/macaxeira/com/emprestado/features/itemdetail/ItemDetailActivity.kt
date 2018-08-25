@@ -12,10 +12,10 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View {
     }
 
     override fun onSaveOrUpdateComplete() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun showErrorMessage(throwable: Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 }

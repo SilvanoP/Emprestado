@@ -13,7 +13,7 @@ interface ListItemContract {
 
     interface Presenter : BasePresenter<View> {
         fun getAllItems()
-        fun getItemsByFilter(filter: Map<String,String>)
+        fun getItemsByFilter(filter: Boolean)
         fun removeItem(item: Item)
     }
 }

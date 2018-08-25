@@ -24,6 +24,8 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        presenter.setView(this)
+
         floatingActionButtonAdd.setOnClickListener {
             val intent = Intent(this, ItemDetailActivity::class.java)
             startActivity(intent)
@@ -72,11 +74,11 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     }
 
     override fun onItemRemoved() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun showErrorMessage(throwable: Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     inner class ActionModeCallback : ActionMode.Callback {
@@ -102,7 +104,6 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
             actionMode = null
             mainItemsRecycler.post {
                 // Runnable
-                TODO("not implemented")
             }
         }
 
