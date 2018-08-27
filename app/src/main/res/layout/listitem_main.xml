@@ -1,102 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/litItemContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
     android:background="@drawable/bg_list_row">
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/listItemBackImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_default"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_checked"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:id="@+id/listItemBackgroundContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_row_background">
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/listItemTypeImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_default"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_other"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.constraint.Barrier
-        android:id="@+id/listItemImageBarrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="end"
-        app:constraint_referenced_ids="listItemBackImage, listItemTypeImage"/>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/listItemBodyContainer"
-        android:layout_width="@dimen/no_dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/listItemImageBarrier"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/listItemDescriptionText"
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/listItemDeleteImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_default"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_delete" />
+
+    </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/listItemForegroundContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/listItemBackImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_default"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_checked"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/listItemMainBarrier"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/tools_desc" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/listItemReturnText"
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/listItemTypeImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_half"
-            android:layout_marginEnd="@dimen/margin_default"
-            android:layout_marginStart="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default"
-            android:text="@string/return_date"
-            app:layout_constraintBottom_toTopOf="@+id/listItemMainReturnDate"
-            app:layout_constraintEnd_toEndOf="@+id/listItemMainReturnDate"
-            app:layout_constraintStart_toStartOf="@+id/listItemMainReturnDate"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
-
-        <TextView
-            android:id="@+id/listItemMainReturnDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_default"
-            android:layout_marginEnd="@dimen/margin_default"
-            android:layout_marginStart="@dimen/margin_default"
+            android:layout_margin="@dimen/margin_default"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_other"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/listItemReturnText"
-            tools:text="@string/tools_date" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <android.support.constraint.Barrier
-            android:id="@+id/listItemMainBarrier"
+            android:id="@+id/listItemImageBarrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:barrierDirection="start"
-            app:constraint_referenced_ids="listItemReturnText, listItemMainReturnDate" />
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="listItemBackImage, listItemTypeImage"/>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/listItemBodyContainer"
+            android:layout_width="@dimen/no_dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/listItemImageBarrier"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/listItemDescriptionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_default"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/listItemMainBarrier"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/tools_desc" />
+
+            <TextView
+                android:id="@+id/listItemReturnText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_half"
+                android:layout_marginEnd="@dimen/margin_default"
+                android:layout_marginStart="@dimen/margin_default"
+                android:layout_marginTop="@dimen/margin_default"
+                android:text="@string/return_date"
+                app:layout_constraintBottom_toTopOf="@+id/listItemMainReturnDate"
+                app:layout_constraintEnd_toEndOf="@+id/listItemMainReturnDate"
+                app:layout_constraintStart_toStartOf="@+id/listItemMainReturnDate"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/listItemMainReturnDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_default"
+                android:layout_marginEnd="@dimen/margin_default"
+                android:layout_marginStart="@dimen/margin_default"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/listItemReturnText"
+                tools:text="@string/tools_date" />
+
+            <android.support.constraint.Barrier
+                android:id="@+id/listItemMainBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="start"
+                app:constraint_referenced_ids="listItemReturnText, listItemMainReturnDate" />
+
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>
 
-</android.support.constraint.ConstraintLayout>
+</FrameLayout>

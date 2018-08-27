@@ -62,6 +62,16 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
         currentSelectedIndex = -1
     }
 
+    fun removeItem(position: Int) {
+        items.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun restoreItem(item: Item, position: Int) {
+        items.add(position, item)
+        notifyItemInserted(position)
+    }
+
     inner class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: Item) {

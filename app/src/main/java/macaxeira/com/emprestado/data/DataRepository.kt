@@ -15,7 +15,7 @@ class DataRepository(private val dataSourceLocal: DataSource) : DataSource {
     private var cachedPeople: MutableList<Person> = mutableListOf()
 
     init {
-        // FIXME Temporário
+        // FIXME Temporary
         val p = Person()
         p.id = 1
         p.name = "Test"
@@ -34,9 +34,11 @@ class DataRepository(private val dataSourceLocal: DataSource) : DataSource {
     }
 
     override fun saveItem(item: Item): Completable {
-        return dataSourceLocal.saveItem(item).doOnComplete {
+        // FIXME Temporary
+        return Completable.complete()
+        /*return dataSourceLocal.saveItem(item).doOnComplete {
             cachedItems.add(item)
-        }
+        }*/
     }
 
     override fun savePerson(person: Person): Completable {
@@ -46,9 +48,11 @@ class DataRepository(private val dataSourceLocal: DataSource) : DataSource {
     }
 
     override fun removeItem(item: Item): Completable {
-        return dataSourceLocal.removeItem(item).doOnComplete{
+        // FIXME Temporary
+        return Completable.complete()
+        /*return dataSourceLocal.removeItem(item).doOnComplete{
             cachedItems.remove(item)
-        }
+        }*/
     }
 
     override fun getAllItems(): Single<List<Item>> {

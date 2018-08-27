@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainFrameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".features.listitem.MainActivity">
@@ -14,7 +15,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mainItemsRecycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

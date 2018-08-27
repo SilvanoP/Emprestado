@@ -42,9 +42,19 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
+                        { },
                         {
-                            view.get()?.onItemRemoved()
-                        },
+                            view.get()?.showErrorMessage(it)
+                        }
+                ))
+    }
+
+    override fun restoreItem(item: Item) {
+        disposable.add(repository.saveItem(item)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { },
                         {
                             view.get()?.showErrorMessage(it)
                         }

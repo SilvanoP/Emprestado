@@ -8,6 +8,7 @@
     <string name="description">Description</string>
     <string name="email">E-mail</string>
     <string name="is_borrowed">Is borrowed?</string>
+    <string name="item_swiped">Item deleted.</string>
     <string name="lent">Lent</string>
     <string name="filter">Filter</string>
     <string name="name">Name</string>
@@ -15,6 +16,7 @@
     <string name="search_contact">Search</string>
     <string name="telephone">Telephone Number</string>
     <string name="telephone_hint">(##)#####-####</string>
+    <string name="undo">UNDO</string>
 
     <!-- Item Type -->
     <string name="book">Book</string>
