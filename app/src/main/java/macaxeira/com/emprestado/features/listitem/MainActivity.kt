@@ -61,7 +61,17 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     }
 
     override fun onLongClickItem(position: Int) {
-        actionMode ?: startSupportActionMode(actionModeCallback)
+        toggleSelection(position)
+    }
+
+    override fun onIconClicked(position: Int) {
+        toggleSelection(position)
+    }
+
+    private fun toggleSelection(position: Int) {
+        if (actionMode == null) {
+            actionMode = startSupportActionMode(actionModeCallback)
+        }
         adapter?.toggleSelection(position)
         val count = adapter?.selectedItems?.size()
 
@@ -74,7 +84,8 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     }
 
     override fun onItemRemoved() {
-
+        adapter?.resetAnimationIndex()
+        // TODO remove items from adapter
     }
 
     override fun showErrorMessage(throwable: Throwable) {
@@ -101,9 +112,11 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {
+            adapter?.clearSelections()
             actionMode = null
             mainItemsRecycler.post {
                 // Runnable
+                adapter?.resetAnimationIndex()
             }
         }
 

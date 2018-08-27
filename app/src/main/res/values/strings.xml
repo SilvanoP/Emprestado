@@ -3,10 +3,18 @@
 
     <string name="all">All</string>
     <string name="borrowed">Borrowed</string>
+    <string name="contact">Contact</string>
     <string name="delete">Delete</string>
+    <string name="description">Description</string>
+    <string name="email">E-mail</string>
+    <string name="is_borrowed">Is borrowed?</string>
     <string name="lent">Lent</string>
     <string name="filter">Filter</string>
-    <string name="return_date">Return:</string>
+    <string name="name">Name</string>
+    <string name="return_date">Return Date</string>
+    <string name="search_contact">Search</string>
+    <string name="telephone">Telephone Number</string>
+    <string name="telephone_hint">(##)#####-####</string>
 
     <!-- Item Type -->
     <string name="book">Book</string>
@@ -18,5 +26,5 @@
 
     <!-- Tools -->
     <string name="tools_date">01/01/2000</string>
-    <string name="tools_desc">Testing description...</string>
+    <string name="tools_desc">Testing description</string>
 </resources>

@@ -10,11 +10,17 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.listitem_main.view.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
+import macaxeira.com.emprestado.utils.Utils
 
-class ItemsAdapter(private val context: Context, var items: MutableList<Item>, val listener: ItemsAdapterListener) :
+class ItemsAdapter(private val context: Context, var items: MutableList<Item>, private val listener: ItemsAdapterListener) :
         RecyclerView.Adapter<ItemsAdapter.ItemViewHolder>() {
 
     val selectedItems = SparseBooleanArray()
+
+    // Animation related attributes
+    private val animationItemsIndex = SparseBooleanArray()
+    private var currentSelectedIndex = -1
+    private var reverseAllAnimations = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val inflater = LayoutInflater.from(context)
@@ -29,33 +35,94 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, v
     }
 
     fun toggleSelection(position: Int) {
+        currentSelectedIndex = position
         if (selectedItems[position, false]) {
-            selectedItems.put(position, false)
+            selectedItems.delete(position)
+            animationItemsIndex.delete(position)
         } else {
             selectedItems.put(position, true)
+            animationItemsIndex.put(position, true)
         }
 
         notifyItemChanged(position)
     }
 
-    inner class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnLongClickListener {
+    fun clearSelections() {
+        reverseAllAnimations = true
+        selectedItems.clear()
+        notifyDataSetChanged()
+    }
+
+    fun resetAnimationIndex() {
+        reverseAllAnimations = false
+        animationItemsIndex.clear()
+    }
+
+    private fun resetCurrentIndex() {
+        currentSelectedIndex = -1
+    }
+
+    inner class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: Item) {
             itemView.listItemDescriptionText.text = item.description
             itemView.listItemMainReturnDate.text = item.returnDate
 
             itemView.isActivated = selectedItems[adapterPosition, false]
+
+            applyClickEvents(adapterPosition)
+            applyIconAnimation(adapterPosition)
         }
 
-        override fun onLongClick(v: View?): Boolean {
-            listener.onLongClickItem(adapterPosition)
-            v?.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-            return true
+        private fun applyClickEvents(position: Int) {
+            itemView.listItemTypeImage.setOnClickListener {
+                listener.onIconClicked(position)
+            }
+
+            itemView.listItemBackImage.setOnClickListener {
+                listener.onIconClicked(position)
+            }
+
+            itemView.listItemBodyContainer.setOnLongClickListener {
+                listener.onLongClickItem(adapterPosition)
+                it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                true // Return true
+            }
+        }
+
+        private fun applyIconAnimation(position: Int) {
+            if (selectedItems.get(position, false)) {
+                itemView.listItemTypeImage.visibility = View.GONE
+                resetIconYAxis(itemView.listItemBackImage)
+                itemView.listItemBackImage.visibility = View.VISIBLE
+                itemView.listItemBackImage.alpha = 1F
+                if (currentSelectedIndex == position) {
+                    Utils.flipView(context, itemView.listItemBackImage, itemView.listItemTypeImage, true)
+                    resetCurrentIndex()
+                }
+            } else {
+                itemView.listItemBackImage.visibility = View.GONE
+                resetIconYAxis(itemView.listItemTypeImage)
+                itemView.listItemTypeImage.visibility = View.VISIBLE
+                itemView.listItemTypeImage.alpha = 1F
+                if((reverseAllAnimations && animationItemsIndex.get(position, false)) ||
+                        currentSelectedIndex == position) {
+                    Utils.flipView(context, itemView.listItemBackImage, itemView.listItemTypeImage, false)
+                    resetCurrentIndex()
+                }
+            }
+        }
+
+        private fun resetIconYAxis(view: View) {
+            if (view.rotationY != 0F) {
+                view.rotationY = 0F
+            }
         }
 
     }
 
     interface ItemsAdapterListener {
         fun onLongClickItem(position: Int)
+        fun onIconClicked(position: Int)
     }
 }
