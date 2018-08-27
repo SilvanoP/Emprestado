@@ -3,6 +3,7 @@
 
     <string name="all">All</string>
     <string name="borrowed">Borrowed</string>
+    <string name="cancel">Cancel</string>
     <string name="contact">Contact</string>
     <string name="delete">Delete</string>
     <string name="description">Description</string>

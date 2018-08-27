@@ -9,12 +9,32 @@ import macaxeira.com.emprestado.R
 
 class FilterDialog : DialogFragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = activity?.layoutInflater?.inflate(R.layout.dialog_filter, container)
+    companion object {
 
-        val title = activity?.getString(R.string.filter)
-        dialog.setTitle(title?.toUpperCase())
+        @JvmStatic
+        val IS_MINE = "IS_MINE"
+
+        @JvmStatic
+        fun newInstance(isMine: Boolean): FilterDialog {
+            val dialog = FilterDialog()
+            val args = Bundle()
+            args.putBoolean(IS_MINE, true)
+            dialog.arguments = args
+
+            return dialog
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = requireActivity().layoutInflater?.inflate(R.layout.dialog_filter, container)
+
+        val title = requireActivity().getString(R.string.filter)
+        dialog.setTitle(title.toUpperCase())
 
         return view
+    }
+
+    interface FilterDialogListener {
+        fun filter()
     }
 }
