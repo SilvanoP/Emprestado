@@ -22,7 +22,7 @@ import macaxeira.com.emprestado.features.itemdetail.ItemDetailActivity
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.ItemsAdapterListener,
-        RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
+        RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, FilterDialog.FilterDialogListener {
 
     private val presenter: ListItemContract.Presenter by inject()
 
@@ -128,6 +128,11 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
             snackbar.setActionTextColor(Color.YELLOW)
             snackbar.show()
         }
+    }
+
+    override fun filter(checkedId: Int) {
+        // TODO fix this filter
+        //presenter.getItemsByFilter(true)
     }
 
     override fun showErrorMessage(throwable: Throwable) {

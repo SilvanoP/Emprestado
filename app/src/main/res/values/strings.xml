@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Emprestado</string>
 
+    <string name="accept">Accept</string>
     <string name="all">All</string>
     <string name="borrowed">Borrowed</string>
     <string name="cancel">Cancel</string>
@@ -14,6 +15,7 @@
     <string name="filter">Filter</string>
     <string name="name">Name</string>
     <string name="return_date">Return Date</string>
+    <string name="returned">Returned</string>
     <string name="search_contact">Search</string>
     <string name="telephone">Telephone Number</string>
     <string name="telephone_hint">(##)#####-####</string>

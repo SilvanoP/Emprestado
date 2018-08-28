@@ -5,14 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/dialogFilterTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_default"
+        android:text="@string/filter"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_category"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <RadioGroup
         android:id="@+id/dialogFilterRadioBorrowedLent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="@dimen/margin_default"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/dialogFilterTitle">
 
         <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/dialogFilterButtonAll"
@@ -31,6 +44,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/borrowed" />
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/dialogFilterButtonReturned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/returned" />
     </RadioGroup>
 
     <Button
@@ -38,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_default"
-        android:text="@string/filter"
+        android:text="@string/accept"
         android:textAllCaps="true"
         style="@style/Widget.AppCompat.Button.Borderless"
         app:layout_constraintTop_toBottomOf="@+id/dialogFilterRadioBorrowedLent"
