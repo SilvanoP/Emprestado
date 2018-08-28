@@ -2,7 +2,7 @@
     <string name="app_name">Emprestado</string>
 
     <string name="accept">Accept</string>
-    <string name="all">All</string>
+    <string name="all_loans">All Loans</string>
     <string name="borrowed">Borrowed</string>
     <string name="cancel">Cancel</string>
     <string name="contact">Contact</string>

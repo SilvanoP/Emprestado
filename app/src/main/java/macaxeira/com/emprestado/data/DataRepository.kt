@@ -1,15 +1,17 @@
 package macaxeira.com.emprestado.data
 
+import android.content.SharedPreferences
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.ItemType
 import macaxeira.com.emprestado.data.entities.Person
+import macaxeira.com.emprestado.utils.Constants
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DataRepository(private val dataSourceLocal: DataSource) : DataSource {
+class DataRepository(private val dataSourceLocal: DataSource, private val prefs: SharedPreferences) : DataSource {
 
     private var cachedItems: MutableList<Item> = mutableListOf()
     private var cachedPeople: MutableList<Person> = mutableListOf()
@@ -65,15 +67,37 @@ class DataRepository(private val dataSourceLocal: DataSource) : DataSource {
         }
     }
 
-    override fun getItemsByFilter(filter: Boolean): Single<List<Item>> {
+    override fun getItemsByOwner(isMine: Boolean): Single<List<Item>> {
         if (cachedItems.size > 0) {
             return Observable.fromIterable(cachedItems).flatMap {
                 Observable.just(it)
             }.filter {
-                it -> it.isMine == filter
+                it -> it.isMine == isMine
             }.toList()
         }
 
-        return dataSourceLocal.getItemsByFilter(filter)
+        return dataSourceLocal.getItemsByOwner(isMine)
+    }
+
+    override fun getItemsByReturned(isReturned: Boolean): Single<List<Item>> {
+        if (cachedItems.size > 0) {
+            return Observable.fromIterable(cachedItems).flatMap {
+                Observable.just(it)
+            }.filter {
+                it -> it.isReturned == isReturned
+            }.toList()
+        }
+
+        return dataSourceLocal.getItemsByReturned(isReturned)
+    }
+
+    fun getFilterPrefence(): Int {
+        return prefs.getInt(Constants.PREFS_FILTER, -1)
+    }
+
+    fun saveFilterPreference(filter: Int) {
+        prefs.edit()
+                .putInt(Constants.PREFS_FILTER, filter)
+                .apply()
     }
 }

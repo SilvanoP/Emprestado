@@ -8,7 +8,6 @@ import macaxeira.com.emprestado.data.entities.Person
 
 class DataSourceLocal(val database: EmprestadoDatabase) : DataSource {
 
-
     override fun saveItem(item: Item): Completable {
         return Completable.fromAction {
             database.dataDAO().insertOrUpdateItem(item)
@@ -31,8 +30,12 @@ class DataSourceLocal(val database: EmprestadoDatabase) : DataSource {
         return database.dataDAO().loadAllItems()
     }
 
-    override fun getItemsByFilter(filter: Boolean): Single<List<Item>> {
-        return database.dataDAO().loadItemsByMine(filter)
+    override fun getItemsByOwner(isMine: Boolean): Single<List<Item>> {
+        return database.dataDAO().loadItemsByMine(isMine)
+    }
+
+    override fun getItemsByReturned(isReturned: Boolean): Single<List<Item>> {
+        return database.dataDAO().loadItemsByReturned(isReturned)
     }
 
 }

@@ -5,8 +5,9 @@ import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import kotlinx.android.synthetic.main.dialog_filter.*
+import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import macaxeira.com.emprestado.R
 
 class FilterDialog : DialogFragment(), View.OnClickListener {
@@ -33,30 +34,40 @@ class FilterDialog : DialogFragment(), View.OnClickListener {
         val view = requireActivity().layoutInflater?.inflate(R.layout.dialog_filter, container)
         val option = arguments?.getInt(FILTER_OPTION)
 
-        dialogFilterRadioBorrowedLent.setOnCheckedChangeListener {
+        // Since synthetic components don't work on dialog, I do it the old way
+        val radioLoan = view?.findViewById<RadioGroup>(R.id.dialogFilterRadioBorrowedLent)
+        val radioButtonAll = view?.findViewById<RadioButton>(R.id.dialogFilterButtonAll)
+        val filterButton = view?.findViewById<Button>(R.id.dialogFilterFilterButton)
+        val cancelButton = view?.findViewById<Button>(R.id.dialogFilterCancelButton)
+
+        radioLoan?.setOnCheckedChangeListener {
             group, checkedId ->
             this.checkedId = checkedId
         }
-        dialogFilterRadioBorrowedLent.clearCheck()
+
+        radioLoan?.clearCheck()
         if (option != null) {
-            dialogFilterRadioBorrowedLent.check(option)
+            radioLoan?.check(option)
         } else {
-            dialogFilterButtonAll.isChecked = true
+            radioButtonAll?.isChecked = true
         }
+
+        filterButton?.setOnClickListener(this)
+        cancelButton?.setOnClickListener(this)
 
         return view
     }
 
     override fun onClick(v: View?) {
-        if (v?.id == dialogFilterCancelButton.id) {
+        if (v?.id == R.id.dialogFilterCancelButton) {
             dialog.cancel()
-        } else if (v?.id == dialogFilterFilterButton.id) {
+        } else if (v?.id == R.id.dialogFilterFilterButton) {
             val listener = requireActivity() as FilterDialogListener
             listener.filter(checkedId)
         }
     }
 
     interface FilterDialogListener {
-        fun filter(checkedId: Int)
+        fun filter(filter: Int)
     }
 }

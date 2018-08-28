@@ -23,6 +23,8 @@ class Item() : Parcelable {
     var returnDate: String = ""
     @ColumnInfo(name = "person_id")
     var personId: Long? = null
+    @ColumnInfo(name = "is_returned")
+    var isReturned: Boolean = false
 
     override fun describeContents(): Int {
         return 0
@@ -39,6 +41,7 @@ class Item() : Parcelable {
         returnDate = parcel.readString()
         val tempPersonId = parcel.readLong()
         personId = if(tempPersonId == -1L) null else tempPersonId
+        isReturned = parcel.readInt() != 0
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
@@ -50,6 +53,7 @@ class Item() : Parcelable {
         dest?.writeString(createdDate)
         dest?.writeString(returnDate)
         dest?.writeLong(personId ?: -1)
+        dest?.writeInt(if (isReturned) 1 else 0)
     }
 
     companion object CREATOR : Parcelable.Creator<Item> {

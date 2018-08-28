@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.view.ActionMode
 import android.support.v7.widget.DefaultItemAnimator
@@ -14,7 +13,6 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
@@ -57,7 +55,7 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
 
     private fun onRefresh() {
         mainSwipeRefreshLayout.isRefreshing = true
-        presenter.getAllItems()
+        presenter.getFilterPreference()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -68,7 +66,7 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
             R.id.menuMainFilter -> {
-                val dialog = FilterDialog()
+                val dialog = FilterDialog.newInstance(-1)
                 dialog.show(supportFragmentManager, "FilterDialog")
             }
         }
@@ -130,9 +128,30 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         }
     }
 
-    override fun filter(checkedId: Int) {
-        // TODO fix this filter
-        //presenter.getItemsByFilter(true)
+    override fun filter(filter: Int) {
+        if (filter == -1) return
+
+        presenter.saveFilterPreference(filter)
+        mainSwipeRefreshLayout.isRefreshing = true
+
+        when(filter) {
+            R.id.dialogFilterButtonAll -> {
+                presenter.getAllItems()
+                title = getString(R.string.all_loans)
+            }
+            R.id.dialogFilterButtonBorrowed ->  {
+                presenter.getItemsByOwner(false)
+                title = getString(R.string.borrowed)
+            }
+            R.id.dialogFilterButtonLent -> {
+                presenter.getItemsByOwner(true)
+                title = getString(R.string.lent)
+            }
+            R.id.dialogFilterButtonReturned -> {
+                presenter.getItemsByReturned(true)
+                title = getString(R.string.returned)
+            }
+        }
     }
 
     override fun showErrorMessage(throwable: Throwable) {

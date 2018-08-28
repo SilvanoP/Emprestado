@@ -13,5 +13,6 @@ interface DataSource {
     fun removeItem(item: Item): Completable
 
     fun getAllItems(): Single<List<Item>>
-    fun getItemsByFilter(filter: Boolean): Single<List<Item>>
+    fun getItemsByOwner(isMine: Boolean): Single<List<Item>>
+    fun getItemsByReturned(isReturned: Boolean): Single<List<Item>>
 }

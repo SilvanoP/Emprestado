@@ -23,8 +23,27 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                 ))
     }
 
-    override fun getItemsByFilter(filter: Boolean) {
-        disposable.add(repository.getItemsByFilter(filter)
+    override fun getFilterPreference() {
+        val filter = repository.getFilterPrefence()
+        view.get()?.filter(filter)
+    }
+
+    override fun getItemsByOwner(isMine: Boolean) {
+        disposable.add(repository.getItemsByOwner(isMine)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            view.get()?.showItems(it)
+                        },
+                        {
+                            view.get()?.showErrorMessage(it)
+                        }
+                ))
+    }
+
+    override fun getItemsByReturned(isReturned: Boolean) {
+        disposable.add(repository.getItemsByReturned(isReturned)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -59,6 +78,10 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                             view.get()?.showErrorMessage(it)
                         }
                 ))
+    }
+
+    override fun saveFilterPreference(filter: Int) {
+        repository.saveFilterPreference(filter)
     }
 
 }
