@@ -30,6 +30,10 @@ class DataSourceLocal(val database: EmprestadoDatabase) : DataSource {
         return database.dataDAO().loadAllItems()
     }
 
+    override fun getPersonById(personId: Long): Single<Person> {
+        return database.dataDAO().loadPersonById(personId)
+    }
+
     override fun getItemsByOwner(isMine: Boolean): Single<List<Item>> {
         return database.dataDAO().loadItemsByMine(isMine)
     }

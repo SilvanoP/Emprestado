@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.features.itemdetail.ItemDetailActivity
+import macaxeira.com.emprestado.utils.Constants
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.ItemsAdapterListener,
@@ -84,6 +85,13 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         }
 
         mainItemsRecycler.adapter = adapter
+    }
+
+    override fun onClickItem(position: Int) {
+        val item = items[position]
+        val intent = Intent(this, ItemDetailActivity::class.java)
+        intent.putExtra(Constants.ITEM_ARGUMENT, item)
+        startActivity(intent)
     }
 
     override fun onLongClickItem(position: Int) {

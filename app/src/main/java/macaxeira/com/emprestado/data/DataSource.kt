@@ -15,4 +15,5 @@ interface DataSource {
     fun getAllItems(): Single<List<Item>>
     fun getItemsByOwner(isMine: Boolean): Single<List<Item>>
     fun getItemsByReturned(isReturned: Boolean): Single<List<Item>>
+    fun getPersonById(personId: Long): Single<Person>
 }

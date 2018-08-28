@@ -7,6 +7,8 @@ import macaxeira.com.emprestado.data.DataRepository
 import macaxeira.com.emprestado.data.DataSource
 import macaxeira.com.emprestado.data.database.DataSourceLocal
 import macaxeira.com.emprestado.data.database.EmprestadoDatabase
+import macaxeira.com.emprestado.features.itemdetail.ItemDetailContract
+import macaxeira.com.emprestado.features.itemdetail.ItemDetailPresenter
 import macaxeira.com.emprestado.features.listitem.ListItemContract
 import macaxeira.com.emprestado.features.listitem.ListItemPresenter
 import macaxeira.com.emprestado.utils.Constants
@@ -18,6 +20,7 @@ val dbName = "emprestado_db"
 val EmprestadoModule = applicationContext {
 
     factory { ListItemPresenter(get()) as ListItemContract.Presenter }
+    factory { ItemDetailPresenter(get()) as ItemDetailContract.Presenter }
     bean { androidApplication().getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE) as SharedPreferences}
 }
 

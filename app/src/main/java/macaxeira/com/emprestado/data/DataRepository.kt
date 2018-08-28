@@ -2,8 +2,10 @@ package macaxeira.com.emprestado.data
 
 import android.content.SharedPreferences
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.SingleSource
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.ItemType
 import macaxeira.com.emprestado.data.entities.Person
@@ -89,6 +91,25 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         }
 
         return dataSourceLocal.getItemsByReturned(isReturned)
+    }
+
+    override fun getPersonById(personId: Long): Single<Person> {
+        return Maybe.fromAction<Person> {
+            var p: Person? = null
+            for (person in cachedPeople) {
+                if (person.id == personId) {
+                    p = person
+                }
+            }
+
+            if (p != null) {
+                Single.just(p)
+            } else {
+                Maybe.empty<Person>()
+            }
+        }.switchIfEmpty(SingleSource {
+            dataSourceLocal.getPersonById(personId)
+        })
     }
 
     fun getFilterPrefence(): Int {

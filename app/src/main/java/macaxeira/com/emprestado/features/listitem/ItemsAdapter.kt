@@ -93,6 +93,10 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
                 listener.onIconClicked(position)
             }
 
+            itemView.listItemBodyContainer.setOnClickListener {
+                listener.onClickItem(position)
+            }
+
             itemView.listItemBodyContainer.setOnLongClickListener {
                 listener.onLongClickItem(adapterPosition)
                 it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
@@ -132,6 +136,7 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
     }
 
     interface ItemsAdapterListener {
+        fun onClickItem(position: Int)
         fun onLongClickItem(position: Int)
         fun onIconClicked(position: Int)
     }

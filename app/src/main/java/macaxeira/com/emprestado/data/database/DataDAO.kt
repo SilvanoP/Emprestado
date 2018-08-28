@@ -26,4 +26,6 @@ interface DataDAO {
     fun loadItemsByMine(isMine: Boolean): Single<List<Item>>
     @Query("SELECT * FROM Item WHERE is_returned = :isReturned")
     fun loadItemsByReturned(isReturned: Boolean): Single<List<Item>>
+    @Query("SELECT * FROM Person WHERE id = :personId")
+    fun loadPersonById(personId: Long): Single<Person>
 }
