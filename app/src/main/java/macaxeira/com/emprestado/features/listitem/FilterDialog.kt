@@ -41,7 +41,7 @@ class FilterDialog : DialogFragment(), View.OnClickListener {
         val cancelButton = view.findViewById<Button>(R.id.dialogFilterCancelButton)
 
         radioLoan?.setOnCheckedChangeListener {
-            group, checkedId ->
+            _, checkedId ->
             this.checkedId = checkedId
             if(checkedId != -1) {
                 filterButton.isEnabled = true

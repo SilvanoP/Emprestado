@@ -9,13 +9,11 @@ import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.ItemType
 import macaxeira.com.emprestado.data.entities.Person
-import macaxeira.com.emprestado.utils.Constants
 import org.koin.android.ext.android.inject
 
 class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View {
 
     private val presenter: ItemDetailContract.Presenter by inject()
-    private var item: Item? = null
     private var adapter:TypesListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,14 +23,10 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         presenter.setView(this)
-
-        if (intent != null && intent.extras.size() > 0) {
-            item = intent.extras[Constants.ITEM_ARGUMENT] as Item
-            fillFields()
-        }
+        presenter.loadData()
     }
 
-    private fun fillFields() {
+    override fun fillFields(item: Item?) {
         if (adapter == null) {
             val types = ItemType.values().toList()
             adapter = TypesListAdapter(this, android.R.layout.simple_list_item_1, types)
@@ -40,14 +34,13 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View {
         }
 
         if (item != null) {
-            itemDetailTypeSpinner.setSelection(adapter!!.getPosition(item!!.itemType))
-            itemDetailDescriptionEdit.setText(item!!.description)
-            itemDetailMineCheckbox.isChecked = item!!.isMine
-            if (item!!.person != null) {
-                fillPersonFields(item!!.person!!)
+            itemDetailTypeSpinner.setSelection(adapter!!.getPosition(item.itemType))
+            itemDetailDescriptionEdit.setText(item.description)
+            itemDetailMineCheckbox.isChecked = item.isMine
+            if (item.person != null) {
+                fillPersonFields(item.person!!)
             }
         }
-
     }
 
     override fun fillPersonFields(person: Person) {
@@ -68,8 +61,6 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View {
     }
 
     private fun saveItem() {
-        
-        val description = itemDetailDescriptionEdit.text.toString()
 
     }
 

@@ -9,6 +9,11 @@ import macaxeira.com.emprestado.features.shared.BasePresenterImpl
 class ItemDetailPresenter(private val repository: DataRepository) : BasePresenterImpl<ItemDetailContract.View>(),
         ItemDetailContract.Presenter {
 
+    override fun loadData() {
+        val item = repository.getSelectedItem()
+        view.get()?.fillFields(item)
+    }
+
     override fun getPersonById(personId: Long) {
         disposable.add(repository.getPersonById(personId)
                 .subscribeOn(Schedulers.io())

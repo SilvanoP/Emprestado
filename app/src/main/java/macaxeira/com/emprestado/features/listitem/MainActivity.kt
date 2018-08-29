@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.features.itemdetail.ItemDetailActivity
-import macaxeira.com.emprestado.utils.Constants
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.ItemsAdapterListener,
@@ -25,7 +24,6 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
 
     private val presenter: ListItemContract.Presenter by inject()
 
-    private var adapter: ItemsAdapter? = null
     private var actionMode: ActionMode? = null
     private var actionModeCallback = ActionModeCallback()
     private var filter = -1
@@ -38,61 +36,51 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         presenter.setView(this)
 
         floatingActionButtonAdd.setOnClickListener {
-            val intent = Intent(this, ItemDetailActivity::class.java)
-            startActivity(intent)
+            presenter.onAddItem()
         }
 
         mainSwipeRefreshLayout.setOnRefreshListener {
-            onRefresh()
+            presenter.onSwipeRefresh(filter)
         }
 
+        setupRecyclerView()
+
+        presenter.loadData()
+    }
+
+    private fun setupRecyclerView() {
         mainItemsRecycler.layoutManager = LinearLayoutManager(this)
         mainItemsRecycler.itemAnimator = DefaultItemAnimator()
         mainItemsRecycler.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
+        val adapter = ItemsAdapter(this, items, this)
+        mainItemsRecycler.adapter = adapter
+
+        // Item swipe
         val itemTouchHelperCallback = RecyclerItemTouchHelper(0, ItemTouchHelper.RIGHT, this)
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mainItemsRecycler)
-        onRefresh()
     }
 
-    private fun onRefresh() {
-        mainSwipeRefreshLayout.isRefreshing = true
-        presenter.getFilterPreference()
+    override fun isRefreshing(refreshing: Boolean) {
+        mainSwipeRefreshLayout.isRefreshing = refreshing
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId) {
-            R.id.menuMainFilter -> {
-                val dialog = FilterDialog.newInstance(filter)
-                dialog.show(supportFragmentManager, "FilterDialog")
-            }
-        }
-        return true
+    override fun callNextActivity() {
+        val intent = Intent(this, ItemDetailActivity::class.java)
+        startActivity(intent)
     }
 
     override fun showItems(items: List<Item>) {
         this.items = items.toMutableList()
 
-        mainSwipeRefreshLayout.isRefreshing = false
-        if (adapter == null) {
-            adapter = ItemsAdapter(this, items.toMutableList(), this)
-        } else {
-            adapter!!.items = items.toMutableList()
-        }
-
-        mainItemsRecycler.adapter = adapter
+        val adapter = mainItemsRecycler.adapter as ItemsAdapter
+        adapter.items = this.items
+        adapter.notifyDataSetChanged()
     }
 
     override fun onClickItem(position: Int) {
         val item = items[position]
-        val intent = Intent(this, ItemDetailActivity::class.java)
-        intent.putExtra(Constants.ITEM_ARGUMENT, item)
-        startActivity(intent)
+        presenter.onItemSelected(item)
     }
 
     override fun onLongClickItem(position: Int) {
@@ -107,8 +95,10 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         if (actionMode == null) {
             actionMode = startSupportActionMode(actionModeCallback)
         }
-        adapter?.toggleSelection(position)
-        val count = adapter?.selectedItems?.size()
+
+        val adapter = mainItemsRecycler.adapter as ItemsAdapter
+        adapter.toggleSelection(position)
+        val count = adapter.selectedItems.size()
 
         if (count == 0) {
             actionMode?.finish()
@@ -123,43 +113,47 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
             val deletedItem = items[viewHolder.adapterPosition]
             val deletedPosition = viewHolder.adapterPosition
 
-            adapter?.removeItem(deletedPosition)
+            val adapter = mainItemsRecycler.adapter as ItemsAdapter
+            adapter.removeItem(deletedPosition)
+
             presenter.removeItem(deletedItem)
             items.removeAt(deletedPosition)
-            val snackbar = Snackbar.make(mainFrameLayout, R.string.item_swiped, Snackbar.LENGTH_LONG)
-            snackbar.setAction(R.string.undo)  {
-                items.add(deletedPosition, deletedItem)
-                adapter?.restoreItem(deletedItem, deletedPosition)
-                presenter.restoreItem(deletedItem)
-            }
-            snackbar.setActionTextColor(Color.YELLOW)
-            snackbar.show()
+            displaySnackBar(deletedItem, deletedPosition)
         }
+    }
+
+    private fun displaySnackBar(deletedItem: Item, deletedPosition: Int) {
+        val snackBar = Snackbar.make(mainFrameLayout, R.string.item_swiped, Snackbar.LENGTH_LONG)
+        snackBar.setAction(R.string.undo)  {
+            items.add(deletedPosition, deletedItem)
+            val adapter = mainItemsRecycler.adapter as ItemsAdapter
+            adapter.restoreItem(deletedItem, deletedPosition)
+            presenter.restoreItem(deletedItem)
+        }
+        snackBar.setActionTextColor(Color.YELLOW)
+        snackBar.show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId) {
+            R.id.menuMainFilter -> openFilterDialog()
+        }
+        return true
+    }
+
+    private fun openFilterDialog() {
+        val dialog = FilterDialog.newInstance(filter)
+        dialog.show(supportFragmentManager, "FilterDialog")
     }
 
     override fun filter(filter: Int) {
         this.filter = filter
-        presenter.saveFilterPreference(filter)
-        mainSwipeRefreshLayout.isRefreshing = true
-
-        when(filter) {
-            R.id.dialogFilterButtonBorrowed ->  {
-                presenter.getItemsByOwner(false)
-                title = getString(R.string.borrowed)
-            }
-            R.id.dialogFilterButtonLent -> {
-                presenter.getItemsByOwner(true)
-                title = getString(R.string.lent)
-            }
-            R.id.dialogFilterButtonReturned -> {
-                presenter.getItemsByReturned(true)
-                title = getString(R.string.returned)
-            }
-            else -> {
-                presenter.getAllItems()
-                title = getString(R.string.all_loans)
-            }
-        }
+        presenter.loadItemsByFilter(filter)
     }
 
     override fun showErrorMessage(throwable: Throwable) {
@@ -186,11 +180,12 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {
-            adapter?.clearSelections()
+            val adapter = mainItemsRecycler.adapter as ItemsAdapter
+            adapter.clearSelections()
             actionMode = null
             mainItemsRecycler.post {
                 // Runnable
-                adapter?.resetAnimationIndex()
+                adapter.resetAnimationIndex()
             }
         }
 

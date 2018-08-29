@@ -9,51 +9,60 @@ import macaxeira.com.emprestado.features.shared.BasePresenterImpl
 class ListItemPresenter(private val repository: DataRepository) : BasePresenterImpl<ListItemContract.View>(),
         ListItemContract.Presenter {
 
-    override fun getAllItems() {
-        disposable.add(repository.getAllItems()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
-                            view.get()?.showItems(it)
-                        },
-                        {
-                            view.get()?.showErrorMessage(it)
-                        }
-                ))
-    }
-
-    override fun getFilterPreference() {
+    override fun loadData() {
+        view.get()?.isRefreshing(true)
         val filter = repository.getFilterPreference()
-        view.get()?.filter(filter)
-    }
-
-    override fun getItemsByOwner(isMine: Boolean) {
-        disposable.add(repository.getItemsByOwner(isMine)
+        disposable.add(repository.getItemsByFilter(filter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
-                            view.get()?.showItems(it)
-                        },
-                        {
-                            view.get()?.showErrorMessage(it)
-                        }
+                .subscribe({
+                    view.get()?.isRefreshing(false)
+                    view.get()?.showItems(it)
+                }, {
+                    view.get()?.isRefreshing(false)
+                    view.get()?.showErrorMessage(it)
+                }
                 ))
     }
 
-    override fun getItemsByReturned(isReturned: Boolean) {
-        disposable.add(repository.getItemsByReturned(isReturned)
+    override fun onAddItem() {
+        repository.onRefreshSelectedItem()
+        view.get()?.callNextActivity()
+    }
+
+    override fun loadItemsByFilter(filter: Int) {
+        view.get()?.isRefreshing(true)
+        disposable.add(repository.getItemsByFilter(filter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
-                            view.get()?.showItems(it)
-                        },
-                        {
-                            view.get()?.showErrorMessage(it)
-                        }
+                .subscribe({
+                    view.get()?.isRefreshing(false)
+                    view.get()?.showItems(it)
+                }, {
+                    view.get()?.isRefreshing(false)
+                    view.get()?.showErrorMessage(it)
+                }
                 ))
+    }
+
+    override fun onSwipeRefresh(filter: Int) {
+        view.get()?.isRefreshing(true)
+        disposable.add(repository.getItemsByFilter(filter)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    view.get()?.isRefreshing(false)
+                    view.get()?.showItems(it)
+                }, {
+                    view.get()?.isRefreshing(false)
+                    view.get()?.showErrorMessage(it)
+                }
+                ))
+    }
+
+    override fun onItemSelected(item: Item) {
+        repository.onItemSelected(item)
+        view.get()?.callNextActivity()
     }
 
     override fun removeItem(item: Item) {

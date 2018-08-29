@@ -7,15 +7,17 @@ import macaxeira.com.emprestado.features.shared.BaseView
 interface ListItemContract {
 
     interface View : BaseView {
+        fun isRefreshing(refreshing: Boolean)
         fun showItems(items: List<Item>)
-        fun filter(filter: Int)
+        fun callNextActivity()
     }
 
     interface Presenter : BasePresenter<View> {
-        fun getAllItems()
-        fun getFilterPreference()
-        fun getItemsByOwner(isMine: Boolean)
-        fun getItemsByReturned(isReturned: Boolean)
+        fun loadData()
+        fun onAddItem()
+        fun loadItemsByFilter(filter:Int)
+        fun onSwipeRefresh(filter: Int)
+        fun onItemSelected(item: Item)
         fun removeItem(item: Item)
         fun restoreItem(item: Item)
         fun saveFilterPreference(filter: Int)

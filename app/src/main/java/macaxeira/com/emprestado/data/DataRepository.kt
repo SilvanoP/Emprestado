@@ -6,6 +6,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.SingleSource
+import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.ItemType
 import macaxeira.com.emprestado.data.entities.Person
@@ -13,10 +14,11 @@ import macaxeira.com.emprestado.utils.Constants
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DataRepository(private val dataSourceLocal: DataSource, private val prefs: SharedPreferences) : DataSource {
+class DataRepository(private val dataSourceLocal: DataSource, private val prefs: SharedPreferences) {
 
     private var cachedItems: MutableList<Item> = mutableListOf()
     private var cachedPeople: MutableList<Person> = mutableListOf()
+    private var selectedItem: Item? = null
 
     init {
         // FIXME Temporary
@@ -37,29 +39,25 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         cachedItems.add(i)
     }
 
-    override fun saveItem(item: Item): Completable {
-        // FIXME Temporary
-        return Completable.complete()
-        /*return dataSourceLocal.saveItem(item).doOnComplete {
+    fun saveItem(item: Item): Completable {
+        return dataSourceLocal.saveItem(item).doOnComplete {
             cachedItems.add(item)
-        }*/
-    }
-
-    override fun savePerson(person: Person): Completable {
-        return dataSourceLocal.savePerson(person).doOnComplete {
-            cachedPeople.add(person)
         }
     }
 
-    override fun removeItem(item: Item): Completable {
-        // FIXME Temporary
-        return Completable.complete()
-        /*return dataSourceLocal.removeItem(item).doOnComplete{
+    /*fun savePerson(person: Person): Completable {
+        return dataSourceLocal.savePerson(person).doOnComplete {
+            cachedPeople.add(person)
+        }
+    }*/
+
+    fun removeItem(item: Item): Completable {
+        return dataSourceLocal.removeItem(item).doOnComplete{
             cachedItems.remove(item)
-        }*/
+        }
     }
 
-    override fun getAllItems(): Single<List<Item>> {
+    fun getAllItems(): Single<List<Item>> {
         if (cachedItems.size > 0) {
             return Single.just(cachedItems)
         }
@@ -69,7 +67,7 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         }
     }
 
-    override fun getItemsByOwner(isMine: Boolean): Single<List<Item>> {
+    fun getItemsByOwner(isMine: Boolean): Single<List<Item>> {
         if (cachedItems.size > 0) {
             return Observable.fromIterable(cachedItems).flatMap {
                 Observable.just(it)
@@ -81,7 +79,7 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         return dataSourceLocal.getItemsByOwner(isMine)
     }
 
-    override fun getItemsByReturned(isReturned: Boolean): Single<List<Item>> {
+    fun getItemsByReturned(isReturned: Boolean): Single<List<Item>> {
         if (cachedItems.size > 0) {
             return Observable.fromIterable(cachedItems).flatMap {
                 Observable.just(it)
@@ -93,7 +91,35 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         return dataSourceLocal.getItemsByReturned(isReturned)
     }
 
-    override fun getPersonById(personId: Long): Single<Person> {
+    fun onItemSelected(item: Item) {
+        selectedItem = item
+    }
+
+    fun onRefreshSelectedItem() {
+        selectedItem = null
+    }
+
+    fun getSelectedItem(): Item? {
+        return selectedItem
+    }
+
+    fun getItemsByFilter(filter: Int): Single<List<Item>> {
+        when(filter) {
+            R.id.dialogFilterButtonBorrowed ->  {
+                return getItemsByOwner(false)
+            }
+            R.id.dialogFilterButtonLent -> {
+                return getItemsByOwner(true)
+            }
+            R.id.dialogFilterButtonReturned -> {
+                return getItemsByReturned(true)
+            }
+        }
+
+        return getAllItems()
+    }
+
+    fun getPersonById(personId: Long): Single<Person> {
         return Maybe.fromAction<Person> {
             var p: Person? = null
             for (person in cachedPeople) {
