@@ -13,12 +13,14 @@
     <string name="item_swiped">Item deleted.</string>
     <string name="lent">Lent</string>
     <string name="filter">Filter</string>
+    <string name="from">From</string>
     <string name="name">Name</string>
     <string name="return_date">Return Date</string>
     <string name="returned">Returned</string>
     <string name="search_contact">Search</string>
     <string name="telephone">Telephone Number</string>
     <string name="telephone_hint">(##)#####-####</string>
+    <string name="to">To</string>
     <string name="undo">UNDO</string>
 
     <!-- Item Type -->

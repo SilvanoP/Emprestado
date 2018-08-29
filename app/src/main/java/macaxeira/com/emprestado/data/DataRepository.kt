@@ -112,7 +112,7 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         })
     }
 
-    fun getFilterPrefence(): Int {
+    fun getFilterPreference(): Int {
         return prefs.getInt(Constants.PREFS_FILTER, -1)
     }
 

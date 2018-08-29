@@ -11,69 +11,114 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_default"
         android:text="@string/filter"
-        android:textAllCaps="true"
-        android:textStyle="bold"
         android:textColor="@android:color/black"
         android:textSize="@dimen/text_size_category"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/dialogFilterDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_default"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogFilterTitle" />
 
     <RadioGroup
         android:id="@+id/dialogFilterRadioBorrowedLent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_default"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dialogFilterTitle">
+        app:layout_constraintTop_toBottomOf="@+id/dialogFilterDivider">
 
         <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/dialogFilterButtonAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/all_loans" />
+            android:layout_margin="@dimen/margin_radio_button"
+            android:paddingEnd="@dimen/radio_padding_default"
+            android:paddingStart="@dimen/radio_padding_default"
+            android:text="@string/all_loans"
+            android:textSize="@dimen/text_size_radio_label" />
 
         <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/dialogFilterButtonLent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/lent" />
+            android:layout_margin="@dimen/margin_radio_button"
+            android:paddingEnd="@dimen/radio_padding_default"
+            android:paddingStart="@dimen/radio_padding_default"
+            android:text="@string/lent"
+            android:textSize="@dimen/text_size_radio_label" />
 
         <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/dialogFilterButtonBorrowed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/borrowed" />
+            android:layout_margin="@dimen/margin_radio_button"
+            android:paddingEnd="@dimen/radio_padding_default"
+            android:paddingStart="@dimen/radio_padding_default"
+            android:text="@string/borrowed"
+            android:textSize="@dimen/text_size_radio_label" />
 
         <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/dialogFilterButtonReturned"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/returned" />
+            android:layout_margin="@dimen/margin_radio_button"
+            android:paddingEnd="@dimen/radio_padding_default"
+            android:paddingStart="@dimen/radio_padding_default"
+            android:text="@string/returned"
+            android:textSize="@dimen/text_size_radio_label" />
     </RadioGroup>
+
+    <View
+        android:id="@+id/dialogFilterDividerButtons"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogFilterRadioBorrowedLent"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="254dp" />
 
     <Button
         android:id="@+id/dialogFilterFilterButton"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_default"
+        android:layout_margin="@dimen/margin_half"
+        android:enabled="false"
+        android:minHeight="@dimen/no_dp"
+        android:minWidth="@dimen/no_dp"
         android:text="@string/accept"
         android:textAllCaps="true"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        app:layout_constraintTop_toBottomOf="@+id/dialogFilterRadioBorrowedLent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/dialogFilterCancelButton"
+        app:layout_constraintTop_toBottomOf="@+id/dialogFilterDividerButtons" />
 
     <Button
         android:id="@+id/dialogFilterCancelButton"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_default"
+        android:layout_marginBottom="@dimen/margin_half"
+        android:layout_marginTop="@dimen/margin_half"
+        android:minHeight="@dimen/no_dp"
+        android:minWidth="@dimen/no_dp"
         android:text="@string/cancel"
         android:textAllCaps="true"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        app:layout_constraintTop_toBottomOf="@+id/dialogFilterRadioBorrowedLent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/dialogFilterFilterButton"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogFilterDividerButtons" />
 
 </android.support.constraint.ConstraintLayout>

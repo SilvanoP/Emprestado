@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="margin_big">24dp</dimen>
     <dimen name="margin_default">16dp</dimen>
     <dimen name="margin_half">8dp</dimen>
+    <dimen name="margin_radio_button">12dp</dimen>
     <dimen name="no_dp">0dp</dimen>
+    <dimen name="radio_padding_default">32dp</dimen>
+
     <dimen name="text_size_category">24sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_radio_label">17sp</dimen>
 </resources>

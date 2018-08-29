@@ -24,7 +24,7 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
     }
 
     override fun getFilterPreference() {
-        val filter = repository.getFilterPrefence()
+        val filter = repository.getFilterPreference()
         view.get()?.filter(filter)
     }
 

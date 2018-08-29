@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     private var adapter: ItemsAdapter? = null
     private var actionMode: ActionMode? = null
     private var actionModeCallback = ActionModeCallback()
+    private var filter = -1
     private var items = mutableListOf<Item>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
             R.id.menuMainFilter -> {
-                val dialog = FilterDialog.newInstance(-1)
+                val dialog = FilterDialog.newInstance(filter)
                 dialog.show(supportFragmentManager, "FilterDialog")
             }
         }
@@ -137,16 +138,11 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     }
 
     override fun filter(filter: Int) {
-        if (filter == -1) return
-
+        this.filter = filter
         presenter.saveFilterPreference(filter)
         mainSwipeRefreshLayout.isRefreshing = true
 
         when(filter) {
-            R.id.dialogFilterButtonAll -> {
-                presenter.getAllItems()
-                title = getString(R.string.all_loans)
-            }
             R.id.dialogFilterButtonBorrowed ->  {
                 presenter.getItemsByOwner(false)
                 title = getString(R.string.borrowed)
@@ -158,6 +154,10 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
             R.id.dialogFilterButtonReturned -> {
                 presenter.getItemsByReturned(true)
                 title = getString(R.string.returned)
+            }
+            else -> {
+                presenter.getAllItems()
+                title = getString(R.string.all_loans)
             }
         }
     }

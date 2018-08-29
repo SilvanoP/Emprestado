@@ -78,6 +78,12 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
             itemView.listItemDescriptionText.text = item.description
             itemView.listItemMainReturnDate.text = item.returnDate
 
+            var person: String = if (item.isMine) context.getString(R.string.to)
+                                    else context.getString(R.string.from)
+            person += ": "
+
+            itemView.listItemPersonText.text = person
+
             itemView.isActivated = selectedItems[adapterPosition, false]
 
             applyClickEvents(adapterPosition)

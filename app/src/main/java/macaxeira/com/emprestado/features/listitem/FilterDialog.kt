@@ -36,24 +36,27 @@ class FilterDialog : DialogFragment(), View.OnClickListener {
 
         // Since synthetic components don't work on dialog, I do it the old way
         val radioLoan = view?.findViewById<RadioGroup>(R.id.dialogFilterRadioBorrowedLent)
-        val radioButtonAll = view?.findViewById<RadioButton>(R.id.dialogFilterButtonAll)
-        val filterButton = view?.findViewById<Button>(R.id.dialogFilterFilterButton)
-        val cancelButton = view?.findViewById<Button>(R.id.dialogFilterCancelButton)
+        val radioButtonAll = view?.findViewById(R.id.dialogFilterButtonAll) as RadioButton
+        val filterButton = view.findViewById<Button>(R.id.dialogFilterFilterButton)
+        val cancelButton = view.findViewById<Button>(R.id.dialogFilterCancelButton)
 
         radioLoan?.setOnCheckedChangeListener {
             group, checkedId ->
             this.checkedId = checkedId
+            if(checkedId != -1) {
+                filterButton.isEnabled = true
+            }
         }
 
         radioLoan?.clearCheck()
         if (option != null) {
             radioLoan?.check(option)
         } else {
-            radioButtonAll?.isChecked = true
+            radioButtonAll.isChecked = true
         }
 
-        filterButton?.setOnClickListener(this)
-        cancelButton?.setOnClickListener(this)
+        filterButton.setOnClickListener(this)
+        cancelButton.setOnClickListener(this)
 
         return view
     }
@@ -64,6 +67,7 @@ class FilterDialog : DialogFragment(), View.OnClickListener {
         } else if (v?.id == R.id.dialogFilterFilterButton) {
             val listener = requireActivity() as FilterDialogListener
             listener.filter(checkedId)
+            dialog.dismiss()
         }
     }
 
