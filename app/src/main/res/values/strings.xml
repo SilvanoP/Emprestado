@@ -17,6 +17,7 @@
     <string name="name">Name</string>
     <string name="return_date">Return Date</string>
     <string name="returned">Returned</string>
+    <string name="save">Save</string>
     <string name="search_contact">Search</string>
     <string name="telephone">Telephone Number</string>
     <string name="telephone_hint">(##)#####-####</string>

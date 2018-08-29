@@ -1,6 +1,7 @@
 package macaxeira.com.emprestado.data.database
 
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 import macaxeira.com.emprestado.data.DataSource
 import macaxeira.com.emprestado.data.entities.Item
@@ -27,11 +28,20 @@ class DataSourceLocal(val database: EmprestadoDatabase) : DataSource {
     }
 
     override fun getAllItems(): Single<List<Item>> {
-        return database.dataDAO().loadAllItems()
+        return Observable.fromIterable(database.dataDAO().loadAllItems())
+                .flatMap ({
+                    val personId = it.personId
+                    Observable.just(database.dataDAO().loadPersonById(personId!!))
+                },{
+                    it, p -> it.person = p
+                    it
+                }).toList()
+
+        //return database.dataDAO().loadAllItems() TODO REMOVE
     }
 
     override fun getPersonById(personId: Long): Single<Person> {
-        return database.dataDAO().loadPersonById(personId)
+        return Single.just(database.dataDAO().loadPersonById(personId))
     }
 
     override fun getItemsByOwner(isMine: Boolean): Single<List<Item>> {

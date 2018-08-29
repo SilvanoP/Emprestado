@@ -80,7 +80,7 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
 
             var person: String = if (item.isMine) context.getString(R.string.to)
                                     else context.getString(R.string.from)
-            person += ": "
+            person += ": " + item.person?.name
 
             itemView.listItemPersonText.text = person
 
