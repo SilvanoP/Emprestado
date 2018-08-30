@@ -7,7 +7,9 @@ import macaxeira.com.emprestado.features.shared.BaseView
 interface ListItemContract {
 
     interface View : BaseView {
+        fun changeTitle(filter: Int)
         fun isRefreshing(refreshing: Boolean)
+        fun showEmptyList()
         fun showItems(items: List<Item>)
         fun callNextActivity()
     }

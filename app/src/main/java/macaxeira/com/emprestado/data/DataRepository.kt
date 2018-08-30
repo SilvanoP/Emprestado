@@ -20,36 +20,40 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
     private var cachedPeople: MutableList<Person> = mutableListOf()
     private var selectedItem: Item? = null
 
-    init {
-        // FIXME Temporary
-        val p = Person()
-        p.id = 1
-        p.name = "Test"
-        p.email = "test@test.com"
-        p.telephone = "982828393"
-
-        val i = Item()
-        i.description = "Testing description"
-        i.isMine = true
-        i.itemType = ItemType.BOOK
-        i.quantity = 1
-        i.personId  = 1
-        i.returnDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
-
-        cachedItems.add(i)
-    }
-
     fun saveItem(item: Item): Completable {
         return dataSourceLocal.saveItem(item).doOnComplete {
-            cachedItems.add(item)
+            cachedItems.add(selectedItem!!)
         }
     }
 
-    /*fun savePerson(person: Person): Completable {
-        return dataSourceLocal.savePerson(person).doOnComplete {
-            cachedPeople.add(person)
+    fun saveItem(description: String, itemType: ItemType, isMine: Boolean, personName: String,
+                 personEmail: String, personPhone: String): Completable {
+        if (selectedItem == null) {
+            selectedItem = Item()
         }
-    }*/
+
+        selectedItem!!.description = description
+        selectedItem!!.itemType = itemType
+        selectedItem!!.isMine = isMine
+
+        var person = Person()
+        if (selectedItem!!.person != null) {
+            person = selectedItem!!.person!!
+        }
+        person.name = personName
+        person.phone = personPhone
+        person.email = personEmail
+
+        return dataSourceLocal.saveItem(selectedItem!!).doOnComplete {
+            val index = cachedItems.indexOf(selectedItem!!)
+            if (index != -1) {
+                cachedItems.removeAt(index)
+                cachedItems.add(index, selectedItem!!)
+            } else {
+                cachedItems.add(selectedItem!!)
+            }
+        }
+    }
 
     fun removeItem(item: Item): Completable {
         return dataSourceLocal.removeItem(item).doOnComplete{
@@ -57,17 +61,18 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         }
     }
 
-    fun getAllItems(): Single<List<Item>> {
+    private fun getAllItems(): Single<List<Item>> {
         if (cachedItems.size > 0) {
             return Single.just(cachedItems)
         }
 
-        return dataSourceLocal.getAllItems().doAfterSuccess {
+        return dataSourceLocal.getAllItems().flatMap {
             cachedItems = it.toMutableList()
+            Single.just(it)
         }
     }
 
-    fun getItemsByOwner(isMine: Boolean): Single<List<Item>> {
+    private fun getItemsByOwner(isMine: Boolean): Single<List<Item>> {
         if (cachedItems.size > 0) {
             return Observable.fromIterable(cachedItems).flatMap {
                 Observable.just(it)
@@ -79,7 +84,7 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         return dataSourceLocal.getItemsByOwner(isMine)
     }
 
-    fun getItemsByReturned(isReturned: Boolean): Single<List<Item>> {
+    private fun getItemsByReturned(isReturned: Boolean): Single<List<Item>> {
         if (cachedItems.size > 0) {
             return Observable.fromIterable(cachedItems).flatMap {
                 Observable.just(it)
@@ -105,15 +110,12 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
 
     fun getItemsByFilter(filter: Int): Single<List<Item>> {
         when(filter) {
-            R.id.dialogFilterButtonBorrowed ->  {
+            R.id.dialogFilterButtonBorrowed ->
                 return getItemsByOwner(false)
-            }
-            R.id.dialogFilterButtonLent -> {
+            R.id.dialogFilterButtonLent ->
                 return getItemsByOwner(true)
-            }
-            R.id.dialogFilterButtonReturned -> {
+            R.id.dialogFilterButtonReturned ->
                 return getItemsByReturned(true)
-            }
         }
 
         return getAllItems()

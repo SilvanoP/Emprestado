@@ -2,19 +2,26 @@ package macaxeira.com.emprestado.features.itemdetail
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.EditText
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_item_detail.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.ItemType
 import macaxeira.com.emprestado.data.entities.Person
 import org.koin.android.ext.android.inject
+import java.text.SimpleDateFormat
+import java.util.*
 
-class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View {
+class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.OnClickListener,
+        View.OnFocusChangeListener, ReturnDateDialog.ReturnDateDialogListener {
 
     private val presenter: ItemDetailContract.Presenter by inject()
-    private var adapter:TypesListAdapter? = null
+    private var adapter: TypesListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,12 +47,46 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View {
             if (item.person != null) {
                 fillPersonFields(item.person!!)
             }
+            if (!TextUtils.isEmpty(item.returnDate)) {
+                itemDetailReturnDateEdit.setText(item.returnDate)
+            }
         }
+
+        itemDetailReturnDateEdit.setOnClickListener(this)
+        itemDetailDescriptionEdit.onFocusChangeListener = this
+        itemDetailPersonNameEdit.onFocusChangeListener = this
     }
 
     override fun fillPersonFields(person: Person) {
         itemDetailPersonNameEdit.setText(person.name)
         itemDetailPersonEmailEdit.setText(person.email)
+        itemDetailPersonPhoneEdit.setText(person.phone)
+    }
+
+    override fun openDatePicker(returnDate: Calendar) {
+        val dialog = ReturnDateDialog.newInstance(returnDate)
+        dialog.show(supportFragmentManager, "datePicker")
+    }
+
+    override fun onDateSet(year: Int, month: Int, dayOfMonth: Int) {
+        val cal = Calendar.getInstance()
+        cal.set(Calendar.YEAR, year)
+        cal.set(Calendar.MONTH, month)
+        cal.set(Calendar.DAY_OF_YEAR, month)
+
+        val date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(cal.time)
+        itemDetailReturnDateEdit.setText(date)
+    }
+
+    override fun onClick(v: View?) {
+        presenter.setReturnDate()
+    }
+
+    override fun onFocusChange(v: View?, hasFocus: Boolean) {
+        val edit = v as EditText
+        if (!hasFocus && TextUtils.isEmpty(edit.text)) {
+            edit.error = getString(R.string.required_field_empty)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -54,14 +95,26 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId) {
+        when (item?.itemId) {
             R.id.menuItemDetailSave -> saveItem()
         }
         return true
     }
 
     private fun saveItem() {
+        val description = itemDetailDescriptionEdit.text.toString()
+        val itemType = itemDetailTypeSpinner.selectedItem as ItemType
+        val isMine = itemDetailMineCheckbox.isChecked
+        val personName = itemDetailPersonNameEdit.text.toString()
+        val personEmail = itemDetailPersonEmailEdit.text.toString()
+        val personPhone = itemDetailPersonPhoneEdit.text.toString()
 
+        if (TextUtils.isEmpty(description) || TextUtils.isEmpty(personName)) {
+            Toast.makeText(this, R.string.required_field_empty, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        presenter.saveItem(description, itemType, isMine, personName, personEmail, personPhone)
     }
 
     override fun onSaveOrUpdateComplete() {

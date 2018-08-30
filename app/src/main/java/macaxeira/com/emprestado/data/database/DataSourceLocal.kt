@@ -28,7 +28,11 @@ class DataSourceLocal(val database: EmprestadoDatabase) : DataSource {
     }
 
     override fun getAllItems(): Single<List<Item>> {
-        return Observable.fromIterable(database.dataDAO().loadAllItems())
+        return database.dataDAO().loadAllItems()
+                .toObservable()
+                .flatMapIterable {
+                    it
+                }
                 .flatMap ({
                     val personId = it.personId
                     Observable.just(database.dataDAO().loadPersonById(personId!!))
@@ -36,8 +40,6 @@ class DataSourceLocal(val database: EmprestadoDatabase) : DataSource {
                     it, p -> it.person = p
                     it
                 }).toList()
-
-        //return database.dataDAO().loadAllItems() TODO REMOVE
     }
 
     override fun getPersonById(personId: Long): Single<Person> {

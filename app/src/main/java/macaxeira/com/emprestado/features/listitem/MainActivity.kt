@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
@@ -61,6 +62,17 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mainItemsRecycler)
     }
 
+    override fun changeTitle(filter: Int) {
+        this.filter = filter
+        title = getString(R.string.all_loans)
+
+        when(filter) {
+            R.id.dialogFilterButtonBorrowed ->  title = getString(R.string.borrowed)
+            R.id.dialogFilterButtonLent -> title = getString(R.string.lent)
+            R.id.dialogFilterButtonReturned -> title = getString(R.string.returned)
+        }
+    }
+
     override fun isRefreshing(refreshing: Boolean) {
         mainSwipeRefreshLayout.isRefreshing = refreshing
     }
@@ -70,7 +82,15 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         startActivity(intent)
     }
 
+    override fun showEmptyList() {
+        mainItemsRecycler.visibility = View.GONE
+        mainEmptyList.visibility = View.VISIBLE
+    }
+
     override fun showItems(items: List<Item>) {
+        mainItemsRecycler.visibility = View.VISIBLE
+        mainEmptyList.visibility = View.GONE
+
         this.items = items.toMutableList()
 
         val adapter = mainItemsRecycler.adapter as ItemsAdapter
@@ -152,7 +172,6 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     }
 
     override fun filter(filter: Int) {
-        this.filter = filter
         presenter.loadItemsByFilter(filter)
     }
 

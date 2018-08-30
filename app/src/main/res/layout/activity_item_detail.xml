@@ -8,6 +8,7 @@
 
     <android.support.v7.widget.AppCompatSpinner
         android:id="@+id/itemDetailTypeSpinner"
+        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_default"
@@ -20,7 +21,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_default"
         android:text="@string/is_borrowed"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="@dimen/text_size_radio_label"
+        app:layout_constraintTop_toTopOf="@+id/itemDetailTypeSpinner"
+        app:layout_constraintBottom_toBottomOf="@+id/itemDetailTypeSpinner"
         app:layout_constraintStart_toEndOf="@+id/itemDetailTypeSpinner" />
 
     <android.support.design.widget.TextInputLayout
@@ -39,6 +42,25 @@
 
     </android.support.design.widget.TextInputLayout>
 
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/itemDetailReturnDateInputLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_default"
+        app:layout_constraintTop_toBottomOf="@+id/itemDetailDescriptionInputLayout"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/itemDetailReturnDateEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="false"
+            android:ems="@integer/return_date_ems"
+            android:hint="@string/return_date" />
+
+    </android.support.design.widget.TextInputLayout>
+
     <TextView
         android:id="@+id/itemDetailContactText"
         android:layout_width="wrap_content"
@@ -48,7 +70,7 @@
         android:textAllCaps="true"
         android:textStyle="bold"
         android:textSize="@dimen/text_size_category"
-        app:layout_constraintTop_toBottomOf="@+id/itemDetailDescriptionInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/itemDetailReturnDateInputLayout"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -93,6 +115,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/itemDetailPersonPhoneInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_default"
+        app:layout_constraintTop_toBottomOf="@+id/itemDetailPersonEmailInputLayout"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/itemDetailPersonPhoneEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:hint="@string/phone_number" />
 
     </android.support.design.widget.TextInputLayout>
 

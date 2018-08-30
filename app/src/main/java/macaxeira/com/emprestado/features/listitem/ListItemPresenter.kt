@@ -10,14 +10,19 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
         ListItemContract.Presenter {
 
     override fun loadData() {
-        view.get()?.isRefreshing(true)
         val filter = repository.getFilterPreference()
+        view.get()?.isRefreshing(true)
+        view.get()?.changeTitle(filter)
         disposable.add(repository.getItemsByFilter(filter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     view.get()?.isRefreshing(false)
-                    view.get()?.showItems(it)
+                    if (it.isEmpty()) {
+                        view.get()?.showEmptyList()
+                    } else {
+                        view.get()?.showItems(it)
+                    }
                 }, {
                     view.get()?.isRefreshing(false)
                     view.get()?.showErrorMessage(it)
@@ -32,7 +37,9 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
 
     override fun loadItemsByFilter(filter: Int) {
         view.get()?.isRefreshing(true)
-        disposable.add(repository.getItemsByFilter(filter)
+        view.get()?.changeTitle(filter)
+        disposable.add(
+                repository.getItemsByFilter(filter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

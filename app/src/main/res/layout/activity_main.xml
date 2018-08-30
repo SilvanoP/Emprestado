@@ -20,12 +20,21 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <TextView
+        android:id="@+id/mainEmptyList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/empty_list"
+        android:textSize="@dimen/text_size_category"
+        android:visibility="gone" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButtonAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/margin_default"
-        app:srcCompat="@drawable/ic_add"
-        android:layout_gravity="bottom|end"/>
+        app:srcCompat="@drawable/ic_add" />
 
 </FrameLayout>

@@ -9,13 +9,16 @@
     <string name="delete">Delete</string>
     <string name="description">Description</string>
     <string name="email">E-mail</string>
+    <string name="empty_list">Add some Items that you have lent or borrowed!</string>
     <string name="is_borrowed">Is borrowed?</string>
     <string name="item_swiped">Item deleted.</string>
     <string name="lent">Lent</string>
     <string name="filter">Filter</string>
     <string name="from">From</string>
     <string name="name">Name</string>
+    <string name="phone_number">Phone Number</string>
     <string name="return_date">Return Date</string>
+    <string name="required_field_empty">This field cannot be empty!</string>
     <string name="returned">Returned</string>
     <string name="save">Save</string>
     <string name="search_contact">Search</string>

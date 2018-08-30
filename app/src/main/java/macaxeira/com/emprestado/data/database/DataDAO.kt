@@ -1,6 +1,7 @@
 package macaxeira.com.emprestado.data.database
 
 import android.arch.persistence.room.*
+import io.reactivex.Observable
 import io.reactivex.Single
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.Person
@@ -19,7 +20,7 @@ interface DataDAO {
     fun removeItem(item: Item)
 
     @Query("SELECT * FROM Item")
-    fun loadAllItems(): List<Item>
+    fun loadAllItems(): Single<List<Item>>
     @Query("SELECT * FROM Person")
     fun loadAllPeople(): Single<List<Person>>
     @Query("SELECT * FROM Item WHERE is_mine = :isMine")

@@ -11,7 +11,7 @@ class Person() : Parcelable {
     @PrimaryKey
     var id: Long? = null
     var name: String = ""
-    var telephone: String = ""
+    var phone: String = ""
     var email: String = ""
 
     override fun describeContents(): Int {
@@ -22,14 +22,14 @@ class Person() : Parcelable {
         val tempId = parcel.readLong()
         id = if (tempId == -1L) null else tempId
         name = parcel.readString()
-        telephone = parcel.readString()
+        phone = parcel.readString()
         email = parcel.readString()
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.writeLong(id ?: -1)
         dest?.writeString(name)
-        dest?.writeString(telephone)
+        dest?.writeString(phone)
         dest?.writeString(email)
     }
 
