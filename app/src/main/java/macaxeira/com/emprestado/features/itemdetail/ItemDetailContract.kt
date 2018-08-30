@@ -13,6 +13,7 @@ interface ItemDetailContract {
         fun onSaveOrUpdateComplete()
         fun fillPersonFields(person: Person)
         fun fillFields(item: Item?)
+        fun requiredFieldsEmpty()
         fun openDatePicker(returnDate: Calendar)
     }
 

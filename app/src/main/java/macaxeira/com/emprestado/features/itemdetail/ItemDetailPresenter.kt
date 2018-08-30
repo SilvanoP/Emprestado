@@ -30,33 +30,35 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
     }
 
     override fun getPersonById(personId: Long) {
-        disposable.add(
-                repository.getPersonById(personId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
-                            view.get()?.fillPersonFields(it)
-                        }, {
+        disposable.add(repository.getPersonById(personId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                {
+                                    view.get()?.fillPersonFields(it)
+                                }, {
                             view.get()?.showErrorMessage(it)
                         }
-                ))
+                        ))
     }
 
     override fun saveItem(description: String, itemType: ItemType, isMine: Boolean, personName: String,
                           personEmail: String, personPhone: String) {
-        disposable.add(
-                repository.saveItem(description, itemType, isMine, personName, personEmail, personPhone)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
-                            view.get()?.onSaveOrUpdateComplete()
-                        },
-                        {
-                            view.get()?.showErrorMessage(it)
-                        }
-                ))
+        if (description.isEmpty() || personName.isEmpty()) {
+            view.get()?.requiredFieldsEmpty()
+        } else {
+            disposable.add(repository.saveItem(description, itemType, isMine, personName, personEmail, personPhone)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    {
+                                        view.get()?.onSaveOrUpdateComplete()
+                                    },
+                                    {
+                                        view.get()?.showErrorMessage(it)
+                                    }
+                            ))
+        }
     }
 
 }

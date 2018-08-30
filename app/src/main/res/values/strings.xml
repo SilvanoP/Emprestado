@@ -10,6 +10,9 @@
     <string name="description">Description</string>
     <string name="email">E-mail</string>
     <string name="empty_list">Add some Items that you have lent or borrowed!</string>
+    <string name="error_load_item">Items could not be loaded, please try again</string>
+    <string name="error_required_fields_empty">Required Fields cannot be empty!</string>
+    <string name="error_save_item">Item could not be save, please try again.</string>
     <string name="is_borrowed">Is borrowed?</string>
     <string name="item_swiped">Item deleted.</string>
     <string name="lent">Lent</string>

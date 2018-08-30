@@ -10,7 +10,7 @@ import macaxeira.com.emprestado.data.entities.Person
 interface DataDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrUpdatePerson(person: Person)
+    fun insertOrUpdatePerson(person: Person): Long
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrUpdateItem(item: Item)
 

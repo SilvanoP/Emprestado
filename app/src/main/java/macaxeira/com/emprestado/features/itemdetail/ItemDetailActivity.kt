@@ -63,6 +63,12 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         itemDetailPersonPhoneEdit.setText(person.phone)
     }
 
+    override fun requiredFieldsEmpty() {
+        Toast.makeText(this, R.string.error_save_item, Toast.LENGTH_SHORT).show()
+        itemDetailDescriptionEdit.error = getString(R.string.required_field_empty)
+        itemDetailPersonNameEdit.error = getString(R.string.required_field_empty)
+    }
+
     override fun openDatePicker(returnDate: Calendar) {
         val dialog = ReturnDateDialog.newInstance(returnDate)
         dialog.show(supportFragmentManager, "datePicker")
@@ -109,19 +115,15 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         val personEmail = itemDetailPersonEmailEdit.text.toString()
         val personPhone = itemDetailPersonPhoneEdit.text.toString()
 
-        if (TextUtils.isEmpty(description) || TextUtils.isEmpty(personName)) {
-            Toast.makeText(this, R.string.required_field_empty, Toast.LENGTH_SHORT).show()
-            return
-        }
-
         presenter.saveItem(description, itemType, isMine, personName, personEmail, personPhone)
     }
 
     override fun onSaveOrUpdateComplete() {
-
+        finish()
     }
 
     override fun showErrorMessage(throwable: Throwable) {
-
+        throwable.printStackTrace()
+        Toast.makeText(this, R.string.error_save_item, Toast.LENGTH_LONG).show()
     }
 }

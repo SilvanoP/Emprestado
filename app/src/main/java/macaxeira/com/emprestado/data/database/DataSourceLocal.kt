@@ -11,6 +11,8 @@ class DataSourceLocal(val database: EmprestadoDatabase) : DataSource {
 
     override fun saveItem(item: Item): Completable {
         return Completable.fromAction {
+            val personId = database.dataDAO().insertOrUpdatePerson(item.person!!)
+            item.personId = personId
             database.dataDAO().insertOrUpdateItem(item)
         }
     }

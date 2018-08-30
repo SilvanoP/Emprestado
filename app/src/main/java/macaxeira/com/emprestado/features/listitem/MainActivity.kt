@@ -14,6 +14,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
@@ -176,13 +177,14 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     }
 
     override fun showErrorMessage(throwable: Throwable) {
-
+        Toast.makeText(this, R.string.error_load_item, Toast.LENGTH_SHORT).show()
     }
 
     inner class ActionModeCallback : ActionMode.Callback {
 
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
             if (item?.itemId == R.id.menuMainDelete) {
+
                 return true
             }
 
