@@ -56,9 +56,40 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
     }
 
     fun removeItem(item: Item): Completable {
-        return dataSourceLocal.removeItem(item).doOnComplete{
+        return dataSourceLocal.removeItem(item).doOnComplete {
             cachedItems.remove(item)
         }
+    }
+
+    fun removeItems(items: List<Item>): Completable {
+        return dataSourceLocal.removeItems(items).doOnComplete {
+            cachedItems.removeAll(items)
+        }
+    }
+
+    fun onItemSelected(item: Item) {
+        selectedItem = item
+    }
+
+    fun onRefreshSelectedItem() {
+        selectedItem = null
+    }
+
+    fun getSelectedItem(): Item? {
+        return selectedItem
+    }
+
+    fun getItemsByFilter(filter: Int): Single<List<Item>> {
+        when (filter) {
+            R.id.dialogFilterButtonBorrowed ->
+                return getItemsByOwner(false)
+            R.id.dialogFilterButtonLent ->
+                return getItemsByOwner(true)
+            R.id.dialogFilterButtonReturned ->
+                return getItemsByReturned(true)
+        }
+
+        return getAllItems()
     }
 
     private fun getAllItems(): Single<List<Item>> {
@@ -76,8 +107,8 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         if (cachedItems.size > 0) {
             return Observable.fromIterable(cachedItems).flatMap {
                 Observable.just(it)
-            }.filter {
-                it -> it.isMine == isMine
+            }.filter { it ->
+                it.isMine == isMine
             }.toList()
         }
 
@@ -88,37 +119,12 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         if (cachedItems.size > 0) {
             return Observable.fromIterable(cachedItems).flatMap {
                 Observable.just(it)
-            }.filter {
-                it -> it.isReturned == isReturned
+            }.filter { it ->
+                it.isReturned == isReturned
             }.toList()
         }
 
         return dataSourceLocal.getItemsByReturned(isReturned)
-    }
-
-    fun onItemSelected(item: Item) {
-        selectedItem = item
-    }
-
-    fun onRefreshSelectedItem() {
-        selectedItem = null
-    }
-
-    fun getSelectedItem(): Item? {
-        return selectedItem
-    }
-
-    fun getItemsByFilter(filter: Int): Single<List<Item>> {
-        when(filter) {
-            R.id.dialogFilterButtonBorrowed ->
-                return getItemsByOwner(false)
-            R.id.dialogFilterButtonLent ->
-                return getItemsByOwner(true)
-            R.id.dialogFilterButtonReturned ->
-                return getItemsByReturned(true)
-        }
-
-        return getAllItems()
     }
 
     fun getPersonById(personId: Long): Single<Person> {

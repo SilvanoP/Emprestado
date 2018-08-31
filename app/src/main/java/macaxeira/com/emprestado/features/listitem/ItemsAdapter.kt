@@ -67,6 +67,11 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
         notifyItemRemoved(position)
     }
 
+    fun removeItems(deletedItems: List<Item>) {
+        items.removeAll(deletedItems)
+        notifyDataSetChanged()
+    }
+
     fun restoreItem(item: Item, position: Int) {
         items.add(position, item)
         notifyItemInserted(position)

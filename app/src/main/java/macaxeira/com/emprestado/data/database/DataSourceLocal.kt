@@ -29,6 +29,12 @@ class DataSourceLocal(val database: EmprestadoDatabase) : DataSource {
         }
     }
 
+    override fun removeItems(items: List<Item>): Completable {
+        return Completable.fromAction {
+            database.dataDAO().removeItems(*items.toTypedArray())
+        }
+    }
+
     override fun getAllItems(): Single<List<Item>> {
         return database.dataDAO().loadAllItems()
                 .toObservable()

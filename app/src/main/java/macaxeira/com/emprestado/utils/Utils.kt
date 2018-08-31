@@ -3,6 +3,7 @@ package macaxeira.com.emprestado.utils
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
+import android.util.SparseArray
 import android.view.View
 import macaxeira.com.emprestado.R
 
@@ -31,5 +32,17 @@ object Utils {
         } else {
             showBackAnim.start()
         }
+    }
+
+    @JvmStatic
+    fun <T> fromSparseToList(sparse: SparseArray<T>): List<T> {
+        val list = mutableListOf<T>()
+        var index = 0
+        while (index < sparse.size()) {
+            list.add(sparse.valueAt(index))
+            index++
+        }
+
+        return list.toList()
     }
 }

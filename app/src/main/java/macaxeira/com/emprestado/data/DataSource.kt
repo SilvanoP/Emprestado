@@ -11,6 +11,7 @@ interface DataSource {
     fun savePerson(person: Person): Completable
 
     fun removeItem(item: Item): Completable
+    fun removeItems(items: List<Item>): Completable
 
     fun getAllItems(): Single<List<Item>>
     fun getItemsByOwner(isMine: Boolean): Single<List<Item>>

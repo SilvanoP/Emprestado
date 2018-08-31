@@ -11,6 +11,7 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.SparseArray
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -99,6 +100,18 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         adapter.notifyDataSetChanged()
     }
 
+    override fun removeItem(position: Int) {
+        val adapter = mainItemsRecycler.adapter as ItemsAdapter
+        adapter.removeItem(position)
+        items.removeAt(position)
+    }
+
+    override fun removeSelectedItems(deletedItems: List<Item>) {
+        val adapter = mainItemsRecycler.adapter as ItemsAdapter
+        adapter.removeItems(deletedItems)
+        items.removeAll(deletedItems)
+    }
+
     override fun onClickItem(position: Int) {
         val item = items[position]
         presenter.onItemSelected(item)
@@ -136,20 +149,26 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
 
             val adapter = mainItemsRecycler.adapter as ItemsAdapter
             adapter.removeItem(deletedPosition)
-
             presenter.removeItem(deletedItem)
             items.removeAt(deletedPosition)
-            displaySnackBar(deletedItem, deletedPosition)
+
         }
     }
 
-    private fun displaySnackBar(deletedItem: Item, deletedPosition: Int) {
+    override fun displaySnackBar(deletedItems: SparseArray<Item>) {
         val snackBar = Snackbar.make(mainFrameLayout, R.string.item_swiped, Snackbar.LENGTH_LONG)
         snackBar.setAction(R.string.undo)  {
-            items.add(deletedPosition, deletedItem)
             val adapter = mainItemsRecycler.adapter as ItemsAdapter
-            adapter.restoreItem(deletedItem, deletedPosition)
-            presenter.restoreItem(deletedItem)
+
+            var index = 0
+            while (index < deletedItems.size()) {
+                val deletedPosition = deletedItems.keyAt(index)
+                val deletedItem = deletedItems[deletedPosition]
+                items.add(deletedPosition, deletedItem)
+                adapter.restoreItem(deletedItem, deletedPosition)
+                presenter.restoreItem(deletedItem)
+                index++
+            }
         }
         snackBar.setActionTextColor(Color.YELLOW)
         snackBar.show()
@@ -184,7 +203,17 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
 
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
             if (item?.itemId == R.id.menuMainDelete) {
+                val adapter = mainItemsRecycler.adapter as ItemsAdapter
+                val deletedItems = SparseArray<Item>()
+                val sparse = adapter.selectedItems
+                var index = 0
+                while (index < sparse.size()) {
+                    val deletedPosition = sparse.keyAt(index)
+                    deletedItems.put(deletedPosition, items[deletedPosition])
+                    index++
+                }
 
+                presenter.onItemsToRemove(deletedItems)
                 return true
             }
 

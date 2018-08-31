@@ -1,10 +1,12 @@
 package macaxeira.com.emprestado.features.listitem
 
+import android.util.SparseArray
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import macaxeira.com.emprestado.data.DataRepository
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.features.shared.BasePresenterImpl
+import macaxeira.com.emprestado.utils.Utils
 
 class ListItemPresenter(private val repository: DataRepository) : BasePresenterImpl<ListItemContract.View>(),
         ListItemContract.Presenter {
@@ -65,6 +67,24 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                     view.get()?.showErrorMessage(it)
                 }
                 ))
+    }
+
+    override fun onItemsToRemove(items: SparseArray<Item>) {
+        val list = Utils.fromSparseToList(items)
+        disposable.add(repository.removeItems(list)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (items.size() > 1) {
+                        view.get()?.removeSelectedItems(list)
+                    } else{
+                        view.get()?.removeItem(items.keyAt(0))
+                    }
+                    view.get()?.displaySnackBar(items)
+                },{
+                    view.get()?.showErrorMessage(it)
+                })
+        )
     }
 
     override fun onItemSelected(item: Item) {

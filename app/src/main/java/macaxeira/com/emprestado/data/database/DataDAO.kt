@@ -18,6 +18,8 @@ interface DataDAO {
     fun removePerson(person: Person)
     @Delete
     fun removeItem(item: Item)
+    @Delete
+    fun removeItems(vararg items: Item)
 
     @Query("SELECT * FROM Item")
     fun loadAllItems(): Single<List<Item>>
