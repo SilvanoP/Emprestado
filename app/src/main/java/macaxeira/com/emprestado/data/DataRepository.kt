@@ -43,6 +43,7 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         person.name = personName
         person.phone = personPhone
         person.email = personEmail
+        selectedItem!!.person = person
 
         return dataSourceLocal.saveItem(selectedItem!!).doOnComplete {
             val index = cachedItems.indexOf(selectedItem!!)

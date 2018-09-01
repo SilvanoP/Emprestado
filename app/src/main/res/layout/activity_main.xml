@@ -24,6 +24,7 @@
         android:id="@+id/mainEmptyList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_default"
         android:layout_gravity="center"
         android:text="@string/empty_list"
         android:textSize="@dimen/text_size_category"

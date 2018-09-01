@@ -146,12 +146,9 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         if (viewHolder is ItemsAdapter.ItemViewHolder) {
             val deletedItem = items[viewHolder.adapterPosition]
             val deletedPosition = viewHolder.adapterPosition
-
-            val adapter = mainItemsRecycler.adapter as ItemsAdapter
-            adapter.removeItem(deletedPosition)
-            presenter.removeItem(deletedItem)
-            items.removeAt(deletedPosition)
-
+            val sparse = SparseArray<Item>()
+            sparse.put(deletedPosition, deletedItem)
+            presenter.onItemsToRemove(sparse)
         }
     }
 

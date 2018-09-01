@@ -78,7 +78,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         val cal = Calendar.getInstance()
         cal.set(Calendar.YEAR, year)
         cal.set(Calendar.MONTH, month)
-        cal.set(Calendar.DAY_OF_YEAR, month)
+        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
         val date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(cal.time)
         itemDetailReturnDateEdit.setText(date)

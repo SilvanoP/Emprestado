@@ -26,8 +26,10 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                         view.get()?.showItems(it)
                     }
                 }, {
+                    it.printStackTrace()
                     view.get()?.isRefreshing(false)
                     view.get()?.showErrorMessage(it)
+                    view.get()?.showEmptyList()
                 }
                 ))
     }
@@ -48,6 +50,7 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                     view.get()?.isRefreshing(false)
                     view.get()?.showItems(it)
                 }, {
+                    it.printStackTrace()
                     view.get()?.isRefreshing(false)
                     view.get()?.showErrorMessage(it)
                 }
@@ -63,6 +66,7 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                     view.get()?.isRefreshing(false)
                     view.get()?.showItems(it)
                 }, {
+                    it.printStackTrace()
                     view.get()?.isRefreshing(false)
                     view.get()?.showErrorMessage(it)
                 }
@@ -82,6 +86,7 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                     }
                     view.get()?.displaySnackBar(items)
                 },{
+                    it.printStackTrace()
                     view.get()?.showErrorMessage(it)
                 })
         )
@@ -99,6 +104,7 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                 .subscribe(
                         { },
                         {
+                            it.printStackTrace()
                             view.get()?.showErrorMessage(it)
                         }
                 ))
@@ -111,6 +117,7 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                 .subscribe(
                         { },
                         {
+                            it.printStackTrace()
                             view.get()?.showErrorMessage(it)
                         }
                 ))
