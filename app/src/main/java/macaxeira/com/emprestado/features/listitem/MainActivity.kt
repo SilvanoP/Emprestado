@@ -100,6 +100,10 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         adapter.notifyDataSetChanged()
     }
 
+    override fun updateItems() {
+        mainItemsRecycler.adapter.notifyDataSetChanged()
+    }
+
     override fun removeItem(position: Int) {
         val adapter = mainItemsRecycler.adapter as ItemsAdapter
         adapter.removeItem(position)
@@ -199,18 +203,33 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     inner class ActionModeCallback : ActionMode.Callback {
 
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            val adapter = mainItemsRecycler.adapter as ItemsAdapter
+            val selectedItems = SparseArray<Item>()
+            val sparse = adapter.selectedItems
+
             if (item?.itemId == R.id.menuMainDelete) {
-                val adapter = mainItemsRecycler.adapter as ItemsAdapter
-                val deletedItems = SparseArray<Item>()
-                val sparse = adapter.selectedItems
                 var index = 0
                 while (index < sparse.size()) {
                     val deletedPosition = sparse.keyAt(index)
-                    deletedItems.put(deletedPosition, items[deletedPosition])
+                    selectedItems.put(deletedPosition, items[deletedPosition])
                     index++
                 }
 
-                presenter.onItemsToRemove(deletedItems)
+                presenter.onItemsToRemove(selectedItems)
+                return true
+            }
+
+            if (item?.itemId == R.id.menuMainReturned) {
+                var index = 0
+                while (index < sparse.size()) {
+                    val selectedPosition = sparse.keyAt(index)
+                    val selectedItem = items[selectedPosition]
+                    selectedItem.isReturned = true
+                    selectedItems.put(selectedPosition, selectedItem)
+                    index++
+                }
+
+                presenter.onItemsReturned(selectedItems)
                 return true
             }
 

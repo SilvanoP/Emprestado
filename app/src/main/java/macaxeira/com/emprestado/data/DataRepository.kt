@@ -56,6 +56,16 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         }
     }
 
+    fun updateItems(items: List<Item>): Completable {
+        return dataSourceLocal.updateItems(items).doOnComplete {
+            for (item in items) {
+                val index = cachedItems.indexOf(item)
+                cachedItems.removeAt(index)
+                cachedItems.add(index, item)
+            }
+        }
+    }
+
     fun removeItem(item: Item): Completable {
         return dataSourceLocal.removeItem(item).doOnComplete {
             cachedItems.remove(item)

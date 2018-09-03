@@ -82,6 +82,7 @@
                 android:layout_marginStart="@dimen/margin_default"
                 android:layout_marginTop="@dimen/margin_default"
                 app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintBottom_toTopOf="@+id/listItemPersonText"
                 app:layout_constraintEnd_toStartOf="@+id/listItemMainBarrier"
                 app:layout_constraintStart_toStartOf="parent"
@@ -94,8 +95,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/margin_default"
                 android:layout_marginBottom="@dimen/margin_default"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/listItemDescriptionText"
+                app:layout_constraintEnd_toStartOf="@id/listItemMainBarrier"
                 app:layout_constraintTop_toBottomOf="@+id/listItemDescriptionText"
                 tools:text="@string/tools_desc" />
 
@@ -104,8 +107,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_half"
-                android:layout_marginEnd="@dimen/margin_default"
-                android:layout_marginStart="@dimen/margin_default"
                 android:layout_marginTop="@dimen/margin_default"
                 android:text="@string/return_date"
                 app:layout_constraintBottom_toTopOf="@+id/listItemMainReturnDate"

@@ -92,6 +92,20 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
         )
     }
 
+    override fun onItemsReturned(items: SparseArray<Item>) {
+        val list = Utils.fromSparseToList(items)
+        disposable.add(repository.updateItems(list)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    view.get()?.updateItems()
+                },{
+                    it.printStackTrace()
+                    view.get()?.showErrorMessage(it)
+                })
+        )
+    }
+
     override fun onItemSelected(item: Item) {
         repository.onItemSelected(item)
         view.get()?.callNextActivity()

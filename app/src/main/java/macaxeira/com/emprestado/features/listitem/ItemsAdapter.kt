@@ -2,6 +2,7 @@ package macaxeira.com.emprestado.features.listitem
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.util.SparseBooleanArray
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
@@ -81,10 +82,17 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
 
         fun bind(item: Item) {
             itemView.listItemDescriptionText.text = item.description
-            itemView.listItemMainReturnDate.text = item.returnDate
 
-            var person: String = if (item.isMine) context.getString(R.string.to)
-                                    else context.getString(R.string.from)
+            var returnedText = item.returnDate
+            if (TextUtils.isEmpty(returnedText)) {
+                returnedText = context.getString(R.string.empty_date)
+            } else if (item.isReturned) {
+                returnedText = context.getString(R.string.returned)
+            }
+
+            itemView.listItemMainReturnDate.text = returnedText
+
+            var person: String = if (item.isMine) context.getString(R.string.to) else context.getString(R.string.from)
             person += ": " + item.person?.name
 
             itemView.listItemPersonText.text = person

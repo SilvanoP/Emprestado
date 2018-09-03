@@ -110,7 +110,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
     private fun saveItem() {
         val description = itemDetailDescriptionEdit.text.toString()
         val itemType = itemDetailTypeSpinner.selectedItem as ItemType
-        val isMine = itemDetailMineCheckbox.isChecked
+        val isMine = !itemDetailMineCheckbox.isChecked
         val personName = itemDetailPersonNameEdit.text.toString()
         val personEmail = itemDetailPersonEmailEdit.text.toString()
         val personPhone = itemDetailPersonPhoneEdit.text.toString()

@@ -9,6 +9,7 @@ interface DataSource {
 
     fun saveItem(item: Item): Completable
     fun savePerson(person: Person): Completable
+    fun updateItems(items: List<Item>): Completable
 
     fun removeItem(item: Item): Completable
     fun removeItems(items: List<Item>): Completable
