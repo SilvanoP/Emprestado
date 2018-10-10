@@ -114,6 +114,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         val personName = itemDetailPersonNameEdit.text.toString()
         val personEmail = itemDetailPersonEmailEdit.text.toString()
         val personPhone = itemDetailPersonPhoneEdit.text.toString()
+        val returnDate = itemDetailReturnDateEdit.text.toString()
 
         presenter.saveItem(description, itemType, isMine, personName, personEmail, personPhone)
     }
