@@ -6,6 +6,7 @@ import macaxeira.com.emprestado.data.DataRepository
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.ItemType
 import macaxeira.com.emprestado.features.shared.BasePresenterImpl
+import java.lang.UnsupportedOperationException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,12 +43,24 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
                         ))
     }
 
+    override fun searchContacts() {
+        view.get()?.verifyPermissions()
+    }
+
+    override fun searchContactPermissionVerified(hasPermission: Boolean) {
+        if (hasPermission) {
+            view.get()?.pickContact()
+        } else {
+            view.get()?.showErrorMessage(UnsupportedOperationException("Search Contacts not allowed."))
+        }
+    }
+
     override fun saveItem(description: String, itemType: ItemType, isMine: Boolean, personName: String,
-                          personEmail: String, personPhone: String) {
+                          personEmail: String, personPhone: String, returnDate: String) {
         if (description.isEmpty() || personName.isEmpty()) {
             view.get()?.requiredFieldsEmpty()
         } else {
-            disposable.add(repository.saveItem(description, itemType, isMine, personName, personEmail, personPhone)
+            disposable.add(repository.saveItem(description, itemType, isMine, personName, personEmail, personPhone, returnDate)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(

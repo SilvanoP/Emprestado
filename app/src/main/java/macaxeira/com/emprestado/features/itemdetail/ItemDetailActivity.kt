@@ -1,6 +1,15 @@
 package macaxeira.com.emprestado.features.itemdetail
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.Menu
@@ -19,6 +28,12 @@ import java.util.*
 
 class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.OnClickListener,
         View.OnFocusChangeListener, ReturnDateDialog.ReturnDateDialogListener {
+
+    companion object {
+        private const val CONTACT_URI = "content://contacts"
+        private const val PICK_CONTACT_REQUEST = 1001
+        private const val MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1002
+    }
 
     private val presenter: ItemDetailContract.Presenter by inject()
     private var adapter: TypesListAdapter? = null
@@ -61,6 +76,48 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         itemDetailPersonNameEdit.setText(person.name)
         itemDetailPersonEmailEdit.setText(person.email)
         itemDetailPersonPhoneEdit.setText(person.phone)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun searchContact(v : View) {
+        presenter.searchContacts()
+    }
+
+    override fun pickContact() {
+        val pickContactIntent = Intent(Intent.ACTION_PICK)
+        pickContactIntent.setDataAndType(Uri.parse(CONTACT_URI),ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE)
+        startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (PICK_CONTACT_REQUEST == requestCode && resultCode == Activity.RESULT_OK && data != null) {
+            val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+            data.data.also { contactUri ->
+                contentResolver.query(contactUri, projection, null, null, null).apply {
+                    moveToFirst()
+
+                    val numberCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                    itemDetailPersonPhoneEdit.setText(getString(numberCol))
+
+                    val nameCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                    itemDetailPersonNameEdit.setText(getString(nameCol))
+
+                    close()
+                }
+            }
+
+            val id = data.data.lastPathSegment
+            contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                    null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=?",
+                    arrayOf<String>(id), null).apply {
+                moveToFirst()
+
+                val emailCol = getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)
+                itemDetailPersonEmailEdit.setText(getString(emailCol))
+
+                close()
+            }
+        }
     }
 
     override fun requiredFieldsEmpty() {
@@ -116,15 +173,47 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         val personPhone = itemDetailPersonPhoneEdit.text.toString()
         val returnDate = itemDetailReturnDateEdit.text.toString()
 
-        presenter.saveItem(description, itemType, isMine, personName, personEmail, personPhone)
+        presenter.saveItem(description, itemType, isMine, personName, personEmail, personPhone, returnDate)
     }
 
     override fun onSaveOrUpdateComplete() {
         finish()
     }
 
+    override fun verifyPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage(R.string.error_required_Permission)
+                        .setNeutralButton(R.string.ok) { _, _ ->
+                            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS),
+                                    MY_PERMISSIONS_REQUEST_READ_CONTACTS)
+                        }
+                builder.create().show()
+            }
+        } else {
+            presenter.searchContactPermissionVerified(true)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            MY_PERMISSIONS_REQUEST_READ_CONTACTS ->
+                if (grantResults.isNotEmpty()) {
+                    presenter.searchContactPermissionVerified(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                } else {
+                    presenter.searchContactPermissionVerified(false)
+                }
+        }
+    }
+
     override fun showErrorMessage(throwable: Throwable) {
-        throwable.printStackTrace()
-        Toast.makeText(this, R.string.error_save_item, Toast.LENGTH_LONG).show()
+        if (throwable is UnsupportedOperationException) {
+            Toast.makeText(this, R.string.error_required_Permission, Toast.LENGTH_LONG).show()
+        } else {
+            throwable.printStackTrace()
+            Toast.makeText(this, R.string.error_save_item, Toast.LENGTH_LONG).show()
+        }
     }
 }

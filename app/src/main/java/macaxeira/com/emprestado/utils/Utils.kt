@@ -1,8 +1,13 @@
 package macaxeira.com.emprestado.utils
 
+import android.Manifest
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.util.SparseArray
 import android.view.View
 import macaxeira.com.emprestado.R

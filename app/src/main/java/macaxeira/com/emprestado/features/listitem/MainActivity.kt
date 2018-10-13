@@ -1,9 +1,13 @@
 package macaxeira.com.emprestado.features.listitem
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.view.ActionMode
 import android.support.v7.widget.DefaultItemAnimator
@@ -24,6 +28,10 @@ import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.ItemsAdapterListener,
         RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, FilterDialog.FilterDialogListener {
+
+    companion object {
+        private const val MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1001
+    }
 
     private val presenter: ListItemContract.Presenter by inject()
 
@@ -48,6 +56,7 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
 
         setupRecyclerView()
 
+        verifyPermissions()
         presenter.loadData()
     }
 
@@ -198,6 +207,14 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
 
     override fun showErrorMessage(throwable: Throwable) {
         Toast.makeText(this, R.string.error_load_item, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun verifyPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS),
+                    MY_PERMISSIONS_REQUEST_READ_CONTACTS)
+        }
     }
 
     inner class ActionModeCallback : ActionMode.Callback {

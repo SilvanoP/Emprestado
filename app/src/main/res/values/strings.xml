@@ -13,6 +13,7 @@
     <string name="empty_list">Add some Items that you have lent or borrowed!</string>
     <string name="error_load_item">Items could not be loaded, please try again</string>
     <string name="error_required_fields_empty">Required Fields cannot be empty!</string>
+    <string name="error_required_Permission">Please allow this app to read your contacts to use this option.</string>
     <string name="error_save_item">Item could not be save, please try again.</string>
     <string name="is_borrowed">Is borrowed?</string>
     <string name="item_swiped">Item deleted.</string>
@@ -20,6 +21,7 @@
     <string name="filter">Filter</string>
     <string name="from">From</string>
     <string name="name">Name</string>
+    <string name="ok">Ok</string>
     <string name="phone_number">Phone Number</string>
     <string name="return_date">Return Date</string>
     <string name="required_field_empty">This field cannot be empty!</string>

@@ -27,7 +27,7 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
     }
 
     fun saveItem(description: String, itemType: ItemType, isMine: Boolean, personName: String,
-                 personEmail: String, personPhone: String): Completable {
+                 personEmail: String, personPhone: String, returnDate: String): Completable {
         if (selectedItem == null) {
             selectedItem = Item()
         }
@@ -35,6 +35,7 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         selectedItem!!.description = description
         selectedItem!!.itemType = itemType
         selectedItem!!.isMine = isMine
+        selectedItem!!.returnDate = returnDate
 
         var person = Person()
         if (selectedItem!!.person != null) {

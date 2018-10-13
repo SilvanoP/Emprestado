@@ -15,13 +15,17 @@ interface ItemDetailContract {
         fun fillFields(item: Item?)
         fun requiredFieldsEmpty()
         fun openDatePicker(returnDate: Calendar)
+        fun verifyPermissions()
+        fun pickContact()
     }
 
     interface Presenter: BasePresenter<View> {
         fun loadData()
         fun setReturnDate()
+        fun searchContacts()
+        fun searchContactPermissionVerified(hasPermission: Boolean)
         fun saveItem(description: String, itemType: ItemType, isMine: Boolean, personName: String,
-                     personEmail: String, personPhone: String)
+                     personEmail: String, personPhone: String, returnDate: String)
         fun getPersonById(personId: Long)
     }
 }

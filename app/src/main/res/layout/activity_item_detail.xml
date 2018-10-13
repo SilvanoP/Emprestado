@@ -82,6 +82,7 @@
         android:text="@string/search_contact"
         android:textAllCaps="true"
         android:background="@drawable/bg_button_outline"
+        android:onClick="searchContact"
         app:layout_constraintTop_toTopOf="@+id/itemDetailContactText"
         app:layout_constraintBottom_toBottomOf="@+id/itemDetailContactText"
         app:layout_constraintStart_toEndOf="@+id/itemDetailContactText" />
