@@ -9,8 +9,8 @@ import macaxeira.com.emprestado.data.entities.Person
 
 class DataSourceLocal(val database: EmprestadoDatabase) : DataSource {
 
-    override fun saveItem(item: Item): Completable {
-        return Completable.fromAction {
+    override fun saveItem(item: Item): Single<Long> {
+        return Single.fromCallable {
             val personId = database.dataDAO().insertOrUpdatePerson(item.person!!)
             item.personId = personId
             database.dataDAO().insertOrUpdateItem(item)

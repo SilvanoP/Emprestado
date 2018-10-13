@@ -12,7 +12,7 @@ interface DataDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrUpdatePerson(person: Person): Long
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrUpdateItem(item: Item)
+    fun insertOrUpdateItem(item: Item): Long
     @Update
     fun updateItems(vararg items: Item)
 

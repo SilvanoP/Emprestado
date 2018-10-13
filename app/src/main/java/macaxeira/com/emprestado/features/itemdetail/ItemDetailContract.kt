@@ -17,6 +17,7 @@ interface ItemDetailContract {
         fun openDatePicker(returnDate: Calendar)
         fun verifyPermissions()
         fun pickContact()
+        fun createAlarm(id: Int)
     }
 
     interface Presenter: BasePresenter<View> {

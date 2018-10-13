@@ -1,10 +1,12 @@
 package macaxeira.com.emprestado.features.itemdetail
 
 import android.Manifest
-import android.app.Activity
+import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.support.v4.app.ActivityCompat
@@ -22,6 +24,8 @@ import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.ItemType
 import macaxeira.com.emprestado.data.entities.Person
+import macaxeira.com.emprestado.features.alarm.AlarmTriggeredReceiver
+import macaxeira.com.emprestado.utils.Constants
 import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -195,6 +199,45 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         } else {
             presenter.searchContactPermissionVerified(true)
         }
+    }
+
+    override fun createAlarm(id: Int) {
+        val notification = createNotification()
+
+        val notificationIntent = Intent(this, AlarmTriggeredReceiver::class.java)
+        notificationIntent.putExtra(Constants.NOTIFICATION_ID, id)
+        notificationIntent.putExtra(Constants.NOTIFICATION, notification)
+        val pi = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val returnDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                .parse(itemDetailReturnDateEdit.text.toString())
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.set(AlarmManager.RTC, returnDate.time, pi)
+    }
+
+    private fun createNotification() : Notification {
+        val builder: Notification.Builder?
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            builder = Notification.Builder(this)
+        } else {
+            builder = Notification.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
+        }
+
+        val text: String
+        if (itemDetailMineCheckbox.isChecked) {
+            text = getString(R.string.notification_return_lent, itemDetailDescriptionEdit.text.toString(),
+                    itemDetailPersonNameEdit.text.toString())
+        } else {
+            text = getString(R.string.notification_return_borrowed, itemDetailDescriptionEdit.text.toString(),
+                    itemDetailPersonNameEdit.text.toString())
+        }
+
+        builder.setSmallIcon(R.drawable.ic_checked)
+                .setContentTitle(getString(R.string.return_date))
+                .setContentText(text)
+
+        return builder.build()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

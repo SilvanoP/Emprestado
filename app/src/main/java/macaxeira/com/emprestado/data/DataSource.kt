@@ -7,7 +7,7 @@ import macaxeira.com.emprestado.data.entities.Person
 
 interface DataSource {
 
-    fun saveItem(item: Item): Completable
+    fun saveItem(item: Item): Single<Long>
     fun savePerson(person: Person): Completable
     fun updateItems(items: List<Item>): Completable
 

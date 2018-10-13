@@ -20,14 +20,14 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
     private var cachedPeople: MutableList<Person> = mutableListOf()
     private var selectedItem: Item? = null
 
-    fun saveItem(item: Item): Completable {
-        return dataSourceLocal.saveItem(item).doOnComplete {
+    fun saveItem(item: Item): Single<Long> {
+        return dataSourceLocal.saveItem(item).doOnSuccess {
             cachedItems.add(selectedItem!!)
         }
     }
 
     fun saveItem(description: String, itemType: ItemType, isMine: Boolean, personName: String,
-                 personEmail: String, personPhone: String, returnDate: String): Completable {
+                 personEmail: String, personPhone: String, returnDate: String): Single<Long> {
         if (selectedItem == null) {
             selectedItem = Item()
         }
@@ -46,7 +46,7 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         person.email = personEmail
         selectedItem!!.person = person
 
-        return dataSourceLocal.saveItem(selectedItem!!).doOnComplete {
+        return dataSourceLocal.saveItem(selectedItem!!).doOnSuccess {
             val index = cachedItems.indexOf(selectedItem!!)
             if (index != -1) {
                 cachedItems.removeAt(index)

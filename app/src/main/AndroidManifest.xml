@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="macaxeira.com.emprestado">
 
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".EmprestadoApplication"
@@ -15,11 +16,25 @@
         <activity android:name=".features.listitem.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".features.itemdetail.ItemDetailActivity"></activity>
+        <activity android:name=".features.itemdetail.ItemDetailActivity" />
+
+        <receiver
+            android:name=".features.alarm.SetAlarmReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".features.alarm.AlarmTriggeredReceiver"
+            android:enabled="false"
+            android:exported="true" />
     </application>
 
 </manifest>

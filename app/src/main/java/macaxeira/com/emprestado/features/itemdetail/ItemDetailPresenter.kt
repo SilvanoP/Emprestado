@@ -1,6 +1,7 @@
 package macaxeira.com.emprestado.features.itemdetail
 
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import macaxeira.com.emprestado.data.DataRepository
 import macaxeira.com.emprestado.data.entities.Item
@@ -60,15 +61,16 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
         if (description.isEmpty() || personName.isEmpty()) {
             view.get()?.requiredFieldsEmpty()
         } else {
+
             disposable.add(repository.saveItem(description, itemType, isMine, personName, personEmail, personPhone, returnDate)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
-                                    {
+                                    Consumer {
+                                        if (!returnDate.isEmpty()) {
+                                            view.get()?.createAlarm(it.toInt())
+                                        }
                                         view.get()?.onSaveOrUpdateComplete()
-                                    },
-                                    {
-                                        view.get()?.showErrorMessage(it)
                                     }
                             ))
         }
