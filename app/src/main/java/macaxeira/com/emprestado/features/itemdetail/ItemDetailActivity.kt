@@ -201,7 +201,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         }
     }
 
-    override fun createAlarm(id: Int) {
+    override fun createAlarm(id: Int, time: Long) {
         val notification = createNotification()
 
         val notificationIntent = Intent(this, AlarmTriggeredReceiver::class.java)
@@ -209,11 +209,8 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         notificationIntent.putExtra(Constants.NOTIFICATION, notification)
         val pi = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val returnDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                .parse(itemDetailReturnDateEdit.text.toString())
-
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.set(AlarmManager.RTC, returnDate.time, pi)
+        alarmManager.set(AlarmManager.RTC, time, pi)
     }
 
     private fun createNotification() : Notification {

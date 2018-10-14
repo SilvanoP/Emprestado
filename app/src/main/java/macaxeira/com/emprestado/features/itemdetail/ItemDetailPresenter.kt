@@ -62,13 +62,19 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
             view.get()?.requiredFieldsEmpty()
         } else {
 
-            disposable.add(repository.saveItem(description, itemType, isMine, personName, personEmail, personPhone, returnDate)
+            disposable.add(repository.saveItem(description, itemType, isMine, personName, personEmail,
+                    personPhone, returnDate)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     Consumer {
                                         if (!returnDate.isEmpty()) {
-                                            view.get()?.createAlarm(it.toInt())
+                                            val alarmTime = "$returnDate 10:00"
+
+                                            val date = SimpleDateFormat("dd/MM/yyyy HH:mm",
+                                                    Locale.getDefault()).parse(alarmTime)
+
+                                            view.get()?.createAlarm(it.toInt(), date.time)
                                         }
                                         view.get()?.onSaveOrUpdateComplete()
                                     }
