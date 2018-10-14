@@ -1,11 +1,12 @@
 package macaxeira.com.emprestado.data.entities
 
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Index
 import android.arch.persistence.room.PrimaryKey
 import android.os.Parcel
 import android.os.Parcelable
 
-@Entity
+@Entity(indices = [Index(value = ["phone"], unique = true)])
 class Person() : Parcelable {
 
     @PrimaryKey

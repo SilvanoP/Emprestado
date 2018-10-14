@@ -21,7 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".features.itemdetail.ItemDetailActivity" />
+        <activity android:name=".features.itemdetail.ItemDetailActivity"
+            android:parentActivityName=".features.listitem.MainActivity"/>
 
         <receiver
             android:name=".features.alarm.SetAlarmReceiver"
@@ -33,8 +34,7 @@
         </receiver>
         <receiver
             android:name=".features.alarm.AlarmTriggeredReceiver"
-            android:enabled="false"
-            android:exported="true" />
+            android:enabled="true" />
     </application>
 
 </manifest>

@@ -15,6 +15,7 @@ interface ListItemContract {
         fun updateItems()
         fun removeItem(position: Int)
         fun removeSelectedItems(deletedItems: List<Item>)
+        fun cancelAlarm(deletedItems: List<Item>)
         fun displaySnackBar(deletedItems: SparseArray<Item>)
         fun callNextActivity()
     }

@@ -79,6 +79,7 @@ class ListItemPresenter(private val repository: DataRepository) : BasePresenterI
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
+                    view.get()?.cancelAlarm(list)
                     if (items.size() > 1) {
                         view.get()?.removeSelectedItems(list)
                     } else{

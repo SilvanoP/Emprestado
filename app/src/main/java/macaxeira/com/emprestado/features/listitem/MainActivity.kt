@@ -1,6 +1,9 @@
 package macaxeira.com.emprestado.features.listitem
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -15,6 +18,7 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.text.TextUtils
 import android.util.SparseArray
 import android.view.Menu
 import android.view.MenuItem
@@ -23,7 +27,9 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
+import macaxeira.com.emprestado.features.alarm.AlarmTriggeredReceiver
 import macaxeira.com.emprestado.features.itemdetail.ItemDetailActivity
+import macaxeira.com.emprestado.utils.Constants
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.ItemsAdapterListener,
@@ -123,6 +129,19 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         val adapter = mainItemsRecycler.adapter as ItemsAdapter
         adapter.removeItems(deletedItems)
         items.removeAll(deletedItems)
+    }
+
+    override fun cancelAlarm(deletedItems: List<Item>) {
+        for (item in deletedItems) {
+            if (!TextUtils.isEmpty(item.returnDate)) {
+                val notificationIntent = Intent(this, AlarmTriggeredReceiver::class.java)
+                notificationIntent.putExtra(Constants.NOTIFICATION_ID, item.id)
+                val pi = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                alarmManager.cancel(pi)
+            }
+        }
     }
 
     override fun onClickItem(position: Int) {

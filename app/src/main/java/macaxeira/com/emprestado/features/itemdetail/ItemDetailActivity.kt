@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.NavUtils
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -62,7 +63,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         if (item != null) {
             itemDetailTypeSpinner.setSelection(adapter!!.getPosition(item.itemType))
             itemDetailDescriptionEdit.setText(item.description)
-            itemDetailMineCheckbox.isChecked = item.isMine
+            itemDetailMineCheckbox.isChecked = !item.isMine
             if (item.person != null) {
                 fillPersonFields(item.person!!)
             }
@@ -164,6 +165,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menuItemDetailSave -> saveItem()
+            android.R.id.home -> NavUtils.navigateUpFromSameTask(this)
         }
         return true
     }
