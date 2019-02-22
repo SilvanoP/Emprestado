@@ -24,8 +24,6 @@ class ReturnDateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
         }
     }
 
-
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val cal = arguments?.getSerializable(CALENDAR_PARAM) as Calendar
 

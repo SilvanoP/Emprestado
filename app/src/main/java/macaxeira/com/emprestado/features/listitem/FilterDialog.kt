@@ -31,7 +31,7 @@ class FilterDialog : DialogFragment(), View.OnClickListener {
     private var checkedId: Int = -1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = requireActivity().layoutInflater?.inflate(R.layout.dialog_filter, container)
+        val view = requireActivity().layoutInflater.inflate(R.layout.dialog_filter, container)
         val option = arguments?.getInt(FILTER_OPTION)
 
         // Since synthetic components don't work on dialog, I do it the old way

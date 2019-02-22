@@ -119,7 +119,7 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         if (cachedItems.size > 0) {
             return Observable.fromIterable(cachedItems).flatMap {
                 Observable.just(it)
-            }.filter { it ->
+            }.filter {
                 it.isMine == isMine
             }.toList()
         }
@@ -131,7 +131,7 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         if (cachedItems.size > 0) {
             return Observable.fromIterable(cachedItems).flatMap {
                 Observable.just(it)
-            }.filter { it ->
+            }.filter {
                 it.isReturned == isReturned
             }.toList()
         }

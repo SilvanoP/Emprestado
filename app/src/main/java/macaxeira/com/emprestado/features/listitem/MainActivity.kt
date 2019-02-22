@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     }
 
     override fun updateItems() {
-        mainItemsRecycler.adapter.notifyDataSetChanged()
+        mainItemsRecycler.adapter?.notifyDataSetChanged()
     }
 
     override fun removeItem(position: Int) {

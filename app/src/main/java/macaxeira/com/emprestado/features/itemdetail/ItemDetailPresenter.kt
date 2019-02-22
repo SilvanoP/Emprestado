@@ -4,10 +4,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import macaxeira.com.emprestado.data.DataRepository
-import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.ItemType
 import macaxeira.com.emprestado.features.shared.BasePresenterImpl
-import java.lang.UnsupportedOperationException
+import macaxeira.com.emprestado.utils.Utils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -70,11 +69,9 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
                                     Consumer {
                                         if (!returnDate.isEmpty()) {
                                             val alarmTime = "$returnDate 10:00"
+                                            val date = Utils.fromStringToTime(alarmTime)
 
-                                            val date = SimpleDateFormat("dd/MM/yyyy HH:mm",
-                                                    Locale.getDefault()).parse(alarmTime)
-
-                                            view.get()?.createAlarm(it.toInt(), date.time)
+                                            view.get()?.createAlarm(it.toInt(), date)
                                         }
                                         view.get()?.onSaveOrUpdateComplete()
                                     }

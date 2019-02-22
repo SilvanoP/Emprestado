@@ -1,18 +1,22 @@
 package macaxeira.com.emprestado.utils
 
-import android.Manifest
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
-import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.util.SparseArray
 import android.view.View
 import macaxeira.com.emprestado.R
+import java.text.SimpleDateFormat
+import java.util.*
 
 object Utils {
+
+    @JvmStatic
+    fun fromStringToTime(date: String): Long {
+        val timestamp = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).parse(date)
+
+        return timestamp.time
+    }
 
     @JvmStatic
     fun flipView(context: Context, back: View, front: View, showFront: Boolean) {
