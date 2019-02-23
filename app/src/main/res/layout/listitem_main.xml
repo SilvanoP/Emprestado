@@ -16,8 +16,8 @@
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/listItemDeleteImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_margin="@dimen/margin_default"
             android:layout_gravity="center"
             android:src="@drawable/ic_delete" />
@@ -102,13 +102,15 @@
                 app:layout_constraintTop_toBottomOf="@+id/listItemDescriptionText"
                 tools:text="@string/tools_desc" />
 
-            <TextView
-                android:id="@+id/listItemReturnText"
+            <ImageView
+                android:id="@+id/listItemDateImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_half"
                 android:layout_marginTop="@dimen/margin_default"
-                android:text="@string/return_date"
+                android:layout_marginEnd="@dimen/margin_default"
+                android:layout_marginStart="@dimen/margin_default"
+                android:src="@drawable/ic_date"
                 app:layout_constraintBottom_toTopOf="@+id/listItemMainReturnDate"
                 app:layout_constraintEnd_toEndOf="@+id/listItemMainReturnDate"
                 app:layout_constraintStart_toStartOf="@+id/listItemMainReturnDate"
@@ -124,7 +126,7 @@
                 android:layout_marginStart="@dimen/margin_default"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/listItemReturnText"
+                app:layout_constraintTop_toBottomOf="@+id/listItemDateImage"
                 tools:text="@string/tools_date" />
 
             <android.support.constraint.Barrier
@@ -132,7 +134,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="start"
-                app:constraint_referenced_ids="listItemReturnText, listItemMainReturnDate" />
+                app:constraint_referenced_ids="listItemDateImage, listItemMainReturnDate" />
 
         </android.support.constraint.ConstraintLayout>
 
