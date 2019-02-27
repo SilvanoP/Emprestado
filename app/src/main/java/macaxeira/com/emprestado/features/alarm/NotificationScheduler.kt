@@ -5,8 +5,10 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.support.v4.app.NotificationCompat
+import android.support.v4.app.TaskStackBuilder
 import macaxeira.com.emprestado.R
+import macaxeira.com.emprestado.features.itemdetail.ItemDetailActivity
 import macaxeira.com.emprestado.utils.Constants
 
 object NotificationScheduler {
@@ -25,11 +27,14 @@ object NotificationScheduler {
     }
 
     private fun createNotification(context: Context, text: String) : Notification {
-        val builder: Notification.Builder?
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            builder = Notification.Builder(context)
-        } else {
-            builder = Notification.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
+        val itemIntent = Intent(context, ItemDetailActivity::class.java)
+        val pendingItemIntent: PendingIntent? = TaskStackBuilder.create(context).run {
+            addNextIntentWithParentStack(itemIntent)
+            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+        val builder = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID).apply {
+            setContentIntent(pendingItemIntent)
         }
 
         builder.setSmallIcon(R.drawable.ic_checked)
