@@ -60,7 +60,9 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         if (item != null) {
             itemDetailTypeSpinner.setSelection(adapter!!.getPosition(item.itemType))
             itemDetailDescriptionEdit.setText(item.description)
-            itemDetailMineCheckbox.isChecked = !item.isMine
+            itemDetailBorrowToggle.isChecked = item.isMine
+            itemDetailLendToggle.isChecked = item.isMine
+
             if (item.person != null) {
                 fillPersonFields(item.person!!)
             }
@@ -170,13 +172,15 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
     private fun saveItem() {
         val description = itemDetailDescriptionEdit.text.toString()
         val itemType = itemDetailTypeSpinner.selectedItem as ItemType
-        val isMine = !itemDetailMineCheckbox.isChecked
+        val isMine = itemDetailLendToggle.isChecked
         val personName = itemDetailPersonNameEdit.text.toString()
         val personEmail = itemDetailPersonEmailEdit.text.toString()
         val personPhone = itemDetailPersonPhoneEdit.text.toString()
         val returnDate = itemDetailReturnDateEdit.text.toString()
+        val isNotifiable = itemDetailRememberSwitch.isChecked
 
-        presenter.saveItem(description, itemType, isMine, personName, personEmail, personPhone, returnDate)
+        presenter.saveItem(description, itemType, isMine, personName, personEmail, personPhone,
+                returnDate, isNotifiable)
     }
 
     override fun onSaveOrUpdateComplete() {
@@ -201,7 +205,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
     }
 
     override fun createAlarm(id: Int, time: Long) {
-        val text: String = if (itemDetailMineCheckbox.isChecked)
+        val text: String = if (itemDetailLendToggle.isChecked)
             getString(R.string.notification_return_lent, itemDetailDescriptionEdit.text.toString(),
                     itemDetailPersonNameEdit.text.toString())
         else
@@ -209,6 +213,10 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
                     itemDetailPersonNameEdit.text.toString())
 
         NotificationScheduler.setAlarm(this, id, time, text)
+    }
+
+    override fun cancelAlarm(id: Int) {
+        NotificationScheduler.cancelAlarm(this, id)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

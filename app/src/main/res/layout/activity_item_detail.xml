@@ -6,25 +6,39 @@
     android:layout_height="match_parent"
     tools:context=".features.itemdetail.ItemDetailActivity">
 
+    <ToggleButton
+        android:id="@+id/itemDetailBorrowToggle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_default"
+        android:layout_marginStart="@dimen/margin_default"
+        android:textOff="@string/borrow"
+        android:textOn="@string/borrow"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/itemDetailLendToggle"
+        tools:checked="true"/>
+
+    <ToggleButton
+        android:id="@+id/itemDetailLendToggle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_default"
+        android:layout_marginEnd="@dimen/margin_default"
+        android:textOff="@string/lend"
+        android:textOn="@string/lend"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/itemDetailBorrowToggle"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <android.support.v7.widget.AppCompatSpinner
         android:id="@+id/itemDetailTypeSpinner"
         style="@style/Base.Widget.AppCompat.Spinner.Underlined"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_default"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemDetailBorrowToggle"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <android.support.v7.widget.AppCompatCheckBox
-        android:id="@+id/itemDetailMineCheckbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_default"
-        android:text="@string/is_borrowed"
-        android:textSize="@dimen/text_size_radio_label"
-        app:layout_constraintTop_toTopOf="@+id/itemDetailTypeSpinner"
-        app:layout_constraintBottom_toBottomOf="@+id/itemDetailTypeSpinner"
-        app:layout_constraintStart_toEndOf="@+id/itemDetailTypeSpinner" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/itemDetailDescriptionInputLayout"
@@ -135,5 +149,24 @@
             android:hint="@string/phone_number" />
 
     </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/itemDetailRememberText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_default"
+        android:text="@string/remembre_switch"
+        app:layout_constraintTop_toBottomOf="@+id/itemDetailPersonPhoneInputLayout"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/itemDetailRememberSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_default"
+        app:layout_constraintTop_toTopOf="@+id/itemDetailRememberText"
+        app:layout_constraintBottom_toBottomOf="@+id/itemDetailRememberText"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
 </android.support.constraint.ConstraintLayout>

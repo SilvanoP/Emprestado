@@ -56,7 +56,7 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
     }
 
     override fun saveItem(description: String, itemType: ItemType, isMine: Boolean, personName: String,
-                          personEmail: String, personPhone: String, returnDate: String) {
+                          personEmail: String, personPhone: String, returnDate: String, isNotifiable: Boolean) {
         if (description.isEmpty() || personName.isEmpty()) {
             view.get()?.requiredFieldsEmpty()
         } else {
@@ -71,7 +71,11 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
                                             val alarmTime = "$returnDate 10:00"
                                             val date = Utils.fromStringToTime(alarmTime)
 
-                                            view.get()?.createAlarm(it.toInt(), date)
+                                            if (isNotifiable) {
+                                                view.get()?.createAlarm(it.toInt(), date)
+                                            } else {
+                                                view.get()?.cancelAlarm(it.toInt())
+                                            }
                                         }
                                         view.get()?.onSaveOrUpdateComplete()
                                     }

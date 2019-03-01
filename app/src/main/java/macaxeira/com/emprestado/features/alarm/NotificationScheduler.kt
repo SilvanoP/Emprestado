@@ -20,10 +20,20 @@ object NotificationScheduler {
         val notificationIntent = Intent(context, AlarmTriggeredReceiver::class.java)
         notificationIntent.putExtra(Constants.NOTIFICATION_ID, id)
         notificationIntent.putExtra(Constants.NOTIFICATION, notification)
-        val pi = PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pi = PendingIntent.getBroadcast(context, id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.set(AlarmManager.RTC, time, pi)
+    }
+
+    @JvmStatic
+    fun cancelAlarm(context: Context, id: Int) {
+        val notificationIntent = Intent(context, AlarmTriggeredReceiver::class.java)
+        notificationIntent.putExtra(Constants.NOTIFICATION_ID, id)
+        val pi = PendingIntent.getBroadcast(context, id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel( pi)
     }
 
     private fun createNotification(context: Context, text: String) : Notification {

@@ -18,6 +18,7 @@ interface ItemDetailContract {
         fun verifyPermissions()
         fun pickContact()
         fun createAlarm(id: Int, time: Long)
+        fun cancelAlarm(id: Int)
     }
 
     interface Presenter: BasePresenter<View> {
@@ -26,7 +27,7 @@ interface ItemDetailContract {
         fun searchContacts()
         fun searchContactPermissionVerified(hasPermission: Boolean)
         fun saveItem(description: String, itemType: ItemType, isMine: Boolean, personName: String,
-                     personEmail: String, personPhone: String, returnDate: String)
+                     personEmail: String, personPhone: String, returnDate: String, isNotifiable: Boolean)
         fun getPersonById(personId: Long)
     }
 }
