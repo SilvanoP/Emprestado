@@ -11,8 +11,6 @@ class Item() : Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null
-    @ColumnInfo(name = "item_type")
-    var itemType: ItemType? = null
     var description: String = ""
     var quantity: Int = 0
     @ColumnInfo(name = "is_mine")
@@ -35,7 +33,6 @@ class Item() : Parcelable {
     constructor(parcel: Parcel) : this() {
         val tempId = parcel.readLong()
         id = if(tempId == -1L) null else tempId
-        itemType = ItemType.valueOf(parcel.readString())
         description = parcel.readString()
         quantity = parcel.readInt()
         isMine = parcel.readInt() != 0
@@ -49,7 +46,6 @@ class Item() : Parcelable {
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.writeLong(id ?: -1)
-        dest?.writeString(itemType?.name)
         dest?.writeString(description)
         dest?.writeInt(quantity)
         dest?.writeInt(if (isMine) 1 else 0)

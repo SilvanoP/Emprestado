@@ -1,7 +1,6 @@
 package macaxeira.com.emprestado.features.itemdetail
 
 import macaxeira.com.emprestado.data.entities.Item
-import macaxeira.com.emprestado.data.entities.ItemType
 import macaxeira.com.emprestado.data.entities.Person
 import macaxeira.com.emprestado.features.shared.BasePresenter
 import macaxeira.com.emprestado.features.shared.BaseView
@@ -26,7 +25,7 @@ interface ItemDetailContract {
         fun setReturnDate()
         fun searchContacts()
         fun searchContactPermissionVerified(hasPermission: Boolean)
-        fun saveItem(description: String, itemType: ItemType, isMine: Boolean, personName: String,
+        fun saveItem(description: String, isMine: Boolean, personName: String,
                      personEmail: String, personPhone: String, returnDate: String, isNotifiable: Boolean)
         fun getPersonById(personId: Long)
     }

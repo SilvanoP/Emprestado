@@ -21,7 +21,6 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_item_detail.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
-import macaxeira.com.emprestado.data.entities.ItemType
 import macaxeira.com.emprestado.data.entities.Person
 import macaxeira.com.emprestado.features.alarm.NotificationScheduler
 import org.koin.android.ext.android.inject
@@ -38,7 +37,6 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
     }
 
     private val presenter: ItemDetailContract.Presenter by inject()
-    private var adapter: TypesListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,14 +49,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
     }
 
     override fun fillFields(item: Item?) {
-        if (adapter == null) {
-            val types = ItemType.values().toList()
-            adapter = TypesListAdapter(this, android.R.layout.simple_list_item_1, types)
-            itemDetailTypeSpinner.adapter = adapter
-        }
-
         if (item != null) {
-            itemDetailTypeSpinner.setSelection(adapter!!.getPosition(item.itemType))
             itemDetailDescriptionEdit.setText(item.description)
             itemDetailBorrowToggle.isChecked = item.isMine
             itemDetailLendToggle.isChecked = item.isMine
@@ -171,7 +162,6 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
 
     private fun saveItem() {
         val description = itemDetailDescriptionEdit.text.toString()
-        val itemType = itemDetailTypeSpinner.selectedItem as ItemType
         val isMine = itemDetailLendToggle.isChecked
         val personName = itemDetailPersonNameEdit.text.toString()
         val personEmail = itemDetailPersonEmailEdit.text.toString()
@@ -179,7 +169,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         val returnDate = itemDetailReturnDateEdit.text.toString()
         val isNotifiable = itemDetailRememberSwitch.isChecked
 
-        presenter.saveItem(description, itemType, isMine, personName, personEmail, personPhone,
+        presenter.saveItem(description, isMine, personName, personEmail, personPhone,
                 returnDate, isNotifiable)
     }
 

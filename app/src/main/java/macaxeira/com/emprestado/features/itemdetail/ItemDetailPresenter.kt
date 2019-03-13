@@ -4,7 +4,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import macaxeira.com.emprestado.data.DataRepository
-import macaxeira.com.emprestado.data.entities.ItemType
 import macaxeira.com.emprestado.features.shared.BasePresenterImpl
 import macaxeira.com.emprestado.utils.Utils
 import java.text.SimpleDateFormat
@@ -55,13 +54,12 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
         }
     }
 
-    override fun saveItem(description: String, itemType: ItemType, isMine: Boolean, personName: String,
+    override fun saveItem(description: String, isMine: Boolean, personName: String,
                           personEmail: String, personPhone: String, returnDate: String, isNotifiable: Boolean) {
         if (description.isEmpty() || personName.isEmpty()) {
             view.get()?.requiredFieldsEmpty()
         } else {
-
-            disposable.add(repository.saveItem(description, itemType, isMine, personName, personEmail,
+            disposable.add(repository.saveItem(description, isMine, personName, personEmail,
                     personPhone, returnDate)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())

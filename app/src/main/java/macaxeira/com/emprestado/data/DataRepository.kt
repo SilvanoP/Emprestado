@@ -1,18 +1,11 @@
 package macaxeira.com.emprestado.data
 
 import android.content.SharedPreferences
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.SingleSource
+import io.reactivex.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
-import macaxeira.com.emprestado.data.entities.ItemType
 import macaxeira.com.emprestado.data.entities.Person
 import macaxeira.com.emprestado.utils.Constants
-import java.text.SimpleDateFormat
-import java.util.*
 
 class DataRepository(private val dataSourceLocal: DataSource, private val prefs: SharedPreferences) {
 
@@ -26,14 +19,13 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         }
     }
 
-    fun saveItem(description: String, itemType: ItemType, isMine: Boolean, personName: String,
+    fun saveItem(description: String, isMine: Boolean, personName: String,
                  personEmail: String, personPhone: String, returnDate: String): Single<Long> {
         if (selectedItem == null) {
             selectedItem = Item()
         }
 
         selectedItem!!.description = description
-        selectedItem!!.itemType = itemType
         selectedItem!!.isMine = isMine
         selectedItem!!.returnDate = returnDate
 
