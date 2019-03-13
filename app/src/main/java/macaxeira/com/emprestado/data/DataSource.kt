@@ -8,7 +8,6 @@ import macaxeira.com.emprestado.data.entities.Person
 interface DataSource {
 
     fun saveItem(item: Item): Single<Long>
-    fun savePerson(person: Person): Completable
     fun updateItems(items: List<Item>): Completable
 
     fun removeItem(item: Item): Completable
@@ -17,5 +16,4 @@ interface DataSource {
     fun getAllItems(): Single<List<Item>>
     fun getItemsByOwner(isMine: Boolean): Single<List<Item>>
     fun getItemsByReturned(isReturned: Boolean): Single<List<Item>>
-    fun getPersonById(personId: Long): Single<Person>
 }

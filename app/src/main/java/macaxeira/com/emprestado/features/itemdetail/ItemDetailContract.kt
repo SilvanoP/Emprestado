@@ -25,8 +25,8 @@ interface ItemDetailContract {
         fun setReturnDate()
         fun searchContacts()
         fun searchContactPermissionVerified(hasPermission: Boolean)
+        fun getPersonByUri(uri: String?)
         fun saveItem(description: String, isMine: Boolean, personName: String,
                      personEmail: String, personPhone: String, returnDate: String, isNotifiable: Boolean)
-        fun getPersonById(personId: Long)
     }
 }

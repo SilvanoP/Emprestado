@@ -86,32 +86,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (PICK_CONTACT_REQUEST == requestCode && resultCode == Activity.RESULT_OK && data != null) {
-            val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-            data.data.also { contactUri ->
-                contentResolver.query(contactUri!!, projection, null, null, null).apply {
-                    moveToFirst()
-
-                    val numberCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                    itemDetailPersonPhoneEdit.setText(getString(numberCol))
-
-                    val nameCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-                    itemDetailPersonNameEdit.setText(getString(nameCol))
-
-                    close()
-                }
-            }
-
-            val id = data.data!!.lastPathSegment
-            contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                    null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=?",
-                    arrayOf(id!!), null).apply {
-                moveToFirst()
-
-                val emailCol = getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)
-                itemDetailPersonEmailEdit.setText(getString(emailCol))
-
-                close()
-            }
+            presenter.getPersonByUri(data.data?.path)
         }
     }
 

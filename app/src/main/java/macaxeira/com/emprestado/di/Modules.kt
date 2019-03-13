@@ -26,7 +26,7 @@ val EmprestadoModule = applicationContext {
 
 val RepositoryModule = applicationContext {
 
-    bean { DataRepository(get(), get()) }
+    bean { DataRepository(androidApplication(), get(), get()) }
     bean { Room.databaseBuilder(androidApplication(), EmprestadoDatabase::class.java, dbName).build() }
     bean("dataSourceLocal") { DataSourceLocal(get()) as DataSource}
 }

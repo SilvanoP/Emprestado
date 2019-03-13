@@ -1,17 +1,23 @@
 package macaxeira.com.emprestado.data
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.provider.ContactsContract
 import io.reactivex.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.Person
 import macaxeira.com.emprestado.utils.Constants
 
-class DataRepository(private val dataSourceLocal: DataSource, private val prefs: SharedPreferences) {
+class DataRepository(private val context: Context, private val dataSourceLocal: DataSource, private val prefs: SharedPreferences) {
 
     private var cachedItems: MutableList<Item> = mutableListOf()
     private var cachedPeople: MutableList<Person> = mutableListOf()
     private var selectedItem: Item? = null
+    private var selectedPerson: Person? = null
 
     fun saveItem(item: Item): Single<Long> {
         return dataSourceLocal.saveItem(item).doOnSuccess {
@@ -131,24 +137,44 @@ class DataRepository(private val dataSourceLocal: DataSource, private val prefs:
         return dataSourceLocal.getItemsByReturned(isReturned)
     }
 
-    fun getPersonById(personId: Long): Single<Person> {
-        return Maybe.fromAction<Person> {
-            var p: Person? = null
-            for (person in cachedPeople) {
-                if (person.id == personId) {
-                    p = person
+    fun getPersonByUri(personUri: String): Single<Person> {
+        val uri = Uri.parse(personUri)
+
+        if (selectedItem?.contactUri.equals(uri.path) && selectedPerson != null)
+            return Single.just(selectedPerson)
+
+        return Single.fromCallable {
+            val name: String
+            val photo: Bitmap
+
+            val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+            uri.also { contactUri ->
+                context.contentResolver.query(contactUri, projection, null, null, null).apply {
+                    moveToFirst()
+
+                    //val numberCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                    //itemDetailPersonPhoneEdit.setText(getString(numberCol))
+
+                    val nameCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                    name = getString(nameCol)
+
+                    val photoCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)
+                    val photoUri = getString(photoCol)
+
+                    val afd = context.contentResolver.openAssetFileDescriptor(Uri.parse(photoUri), "r")
+                    photo = afd.fileDescriptor.let {
+                        BitmapFactory.decodeFileDescriptor(it, null, null)
+                    }
+
+                    close()
                 }
             }
 
-            if (p != null) {
-                Single.just(p)
-            } else {
-                Maybe.empty<Person>()
-            }
-        }.switchIfEmpty(SingleSource {
-            dataSourceLocal.getPersonById(personId)
-        })
+            Person(name, "", "", photo)
+        }
     }
+
+
 
     fun getFilterPreference(): Int {
         return prefs.getInt(Constants.PREFS_FILTER, -1)

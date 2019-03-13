@@ -19,10 +19,10 @@ class Item() : Parcelable {
     var createdDate: String = ""
     @ColumnInfo(name = "return_date")
     var returnDate: String = ""
-    @ColumnInfo(name = "person_id")
-    var personId: Long? = null
     @ColumnInfo(name = "is_returned")
     var isReturned: Boolean = false
+    @ColumnInfo(name = "contact_uri")
+    var contactUri: String = ""
     @Ignore
     var person: Person? = null
 
@@ -38,8 +38,6 @@ class Item() : Parcelable {
         isMine = parcel.readInt() != 0
         createdDate = parcel.readString()
         returnDate = parcel.readString()
-        val tempPersonId = parcel.readLong()
-        personId = if(tempPersonId == -1L) null else tempPersonId
         isReturned = parcel.readInt() != 0
         person = parcel.readParcelable(Person::class.java.classLoader)
     }
@@ -51,7 +49,6 @@ class Item() : Parcelable {
         dest?.writeInt(if (isMine) 1 else 0)
         dest?.writeString(createdDate)
         dest?.writeString(returnDate)
-        dest?.writeLong(personId ?: -1)
         dest?.writeInt(if (isReturned) 1 else 0)
         dest?.writeParcelable(person, flags)
     }

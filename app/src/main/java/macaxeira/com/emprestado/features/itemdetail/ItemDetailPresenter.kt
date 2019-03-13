@@ -29,19 +29,6 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
         view.get()?.openDatePicker(cal)
     }
 
-    override fun getPersonById(personId: Long) {
-        disposable.add(repository.getPersonById(personId)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                {
-                                    view.get()?.fillPersonFields(it)
-                                }, {
-                            view.get()?.showErrorMessage(it)
-                        }
-                        ))
-    }
-
     override fun searchContacts() {
         view.get()?.verifyPermissions()
     }
@@ -52,6 +39,20 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
         } else {
             view.get()?.showErrorMessage(UnsupportedOperationException("Search Contacts not allowed."))
         }
+    }
+
+    override fun getPersonByUri(uri: String?) {
+        if (uri != null)
+            disposable.add(repository.getPersonByUri(uri)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            view.get()?.fillPersonFields(it)
+                        }, {
+                    view.get()?.showErrorMessage(it)
+                })
+            )
     }
 
     override fun saveItem(description: String, isMine: Boolean, personName: String,
