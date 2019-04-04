@@ -6,6 +6,7 @@
     <dimen name="margin_radio_button">12dp</dimen>
     <dimen name="no_dp">0dp</dimen>
     <dimen name="radio_padding_default">32dp</dimen>
+    <dimen name="round_width_height">40dp</dimen>
 
     <dimen name="text_size_category">24sp</dimen>
     <dimen name="text_size_small">12sp</dimen>

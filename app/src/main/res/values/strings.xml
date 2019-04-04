@@ -27,7 +27,7 @@
     <string name="name">Name</string>
     <string name="notification_return_borrowed">Today is the last day to return %1$s to %2$s.</string>
     <string name="notification_return_lent">Today is the last day to receive %1$s to %2$s.</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="phone_number">Phone Number</string>
     <string name="remembre_switch">Send remembre notification</string>
     <string name="return_date">Return Date</string>
@@ -39,6 +39,7 @@
     <string name="telephone_hint">(##)#####-####</string>
     <string name="to">To</string>
     <string name="undo">UNDO</string>
+    <string name="user_photo">User photo</string>
 
     <!-- Item Type -->
     <string name="book">Book</string>
@@ -51,4 +52,5 @@
     <!-- Tools -->
     <string name="tools_date">01/01/2000</string>
     <string name="tools_desc">Testing description</string>
+    <string name="tools_user_name">Username</string>
 </resources>

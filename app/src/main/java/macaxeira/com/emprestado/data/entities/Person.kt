@@ -8,7 +8,8 @@ class Person(
     var name: String = "",
     var phone: String = "",
     var email: String = "",
-    var photo: Bitmap? = null
+    var photo: Bitmap? = null,
+    var photoUri: String = ""
     ) : Parcelable {
 
     override fun describeContents(): Int {
@@ -20,12 +21,14 @@ class Person(
         phone = parcel.readString()
         email = parcel.readString()
         photo = parcel.readParcelable(Bitmap::class.java.classLoader)
+        photoUri = parcel.readString()
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.writeString(name)
         dest?.writeString(phone)
         dest?.writeString(email)
+        dest?.writeString(photoUri)
     }
 
     companion object CREATOR : Parcelable.Creator<Person> {

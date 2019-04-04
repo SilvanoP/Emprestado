@@ -18,11 +18,13 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_item_detail.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.Person
 import macaxeira.com.emprestado.features.alarm.NotificationScheduler
+import macaxeira.com.emprestado.utils.CircleTransform
 import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -51,25 +53,38 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
     }
 
     override fun fillFields(item: Item?) {
+        itemDetailReturnDateEdit.setOnClickListener(this)
+        itemDetailDescriptionEdit.onFocusChangeListener = this
+
         if (item != null) {
             itemDetailDescriptionEdit.setText(item.description)
             itemDetailBorrowToggle.isChecked = item.isMine
             itemDetailLendToggle.isChecked = item.isMine
 
-            if (item.person != null) {
-                fillPersonFields(item.person!!)
-            }
             if (!TextUtils.isEmpty(item.returnDate)) {
                 itemDetailReturnDateEdit.setText(item.returnDate)
             }
-        }
 
-        itemDetailReturnDateEdit.setOnClickListener(this)
-        itemDetailDescriptionEdit.onFocusChangeListener = this
+            if (item.person != null) {
+                fillPersonFields(item.person!!)
+            } else if (!item.contactUri.isEmpty()) {
+                presenter.getPersonByUri(item.contactUri)
+            }
+        }
     }
 
     override fun fillPersonFields(person: Person) {
         this.person = person
+
+        itemDetailUserNameText.text = person.name
+        if (!person.photoUri.isEmpty()) {
+            Picasso.get().load(Uri.parse(person.photoUri))
+                    .transform(CircleTransform())
+                    .into(itemDetailUserPhotoImage)
+        } else {
+            Picasso.get().load(R.drawable.bg_circle)
+                    .into(itemDetailUserPhotoImage)
+        }
     }
 
     @Suppress("UNUSED_PARAMETER")

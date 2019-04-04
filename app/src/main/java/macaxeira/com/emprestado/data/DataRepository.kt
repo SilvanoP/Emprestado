@@ -136,6 +136,7 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         return Single.fromCallable {
             val name: String
             val photo: Bitmap
+            val photoUri: String
 
             val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
             uri.also { contactUri ->
@@ -149,7 +150,7 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
                     name = getString(nameCol)
 
                     val photoCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)
-                    val photoUri = getString(photoCol)
+                    photoUri = getString(photoCol)
 
                     val afd = context.contentResolver.openAssetFileDescriptor(Uri.parse(photoUri), "r")
                     photo = afd?.fileDescriptor.let {

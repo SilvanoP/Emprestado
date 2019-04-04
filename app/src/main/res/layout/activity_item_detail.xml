@@ -98,9 +98,24 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_default"
         android:orientation="horizontal"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@+id/itemDetailContactText"
         app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/itemDetailUserPhotoImage"
+            android:layout_width="@dimen/round_width_height"
+            android:layout_height="@dimen/round_width_height"
+            android:contentDescription="@string/user_photo"
+            android:src="@drawable/bg_circle"
+            />
+
+        <TextView
+            android:id="@+id/itemDetailUserNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/tools_user_name"
+            />
 
     </LinearLayout>
 
