@@ -98,7 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_default"
         android:orientation="horizontal"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/itemDetailContactText"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -114,6 +114,9 @@
             android:id="@+id/itemDetailUserNameText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_default"
+            android:layout_gravity="center"
+            android:textSize="@dimen/text_size_radio_label"
             tools:text="@string/tools_user_name"
             />
 

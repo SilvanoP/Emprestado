@@ -56,6 +56,13 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         itemDetailReturnDateEdit.setOnClickListener(this)
         itemDetailDescriptionEdit.onFocusChangeListener = this
 
+        itemDetailBorrowToggle.setOnCheckedChangeListener { _, isChecked ->
+            itemDetailLendToggle.isChecked = !isChecked
+        }
+        itemDetailLendToggle.setOnCheckedChangeListener { _, isChecked ->
+            itemDetailBorrowToggle.isChecked = !isChecked
+        }
+
         if (item != null) {
             itemDetailDescriptionEdit.setText(item.description)
             itemDetailBorrowToggle.isChecked = item.isMine
@@ -75,6 +82,8 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
 
     override fun fillPersonFields(person: Person) {
         this.person = person
+
+        itemDetailContactContainer.visibility = View.VISIBLE
 
         itemDetailUserNameText.text = person.name
         if (!person.photoUri.isEmpty()) {
@@ -100,7 +109,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (PICK_CONTACT_REQUEST == requestCode && resultCode == Activity.RESULT_OK && data != null) {
-            presenter.getPersonByUri(data.data?.path)
+            presenter.getPersonByUri(data.data?.toString())
         }
     }
 

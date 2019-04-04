@@ -15,7 +15,6 @@ import macaxeira.com.emprestado.utils.Constants
 class DataRepository(private val context: Context, private val dataSourceLocal: DataSource, private val prefs: SharedPreferences) {
 
     private var cachedItems: MutableList<Item> = mutableListOf()
-    private var cachedPeople: MutableList<Person> = mutableListOf()
     private var selectedItem: Item? = null
     private var selectedPerson: Person? = null
 
@@ -138,7 +137,8 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
             val photo: Bitmap
             val photoUri: String
 
-            val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+            val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI,
+                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
             uri.also { contactUri ->
                 context.contentResolver.query(contactUri, projection, null, null, null).apply {
                     moveToFirst()
@@ -161,7 +161,8 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
                 }
             }
 
-            Person(name, "", "", photo)
+            selectedPerson = Person(name, "", "", photo, photoUri)
+            selectedPerson
         }
     }
 
