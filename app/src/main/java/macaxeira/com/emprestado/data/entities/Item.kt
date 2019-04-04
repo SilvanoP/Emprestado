@@ -4,9 +4,7 @@ import android.arch.persistence.room.*
 import android.os.Parcel
 import android.os.Parcelable
 
-@Entity(foreignKeys = [ForeignKey(entity = Person::class, parentColumns = arrayOf("id"),
-            childColumns = arrayOf("person_id"), onDelete = ForeignKey.CASCADE)],
-        indices = [Index(value = arrayOf("person_id"))])
+@Entity
 class Item() : Parcelable {
 
     @PrimaryKey(autoGenerate = true)

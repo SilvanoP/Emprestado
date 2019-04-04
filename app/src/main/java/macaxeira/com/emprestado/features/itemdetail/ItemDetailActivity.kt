@@ -38,6 +38,8 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
 
     private val presenter: ItemDetailContract.Presenter by inject()
 
+    private var person: Person? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item_detail)
@@ -64,13 +66,10 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
 
         itemDetailReturnDateEdit.setOnClickListener(this)
         itemDetailDescriptionEdit.onFocusChangeListener = this
-        itemDetailPersonNameEdit.onFocusChangeListener = this
     }
 
     override fun fillPersonFields(person: Person) {
-        itemDetailPersonNameEdit.setText(person.name)
-        itemDetailPersonEmailEdit.setText(person.email)
-        itemDetailPersonPhoneEdit.setText(person.phone)
+        this.person = person
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -93,7 +92,6 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
     override fun requiredFieldsEmpty() {
         Toast.makeText(this, R.string.error_save_item, Toast.LENGTH_SHORT).show()
         itemDetailDescriptionEdit.error = getString(R.string.required_field_empty)
-        itemDetailPersonNameEdit.error = getString(R.string.required_field_empty)
     }
 
     override fun openDatePicker(returnDate: Calendar) {
@@ -138,14 +136,10 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
     private fun saveItem() {
         val description = itemDetailDescriptionEdit.text.toString()
         val isMine = itemDetailLendToggle.isChecked
-        val personName = itemDetailPersonNameEdit.text.toString()
-        val personEmail = itemDetailPersonEmailEdit.text.toString()
-        val personPhone = itemDetailPersonPhoneEdit.text.toString()
         val returnDate = itemDetailReturnDateEdit.text.toString()
         val isNotifiable = itemDetailRememberSwitch.isChecked
 
-        presenter.saveItem(description, isMine, personName, personEmail, personPhone,
-                returnDate, isNotifiable)
+        presenter.saveItem(description, isMine, returnDate, isNotifiable, person)
     }
 
     override fun onSaveOrUpdateComplete() {
@@ -169,13 +163,13 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         }
     }
 
-    override fun createAlarm(id: Int, time: Long) {
+    override fun createAlarm(id: Int, time: Long, personName: String) {
         val text: String = if (itemDetailLendToggle.isChecked)
             getString(R.string.notification_return_lent, itemDetailDescriptionEdit.text.toString(),
-                    itemDetailPersonNameEdit.text.toString())
+                    personName)
         else
             getString(R.string.notification_return_borrowed, itemDetailDescriptionEdit.text.toString(),
-                    itemDetailPersonNameEdit.text.toString())
+                    personName)
 
         NotificationScheduler.setAlarm(this, id, time, text)
     }

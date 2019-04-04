@@ -25,8 +25,7 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         }
     }
 
-    fun saveItem(description: String, isMine: Boolean, personName: String,
-                 personEmail: String, personPhone: String, returnDate: String): Single<Long> {
+    fun saveItem(description: String, isMine: Boolean, returnDate: String): Single<Long> {
         if (selectedItem == null) {
             selectedItem = Item()
         }
@@ -34,15 +33,6 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         selectedItem!!.description = description
         selectedItem!!.isMine = isMine
         selectedItem!!.returnDate = returnDate
-
-        var person = Person()
-        if (selectedItem!!.person != null) {
-            person = selectedItem!!.person!!
-        }
-        person.name = personName
-        person.phone = personPhone
-        person.email = personEmail
-        selectedItem!!.person = person
 
         return dataSourceLocal.saveItem(selectedItem!!).doOnSuccess {
             val index = cachedItems.indexOf(selectedItem!!)
@@ -162,7 +152,7 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
                     val photoUri = getString(photoCol)
 
                     val afd = context.contentResolver.openAssetFileDescriptor(Uri.parse(photoUri), "r")
-                    photo = afd.fileDescriptor.let {
+                    photo = afd?.fileDescriptor.let {
                         BitmapFactory.decodeFileDescriptor(it, null, null)
                     }
 

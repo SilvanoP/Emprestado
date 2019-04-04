@@ -16,7 +16,7 @@ interface ItemDetailContract {
         fun openDatePicker(returnDate: Calendar)
         fun verifyPermissions()
         fun pickContact()
-        fun createAlarm(id: Int, time: Long)
+        fun createAlarm(id: Int, time: Long, personName: String)
         fun cancelAlarm(id: Int)
     }
 
@@ -26,7 +26,7 @@ interface ItemDetailContract {
         fun searchContacts()
         fun searchContactPermissionVerified(hasPermission: Boolean)
         fun getPersonByUri(uri: String?)
-        fun saveItem(description: String, isMine: Boolean, personName: String,
-                     personEmail: String, personPhone: String, returnDate: String, isNotifiable: Boolean)
+        fun saveItem(description: String, isMine: Boolean, returnDate: String, isNotifiable: Boolean,
+                     person: Person?)
     }
 }
