@@ -1,11 +1,9 @@
 package macaxeira.com.emprestado.data.database
 
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
 import macaxeira.com.emprestado.data.DataSource
 import macaxeira.com.emprestado.data.entities.Item
-import macaxeira.com.emprestado.data.entities.Person
 
 class DataSourceLocal(val database: EmprestadoDatabase) : DataSource {
 

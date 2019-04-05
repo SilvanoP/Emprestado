@@ -85,7 +85,7 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
             R.id.dialogFilterButtonLent ->
                 return getItemsByOwner(true)
             R.id.dialogFilterButtonReturned ->
-                return getItemsByReturned(true)
+                return getItemsByReturned()
         }
 
         return getAllItems()
@@ -96,10 +96,19 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
             return Single.just(cachedItems)
         }
 
-        return dataSourceLocal.getAllItems().flatMap {
-            cachedItems = it.toMutableList()
-            Single.just(it)
-        }
+        return dataSourceLocal.getAllItems()
+                .toObservable()
+                .flatMap { Observable.fromIterable(it)}
+                .flatMap { item ->
+                    if (!item.contactUri.isEmpty()) {
+                        item.person = queryContactByUri(item.contactUri)
+                    }
+                    Observable.just(item)
+                }
+                .toList()
+                .doAfterSuccess {
+                    cachedItems = it
+                }
     }
 
     private fun getItemsByOwner(isMine: Boolean): Single<List<Item>> {
@@ -112,61 +121,82 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         }
 
         return dataSourceLocal.getItemsByOwner(isMine)
+                .toObservable()
+                .flatMap { Observable.fromIterable(it)}
+                .flatMap { item ->
+                    if (!item.contactUri.isEmpty()) {
+                        item.person = queryContactByUri(item.contactUri)
+                    }
+                    Observable.just(item)
+                }
+                .toList()
     }
 
-    private fun getItemsByReturned(isReturned: Boolean): Single<List<Item>> {
+    private fun getItemsByReturned(): Single<List<Item>> {
         if (cachedItems.size > 0) {
             return Observable.fromIterable(cachedItems).flatMap {
                 Observable.just(it)
             }.filter {
-                it.isReturned == isReturned
+                it.isReturned
             }.toList()
         }
 
-        return dataSourceLocal.getItemsByReturned(isReturned)
+        return dataSourceLocal.getItemsByReturned(true)
+                .toObservable()
+                .flatMap { Observable.fromIterable(it)}
+                .flatMap { item ->
+                    if (!item.contactUri.isEmpty()) {
+                        item.person = queryContactByUri(item.contactUri)
+                    }
+                    Observable.just(item)
+                }
+                .toList()
     }
 
     fun getPersonByUri(personUri: String): Single<Person> {
-        val uri = Uri.parse(personUri)
-
-        if (selectedItem?.contactUri.equals(uri.path) && selectedPerson != null)
+        if (selectedItem?.contactUri.equals(personUri) && selectedPerson != null)
             return Single.just(selectedPerson)
 
         return Single.fromCallable {
-            val name: String
-            val photo: Bitmap
-            val photoUri: String
-
-            val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI,
-                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-            uri.also { contactUri ->
-                context.contentResolver.query(contactUri, projection, null, null, null).apply {
-                    moveToFirst()
-
-                    //val numberCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                    //itemDetailPersonPhoneEdit.setText(getString(numberCol))
-
-                    val nameCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-                    name = getString(nameCol)
-
-                    val photoCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)
-                    photoUri = getString(photoCol)
-
-                    val afd = context.contentResolver.openAssetFileDescriptor(Uri.parse(photoUri), "r")
-                    photo = afd?.fileDescriptor.let {
-                        BitmapFactory.decodeFileDescriptor(it, null, null)
-                    }
-
-                    close()
-                }
-            }
-
-            selectedPerson = Person(name, "", "", photo, photoUri)
-            selectedPerson
+            queryContactByUri(personUri)
         }
     }
 
+    fun queryContactByUri(personUri: String) : Person? {
+        val uri = Uri.parse(personUri)
 
+        val name: String
+        val photo: Bitmap
+        val photoUri: String
+
+        val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI,
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+        uri.also { contactUri ->
+            context.contentResolver.query(contactUri, projection, null, null, null).apply {
+                moveToFirst()
+
+                //val numberCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                //itemDetailPersonPhoneEdit.setText(getString(numberCol))
+
+                val nameCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                name = getString(nameCol)
+
+                val photoCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)
+                photoUri = getString(photoCol)
+
+                val afd = context.contentResolver.openAssetFileDescriptor(Uri.parse(photoUri), "r")
+                photo = afd?.fileDescriptor.let {
+                    BitmapFactory.decodeFileDescriptor(it, null, null)
+                }
+
+                close()
+            }
+        }
+
+        selectedPerson = Person(name, "", "", photo, photoUri)
+
+        return selectedPerson
+    }
 
     fun getFilterPreference(): Int {
         return prefs.getInt(Constants.PREFS_FILTER, -1)
