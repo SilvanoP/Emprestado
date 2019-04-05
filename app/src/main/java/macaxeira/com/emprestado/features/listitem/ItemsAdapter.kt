@@ -92,8 +92,9 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
 
             itemView.listItemMainReturnDate.text = returnedText
 
+            val personName = item.person?.name ?: ""
             var person: String = if (item.isMine) context.getString(R.string.to) else context.getString(R.string.from)
-            person += ": " + item.person?.name
+            person += ": $personName"
 
             itemView.listItemPersonText.text = person
 

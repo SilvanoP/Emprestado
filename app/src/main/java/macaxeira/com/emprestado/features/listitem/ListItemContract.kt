@@ -21,7 +21,7 @@ interface ListItemContract {
     }
 
     interface Presenter : BasePresenter<View> {
-        fun loadData()
+        fun loadData(changedItems: Boolean)
         fun onAddItem()
         fun loadItemsByFilter(filter:Int)
         fun onSwipeRefresh(filter: Int)

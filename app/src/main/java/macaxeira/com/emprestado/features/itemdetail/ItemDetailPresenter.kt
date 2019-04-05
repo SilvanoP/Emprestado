@@ -42,8 +42,8 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
         }
     }
 
-    override fun getPersonByUri(uri: String?) {
-        if (uri != null)
+    override fun getPersonByUri(uri: String) {
+        if (!uri.isEmpty())
             disposable.add(repository.getPersonByUri(uri)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -57,11 +57,11 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
     }
 
     override fun saveItem(description: String, isMine: Boolean, returnDate: String,
-                          isNotifiable: Boolean, person: Person?) {
+                          isNotifiable: Boolean, person: Person?, personUri: String) {
         if (description.isEmpty() || person == null) {
             view.get()?.requiredFieldsEmpty()
         } else {
-            disposable.add(repository.saveItem(description, isMine, returnDate)
+            disposable.add(repository.saveItem(description, isMine, returnDate, personUri)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(

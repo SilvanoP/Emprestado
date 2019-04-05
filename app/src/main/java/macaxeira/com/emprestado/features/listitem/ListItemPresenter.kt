@@ -11,10 +11,11 @@ import macaxeira.com.emprestado.utils.Utils
 class ListItemPresenter(private val repository: DataRepository) : BasePresenterImpl<ListItemContract.View>(),
         ListItemContract.Presenter {
 
-    override fun loadData() {
+    override fun loadData(changedItems: Boolean) {
         val filter = repository.getFilterPreference()
         view.get()?.isRefreshing(true)
         view.get()?.changeTitle(filter)
+        if (changedItems) repository.onRefreshCachedItems()
         disposable.add(repository.getItemsByFilter(filter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

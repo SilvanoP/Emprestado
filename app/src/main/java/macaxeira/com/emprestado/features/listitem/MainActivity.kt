@@ -63,7 +63,13 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         setupRecyclerView()
 
         verifyPermissions()
-        presenter.loadData()
+        presenter.loadData(false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        presenter.loadData(true)
     }
 
     private fun setupRecyclerView() {
@@ -122,7 +128,9 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     override fun removeItem(position: Int) {
         val adapter = mainItemsRecycler.adapter as ItemsAdapter
         adapter.removeItem(position)
-        items.removeAt(position)
+        if (items.size > position) {
+            items.removeAt(position)
+        }
     }
 
     override fun removeSelectedItems(deletedItems: List<Item>) {

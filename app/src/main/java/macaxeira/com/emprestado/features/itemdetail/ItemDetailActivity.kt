@@ -41,6 +41,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
     private val presenter: ItemDetailContract.Presenter by inject()
 
     private var person: Person? = null
+    private var personUri = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +66,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
 
         if (item != null) {
             itemDetailDescriptionEdit.setText(item.description)
-            itemDetailBorrowToggle.isChecked = item.isMine
+            itemDetailBorrowToggle.isChecked = !item.isMine
             itemDetailLendToggle.isChecked = item.isMine
 
             if (!TextUtils.isEmpty(item.returnDate)) {
@@ -109,7 +110,8 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (PICK_CONTACT_REQUEST == requestCode && resultCode == Activity.RESULT_OK && data != null) {
-            presenter.getPersonByUri(data.data?.toString())
+            personUri = data.data?.toString() ?: ""
+            presenter.getPersonByUri(personUri)
         }
     }
 
@@ -163,7 +165,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         val returnDate = itemDetailReturnDateEdit.text.toString()
         val isNotifiable = itemDetailRememberSwitch.isChecked
 
-        presenter.saveItem(description, isMine, returnDate, isNotifiable, person)
+        presenter.saveItem(description, isMine, returnDate, isNotifiable, person, personUri)
     }
 
     override fun onSaveOrUpdateComplete() {
