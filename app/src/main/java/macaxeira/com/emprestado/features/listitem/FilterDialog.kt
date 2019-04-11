@@ -49,10 +49,11 @@ class FilterDialog : DialogFragment(), View.OnClickListener {
         }
 
         radioLoan?.clearCheck()
-        if (option != null) {
+        if (option != null && option >= 0) {
             radioLoan?.check(option)
         } else {
-            radioButtonAll.isChecked = true
+            radioLoan?.check(radioButtonAll.id)
+            //radioButtonAll.isChecked = true
         }
 
         filterButton.setOnClickListener(this)
