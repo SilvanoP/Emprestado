@@ -3,6 +3,5 @@
     <gradient android:startColor="#FFFFFF"
         android:endColor="#FFFFFF"
         android:angle="270" />
-    <corners android:radius="3dp" />
     <stroke android:width="5px" android:color="@color/button_color" />
 </shape>

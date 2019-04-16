@@ -4,6 +4,7 @@
     <dimen name="margin_default">16dp</dimen>
     <dimen name="margin_half">8dp</dimen>
     <dimen name="margin_radio_button">12dp</dimen>
+    <dimen name="margin_container">10dp</dimen>
     <dimen name="no_dp">0dp</dimen>
     <dimen name="radio_padding_default">32dp</dimen>
     <dimen name="round_width_height">40dp</dimen>
