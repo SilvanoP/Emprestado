@@ -57,11 +57,11 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
     }
 
     override fun saveItem(description: String, isMine: Boolean, returnDate: String,
-                          isNotifiable: Boolean, person: Person?, personUri: String) {
+                          remember: Boolean, person: Person?, personUri: String) {
         if (description.isEmpty() || person == null) {
             view.get()?.requiredFieldsEmpty()
         } else {
-            disposable.add(repository.saveItem(description, isMine, returnDate, personUri)
+            disposable.add(repository.saveItem(description, isMine, returnDate, personUri, remember)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
@@ -70,7 +70,7 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
                                             val alarmTime = "$returnDate 10:00"
                                             val date = Utils.fromStringToTime(alarmTime)
 
-                                            if (isNotifiable) {
+                                            if (remember) {
                                                 view.get()?.createAlarm(it.toInt(), date, person.name)
                                             } else {
                                                 view.get()?.cancelAlarm(it.toInt())

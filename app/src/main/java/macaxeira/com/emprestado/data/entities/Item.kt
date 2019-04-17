@@ -21,6 +21,8 @@ class Item() : Parcelable {
     var isReturned: Boolean = false
     @ColumnInfo(name = "contact_uri")
     var contactUri: String = ""
+    @ColumnInfo(name = "remember")
+    var remember: Boolean = false
     @Ignore
     var person: Person? = null
 
@@ -38,6 +40,7 @@ class Item() : Parcelable {
         returnDate = parcel.readString()
         isReturned = parcel.readInt() != 0
         person = parcel.readParcelable(Person::class.java.classLoader)
+        remember = parcel.readInt() == 1
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
@@ -49,6 +52,7 @@ class Item() : Parcelable {
         dest?.writeString(returnDate)
         dest?.writeInt(if (isReturned) 1 else 0)
         dest?.writeParcelable(person, flags)
+        dest?.writeInt(if (remember) 1 else 0)
     }
 
     companion object CREATOR : Parcelable.Creator<Item> {

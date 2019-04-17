@@ -24,7 +24,8 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         }
     }
 
-    fun saveItem(description: String, isMine: Boolean, returnDate: String, personUri: String): Single<Long> {
+    fun saveItem(description: String, isMine: Boolean, returnDate: String, personUri: String,
+                 remember: Boolean): Single<Long> {
         if (selectedItem == null) {
             selectedItem = Item()
         }
@@ -33,6 +34,7 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         selectedItem!!.isMine = isMine
         selectedItem!!.returnDate = returnDate
         selectedItem!!.contactUri = personUri
+        selectedItem!!.remember = remember
 
         return dataSourceLocal.saveItem(selectedItem!!).doOnSuccess {
             val index = cachedItems.indexOf(selectedItem!!)

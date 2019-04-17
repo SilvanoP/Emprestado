@@ -78,6 +78,8 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
             } else if (!item.contactUri.isEmpty()) {
                 presenter.getPersonByUri(item.contactUri)
             }
+
+            itemDetailRememberSwitch.isChecked = item.remember
         }
     }
 
@@ -163,9 +165,9 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         val description = itemDetailDescriptionEdit.text.toString()
         val isMine = itemDetailLendToggle.isChecked
         val returnDate = itemDetailReturnDateEdit.text.toString()
-        val isNotifiable = itemDetailRememberSwitch.isChecked
+        val remember = itemDetailRememberSwitch.isChecked
 
-        presenter.saveItem(description, isMine, returnDate, isNotifiable, person, personUri)
+        presenter.saveItem(description, isMine, returnDate, remember, person, personUri)
     }
 
     override fun onSaveOrUpdateComplete() {
