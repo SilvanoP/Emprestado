@@ -49,7 +49,6 @@
             android:layout_margin="@dimen/margin_default"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/ic_other"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -88,18 +87,31 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@string/tools_desc" />
+            
+            <ImageView
+                android:id="@+id/listItemPersonPhotoImage"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="@dimen/margin_default"
+                android:contentDescription="@string/user_photo"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/listItemDescriptionText"
+                app:layout_constraintTop_toBottomOf="@+id/listItemDescriptionText"
+                tools:src="@drawable/bg_circle"
+                />
 
             <TextView
                 android:id="@+id/listItemPersonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_half"
                 android:layout_marginEnd="@dimen/margin_default"
-                android:layout_marginBottom="@dimen/margin_default"
                 app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/listItemDescriptionText"
+                app:layout_constraintTop_toTopOf="@+id/listItemPersonPhotoImage"
+                app:layout_constraintBottom_toBottomOf="@+id/listItemPersonPhotoImage"
+                app:layout_constraintStart_toEndOf="@+id/listItemPersonPhotoImage"
                 app:layout_constraintEnd_toStartOf="@id/listItemMainBarrier"
-                app:layout_constraintTop_toBottomOf="@+id/listItemDescriptionText"
                 tools:text="@string/tools_desc" />
 
             <ImageView
@@ -110,6 +122,7 @@
                 android:layout_marginTop="@dimen/margin_default"
                 android:layout_marginEnd="@dimen/margin_default"
                 android:layout_marginStart="@dimen/margin_default"
+                android:contentDescription="@string/date_image"
                 android:src="@drawable/ic_date"
                 app:layout_constraintBottom_toTopOf="@+id/listItemMainReturnDate"
                 app:layout_constraintEnd_toEndOf="@+id/listItemMainReturnDate"

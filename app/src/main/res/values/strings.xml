@@ -9,6 +9,7 @@
     <string name="channel_name" translatable="false">Loan</string>
     <string name="channel_description" translatable="false">Notification for the return date of borrowed or Lent items.</string>
     <string name="contact">Contact</string>
+    <string name="date_image">Image to represent date</string>
     <string name="delete">Delete</string>
     <string name="description">Description</string>
     <string name="email">E-mail</string>

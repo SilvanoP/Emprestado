@@ -1,6 +1,7 @@
 package macaxeira.com.emprestado.features.listitem
 
 import android.content.Context
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.SparseBooleanArray
@@ -8,9 +9,13 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_item_detail.*
 import kotlinx.android.synthetic.main.listitem_main.view.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
+import macaxeira.com.emprestado.data.entities.Person
+import macaxeira.com.emprestado.utils.CircleTransform
 import macaxeira.com.emprestado.utils.Utils
 
 class ItemsAdapter(private val context: Context, var items: MutableList<Item>, private val listener: ItemsAdapterListener) :
@@ -91,12 +96,22 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
             }
 
             itemView.listItemMainReturnDate.text = returnedText
+            val person: Person? = item.person
 
-            val personName = item.person?.name ?: ""
-            var person: String = if (item.isMine) context.getString(R.string.to) else context.getString(R.string.from)
-            person += ": $personName"
+            val personName = person?.name ?: ""
+            var personText: String = if (item.isMine) context.getString(R.string.to) else context.getString(R.string.from)
+            personText += ": $personName"
 
-            itemView.listItemPersonText.text = person
+            itemView.listItemPersonText.text = personText
+
+            if (person != null && person.photoUri.isNotEmpty()) {
+                Picasso.get().load(Uri.parse(person.photoUri))
+                        .transform(CircleTransform())
+                        .into(itemView.listItemPersonPhotoImage)
+            } else {
+                Picasso.get().load(R.drawable.bg_circle)
+                        .into(itemView.listItemPersonPhotoImage)
+            }
 
             itemView.isActivated = selectedItems[adapterPosition, false]
 
