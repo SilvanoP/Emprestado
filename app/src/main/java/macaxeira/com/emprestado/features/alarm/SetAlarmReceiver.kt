@@ -19,15 +19,17 @@ class SetAlarmReceiver : BroadcastReceiver(), KoinComponent {
             val items = repository.getItemsByFilter(0).blockingGet()
 
             for (item in items) {
-                val text: String = if (item.isMine)
-                    context.getString(R.string.notification_return_lent, item.description, item.person?.name)
-                else
-                    context.getString(R.string.notification_return_borrowed, item.description,
-                            item.person?.name)
+                if (item.remember && !item.isReturned) {
+                    val text: String = if (item.isMine)
+                        context.getString(R.string.notification_return_lent, item.description, item.person?.name)
+                    else
+                        context.getString(R.string.notification_return_borrowed, item.description,
+                                item.person?.name)
 
-                val date = Utils.fromStringToTime(item.returnDate)
+                    val date = Utils.fromStringToTime(item.returnDate)
 
-                NotificationScheduler.setAlarm(context, item.id!!.toInt(), date, text)
+                    NotificationScheduler.setAlarm(context, item.id!!.toInt(), date, text)
+                }
             }
         }
     }
