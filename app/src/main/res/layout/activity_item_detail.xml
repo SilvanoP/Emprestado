@@ -15,6 +15,7 @@
         android:background="@drawable/toogle_selector"
         android:textOff="@string/borrow"
         android:textOn="@string/borrow"
+        android:checked="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/itemDetailLendToggle"
@@ -73,27 +74,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_default"
-        android:text="@string/contact"
+        android:text="@string/borrow_from"
         android:textAllCaps="true"
         android:textStyle="bold"
-        android:textSize="@dimen/text_size_category"
+        android:textSize="@dimen/text_size_hint"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintTop_toBottomOf="@+id/itemDetailReturnDateInputLayout"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/itemDetailSearchContactButton"/>
 
     <Button
         android:id="@+id/itemDetailSearchContactButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginEnd="@dimen/margin_default"
         android:minHeight="25dp"
         android:text="@string/search_contact"
+        android:textSize="@dimen/text_size_hint"
         android:textAllCaps="true"
         android:textColor="@color/button_color"
         android:background="@drawable/bg_button_outline"
         android:onClick="searchContact"
         app:layout_constraintTop_toTopOf="@+id/itemDetailContactText"
         app:layout_constraintBottom_toBottomOf="@+id/itemDetailContactText"
-        app:layout_constraintStart_toEndOf="@+id/itemDetailContactText" />
+        app:layout_constraintStart_toEndOf="@+id/itemDetailContactText"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <LinearLayout
         android:id="@+id/itemDetailContactContainer"
@@ -136,7 +142,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_default"
-        android:text="@string/remembre_switch"
+        android:text="@string/remember_switch"
         app:layout_constraintTop_toBottomOf="@+id/itemDetailContactContainer"
         app:layout_constraintStart_toStartOf="parent"/>
 

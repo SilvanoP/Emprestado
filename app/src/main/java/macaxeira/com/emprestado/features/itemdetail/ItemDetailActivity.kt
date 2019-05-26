@@ -59,9 +59,11 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
 
         itemDetailBorrowToggle.setOnCheckedChangeListener { _, isChecked ->
             itemDetailLendToggle.isChecked = !isChecked
+            changeContactText()
         }
         itemDetailLendToggle.setOnCheckedChangeListener { _, isChecked ->
             itemDetailBorrowToggle.isChecked = !isChecked
+            changeContactText()
         }
 
         if (item != null) {
@@ -73,6 +75,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
                 itemDetailReturnDateEdit.setText(item.returnDate)
             }
 
+            changeContactText()
             if (item.person != null) {
                 fillPersonFields(item.person!!)
             } else if (!item.contactUri.isEmpty()) {
@@ -80,6 +83,14 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
             }
 
             itemDetailRememberSwitch.isChecked = item.remember
+        }
+    }
+
+    private fun changeContactText() {
+        if (itemDetailBorrowToggle.isChecked) {
+            itemDetailContactText.text = getString(R.string.borrow_from)
+        } else {
+            itemDetailContactText.text = getString(R.string.lend_to)
         }
     }
 

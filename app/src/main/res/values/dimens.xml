@@ -10,6 +10,7 @@
     <dimen name="round_width_height">40dp</dimen>
 
     <dimen name="text_size_category">24sp</dimen>
+    <dimen name="text_size_hint">18sp</dimen>
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_radio_label">17sp</dimen>
 </resources>

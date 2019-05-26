@@ -4,6 +4,7 @@
     <string name="accept">Accept</string>
     <string name="all_loans">All Loans</string>
     <string name="borrow">Borrow</string>
+    <string name="borrow_from">Borrow from</string>
     <string name="borrowed">Borrowed</string>
     <string name="cancel">Cancel</string>
     <string name="channel_name" translatable="false">Loan</string>
@@ -22,6 +23,7 @@
     <string name="is_borrowed">Is borrowed?</string>
     <string name="item_swiped">Item deleted.</string>
     <string name="lend">Lend</string>
+    <string name="lend_to">Lend to</string>
     <string name="lent">Lent</string>
     <string name="filter">Filter</string>
     <string name="from">From</string>
@@ -30,7 +32,7 @@
     <string name="notification_return_lent">Today is the last day to receive %1$s to %2$s.</string>
     <string name="ok">OK</string>
     <string name="phone_number">Phone Number</string>
-    <string name="remembre_switch">Send remembre notification</string>
+    <string name="remember_switch">Send remember notification</string>
     <string name="return_date">Return Date</string>
     <string name="required_field_empty">This field cannot be empty!</string>
     <string name="returned">Returned</string>
