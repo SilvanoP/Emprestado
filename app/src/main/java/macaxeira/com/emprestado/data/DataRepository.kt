@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.Image
 import android.net.Uri
 import android.provider.ContactsContract
 import io.reactivex.*
@@ -169,12 +170,12 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         }
     }
 
-    fun queryContactByUri(personUri: String) : Person? {
+    private fun queryContactByUri(personUri: String) : Person? {
         val uri = Uri.parse(personUri)
 
         val name: String
-        val photo: Bitmap
-        val photoUri: String
+        val photo: Bitmap?
+        var photoUri: String?
 
         val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI,
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
@@ -188,20 +189,24 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
                 val nameCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
                 name = getString(nameCol)
 
-                // TODO add photo default for contacts without photos
                 val photoCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)
                 photoUri = getString(photoCol)
 
-                val afd = context.contentResolver.openAssetFileDescriptor(Uri.parse(photoUri), "r")
-                photo = afd?.fileDescriptor.let {
-                    BitmapFactory.decodeFileDescriptor(it, null, null)
+                if (photoUri != null) {
+                    val afd = context.contentResolver.openAssetFileDescriptor(Uri.parse(photoUri), "r")
+                    photo = afd?.fileDescriptor.let {
+                        BitmapFactory.decodeFileDescriptor(it, null, null)
+                    }
+                } else {
+                    photoUri = ""
+                    photo = null
                 }
 
                 close()
             }
         }
 
-        selectedPerson = Person(name, "", "", photo, photoUri)
+        selectedPerson = Person(name, "", "", photo, photoUri!!)
 
         return selectedPerson
     }

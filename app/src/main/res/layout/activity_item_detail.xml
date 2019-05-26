@@ -15,6 +15,7 @@
         android:background="@drawable/toogle_selector"
         android:textOff="@string/borrow"
         android:textOn="@string/borrow"
+        android:textColor="@color/toggle_text_selector"
         android:checked="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,6 +31,7 @@
         android:background="@drawable/toogle_selector"
         android:textOff="@string/lend"
         android:textOn="@string/lend"
+        android:textColor="@color/toggle_text_selector"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/itemDetailBorrowToggle"
         app:layout_constraintEnd_toEndOf="parent"/>

@@ -109,8 +109,7 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
                         .transform(CircleTransform())
                         .into(itemView.listItemPersonPhotoImage)
             } else {
-                Picasso.get().load(R.drawable.bg_circle)
-                        .into(itemView.listItemPersonPhotoImage)
+                itemView.listItemPersonPhotoImage.setImageResource(R.drawable.default_person_round)
             }
 
             itemView.isActivated = selectedItems[adapterPosition, false]

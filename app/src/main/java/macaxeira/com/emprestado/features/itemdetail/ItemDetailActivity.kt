@@ -105,8 +105,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
                     .transform(CircleTransform())
                     .into(itemDetailUserPhotoImage)
         } else {
-            Picasso.get().load(R.drawable.bg_circle)
-                    .into(itemDetailUserPhotoImage)
+            itemDetailUserPhotoImage.setImageResource(R.drawable.default_person_round)
         }
     }
 
