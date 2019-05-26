@@ -131,12 +131,16 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         if (items.size > position) {
             items.removeAt(position)
         }
+
+        actionMode?.finish()
     }
 
     override fun removeSelectedItems(deletedItems: List<Item>) {
         val adapter = mainItemsRecycler.adapter as ItemsAdapter
         adapter.removeItems(deletedItems)
         items.removeAll(deletedItems)
+
+        actionMode?.finish()
     }
 
     override fun cancelAlarm(deletedItems: List<Item>) {
@@ -251,7 +255,7 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
             val selectedItems = SparseArray<Item>()
             val sparse = adapter.selectedItems
 
-            if (item?.itemId == R.id.menuMainDelete) {
+            if (item?.itemId == R.id.menuMainDelete && sparse.size() > 0) {
                 var index = 0
                 while (index < sparse.size()) {
                     val deletedPosition = sparse.keyAt(index)
@@ -263,7 +267,7 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
                 return true
             }
 
-            if (item?.itemId == R.id.menuMainReturned) {
+            if (item?.itemId == R.id.menuMainReturned && sparse.size() > 0) {
                 var index = 0
                 while (index < sparse.size()) {
                     val selectedPosition = sparse.keyAt(index)
