@@ -188,6 +188,7 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
                 val nameCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
                 name = getString(nameCol)
 
+                // TODO add photo default for contacts without photos
                 val photoCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)
                 photoUri = getString(photoCol)
 
