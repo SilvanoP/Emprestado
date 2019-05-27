@@ -119,7 +119,7 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
         }
 
         private fun applyClickEvents(position: Int) {
-            itemView.listItemTypeImage.setOnClickListener {
+            itemView.listItemPersonPhotoImage.setOnClickListener {
                 listener.onIconClicked(position)
             }
 
@@ -140,22 +140,22 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
 
         private fun applyIconAnimation(position: Int) {
             if (selectedItems.get(position, false)) {
-                itemView.listItemTypeImage.visibility = View.GONE
+                itemView.listItemPersonPhotoImage.visibility = View.GONE
                 resetIconYAxis(itemView.listItemBackImage)
                 itemView.listItemBackImage.visibility = View.VISIBLE
                 itemView.listItemBackImage.alpha = 1F
                 if (currentSelectedIndex == position) {
-                    Utils.flipView(context, itemView.listItemBackImage, itemView.listItemTypeImage, true)
+                    Utils.flipView(context, itemView.listItemBackImage, itemView.listItemPersonPhotoImage, true)
                     resetCurrentIndex()
                 }
             } else {
                 itemView.listItemBackImage.visibility = View.GONE
-                resetIconYAxis(itemView.listItemTypeImage)
-                itemView.listItemTypeImage.visibility = View.VISIBLE
-                itemView.listItemTypeImage.alpha = 1F
+                resetIconYAxis(itemView.listItemPersonPhotoImage)
+                itemView.listItemPersonPhotoImage.visibility = View.VISIBLE
+                itemView.listItemPersonPhotoImage.alpha = 1F
                 if((reverseAllAnimations && animationItemsIndex.get(position, false)) ||
                         currentSelectedIndex == position) {
-                    Utils.flipView(context, itemView.listItemBackImage, itemView.listItemTypeImage, false)
+                    Utils.flipView(context, itemView.listItemBackImage, itemView.listItemPersonPhotoImage, false)
                     resetCurrentIndex()
                 }
             }

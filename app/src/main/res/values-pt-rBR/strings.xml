@@ -8,8 +8,6 @@
     <string name="borrow_from">Pegar emprestado de</string>
     <string name="borrowed">Peguei emprestado</string>
     <string name="cancel">Cancelar</string>
-    <string name="channel_name" translatable="false">Loan</string>
-    <string name="channel_description" translatable="false">Notification for the return date of borrowed or Lent items.</string>
     <string name="contact">Contato</string>
     <string name="date_image">Data</string>
     <string name="delete">Remover</string>
@@ -46,15 +44,10 @@
     <string name="user_photo">Foto do usuário</string>
 
     <!-- Item Type -->
-    <string name="book">Book</string>
+    <string name="book">Livro</string>
     <string name="cd">CD</string>
-    <string name="clothe">Clothe</string>
+    <string name="clothe">Roupa</string>
     <string name="dvd">DVD</string>
-    <string name="money">Money</string>
-    <string name="other">Other</string>
-
-    <!-- Tools -->
-    <string name="tools_date">01/01/2000</string>
-    <string name="tools_desc">Testing description</string>
-    <string name="tools_user_name">Username</string>
+    <string name="money">Dinheiro</string>
+    <string name="other">Outros</string>
 </resources>

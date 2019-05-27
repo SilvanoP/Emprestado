@@ -53,7 +53,8 @@
     <string name="other">Other</string>
 
     <!-- Tools -->
-    <string name="tools_date">01/01/2000</string>
-    <string name="tools_desc">Testing description</string>
-    <string name="tools_user_name">Username</string>
+    <string name="tools_date" translatable="false">01/01/2000</string>
+    <string name="tools_desc" translatable="false">Testing description</string>
+    <string name="tools_desc_short" translatable="false">Test desc</string>
+    <string name="tools_user_name" translatable="false">Username</string>
 </resources>
