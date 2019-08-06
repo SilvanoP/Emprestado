@@ -5,8 +5,8 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.TaskStackBuilder
+import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.features.itemdetail.ItemDetailActivity
 import macaxeira.com.emprestado.utils.Constants

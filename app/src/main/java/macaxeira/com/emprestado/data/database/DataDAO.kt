@@ -1,6 +1,6 @@
 package macaxeira.com.emprestado.data.database
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import io.reactivex.Observable
 import io.reactivex.Single
 import macaxeira.com.emprestado.data.entities.Item

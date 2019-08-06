@@ -8,16 +8,16 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.view.ActionMode
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ItemTouchHelper
 import android.text.TextUtils
 import android.util.SparseArray
 import android.view.Menu
@@ -73,9 +73,9 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
     }
 
     private fun setupRecyclerView() {
-        mainItemsRecycler.layoutManager = LinearLayoutManager(this)
-        mainItemsRecycler.itemAnimator = DefaultItemAnimator()
-        mainItemsRecycler.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        mainItemsRecycler.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        mainItemsRecycler.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
+        mainItemsRecycler.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
 
         val adapter = ItemsAdapter(this, items, this)
         mainItemsRecycler.adapter = adapter
@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         }
     }
 
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int, position: Int?) {
+    override fun onSwiped(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder?, direction: Int, position: Int?) {
         if (viewHolder is ItemsAdapter.ItemViewHolder) {
             val deletedItem = items[viewHolder.adapterPosition]
             val deletedPosition = viewHolder.adapterPosition

@@ -2,7 +2,7 @@ package macaxeira.com.emprestado.features.listitem
 
 import android.content.Context
 import android.net.Uri
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.SparseBooleanArray
 import android.view.HapticFeedbackConstants
@@ -19,7 +19,7 @@ import macaxeira.com.emprestado.utils.CircleTransform
 import macaxeira.com.emprestado.utils.Utils
 
 class ItemsAdapter(private val context: Context, var items: MutableList<Item>, private val listener: ItemsAdapterListener) :
-        RecyclerView.Adapter<ItemsAdapter.ItemViewHolder>() {
+        androidx.recyclerview.widget.RecyclerView.Adapter<ItemsAdapter.ItemViewHolder>() {
 
     val selectedItems = SparseBooleanArray()
 
@@ -83,7 +83,7 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
         notifyItemInserted(position)
     }
 
-    inner class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class ItemViewHolder(itemView: View): androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: Item) {
             itemView.listItemDescriptionText.text = item.description
