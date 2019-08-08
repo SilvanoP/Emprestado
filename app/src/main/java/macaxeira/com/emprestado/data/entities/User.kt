@@ -7,10 +7,10 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @Entity
-class User(
+data class User(
         @PrimaryKey(autoGenerate = true)
-        val id: Long,
-        val login: String,
-        val password: String,
-        val isGoogleAccount: Boolean) : Parcelable {
-}
+        var id: Long,
+        var login: String,
+        var password: String,
+        var email: String,
+        var isGoogleAccount: Boolean) : Parcelable

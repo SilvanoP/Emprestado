@@ -4,10 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.Image
 import android.net.Uri
 import android.provider.ContactsContract
-import io.reactivex.*
+import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.Single
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.Person
@@ -17,25 +18,22 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
 
     private var cachedItems: MutableList<Item> = mutableListOf()
     private var selectedItem: Item? = null
-    private var selectedPerson: Person? = null
 
     fun saveItem(item: Item): Single<Long> {
         return dataSourceLocal.saveItem(item).doOnSuccess {
-            cachedItems.add(selectedItem!!)
+            val index = cachedItems.indexOf(selectedItem!!)
+            if (index != -1) {
+                cachedItems.removeAt(index)
+                cachedItems.add(index, selectedItem!!)
+            } else {
+                cachedItems.add(selectedItem!!)
+            }
         }
     }
 
-    fun saveItem(description: String, isMine: Boolean, returnDate: String, personUri: String,
-                 remember: Boolean): Single<Long> {
-        if (selectedItem == null) {
-            selectedItem = Item()
-        }
-
-        selectedItem!!.description = description
-        selectedItem!!.isMine = isMine
-        selectedItem!!.returnDate = returnDate
-        selectedItem!!.contactUri = personUri
-        selectedItem!!.remember = remember
+    fun saveSelectedItem(): Single<Long> {
+        if (selectedItem == null)
+            return Single.error(UnsupportedOperationException("No item selected!"))
 
         return dataSourceLocal.saveItem(selectedItem!!).doOnSuccess {
             val index = cachedItems.indexOf(selectedItem!!)
@@ -83,6 +81,8 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
     }
 
     fun getSelectedItem(): Item? {
+        if (selectedItem == null)
+            selectedItem = Item()
         return selectedItem
     }
 
@@ -105,17 +105,8 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         }
 
         return dataSourceLocal.getAllItems()
-                .toObservable()
-                .flatMap { Observable.fromIterable(it)}
-                .flatMap { item ->
-                    if (!item.contactUri.isEmpty()) {
-                        item.person = queryContactByUri(item.contactUri)
-                    }
-                    Observable.just(item)
-                }
-                .toList()
                 .doAfterSuccess {
-                    cachedItems = it
+                    cachedItems = it.toMutableList()
                 }
     }
 
@@ -129,15 +120,6 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         }
 
         return dataSourceLocal.getItemsByOwner(isMine)
-                .toObservable()
-                .flatMap { Observable.fromIterable(it)}
-                .flatMap { item ->
-                    if (!item.contactUri.isEmpty()) {
-                        item.person = queryContactByUri(item.contactUri)
-                    }
-                    Observable.just(item)
-                }
-                .toList()
     }
 
     private fun getItemsByReturned(): Single<List<Item>> {
@@ -162,8 +144,8 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
     }
 
     fun getPersonByUri(personUri: String): Single<Person> {
-        if (selectedItem?.contactUri.equals(personUri) && selectedPerson != null)
-            return Single.just(selectedPerson)
+        if (selectedItem?.contactUri.equals(personUri) && selectedItem?.person != null)
+            return Single.just(selectedItem!!.person)
 
         return Single.fromCallable {
             queryContactByUri(personUri)
@@ -174,41 +156,26 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         val uri = Uri.parse(personUri)
 
         val name: String
-        val photo: Bitmap?
         var photoUri: String?
 
         val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI,
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
         uri.also { contactUri ->
-            context.contentResolver.query(contactUri, projection, null, null, null).apply {
+            context.contentResolver.query(contactUri, projection, null, null, null)?.apply {
                 moveToFirst()
-
-                //val numberCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                //itemDetailPersonPhoneEdit.setText(getString(numberCol))
 
                 val nameCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
                 name = getString(nameCol)
 
                 val photoCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)
-                photoUri = getString(photoCol)
+                photoUri = if (getString(photoCol) == null) "" else getString(photoCol)
 
-                if (photoUri != null) {
-                    val afd = context.contentResolver.openAssetFileDescriptor(Uri.parse(photoUri), "r")
-                    photo = afd?.fileDescriptor.let {
-                        BitmapFactory.decodeFileDescriptor(it, null, null)
-                    }
-                } else {
-                    photoUri = ""
-                    photo = null
-                }
-
+                selectedItem?.person = Person(name, photoUri!!)
                 close()
             }
         }
 
-        selectedPerson = Person(name, "", "", photo, photoUri!!)
-
-        return selectedPerson
+        return selectedItem?.person
     }
 
     fun getFilterPreference(): Int {
@@ -219,5 +186,27 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         prefs.edit()
                 .putInt(Constants.PREFS_FILTER, filter)
                 .apply()
+    }
+
+    // Item Detail
+
+    fun setIsMine(isMine: Boolean) {
+        selectedItem?.isMine = isMine
+    }
+
+    fun setDescription(description: String) {
+        selectedItem?.description = description
+    }
+
+    fun setReturnedDate(returnedDate: String) {
+        selectedItem?.returnDate = returnedDate
+    }
+
+    fun setReturned(isReturned: Boolean) {
+        selectedItem?.isReturned = isReturned
+    }
+
+    fun setShouldRemember(shouldRemember: Boolean) {
+        selectedItem?.remember = shouldRemember
     }
 }

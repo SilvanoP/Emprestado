@@ -12,6 +12,11 @@ import java.util.*
 object Utils {
 
     @JvmStatic
+    fun fromCalendarToString(calendar: Calendar): String {
+        return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(calendar.time)
+    }
+
+    @JvmStatic
     fun fromStringToTime(date: String): Long {
         val timestamp = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).parse(date)
 
