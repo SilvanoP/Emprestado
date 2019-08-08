@@ -17,6 +17,7 @@ interface ItemDetailContract {
         fun setPersonName(name: String)
         fun setPersonPhoto(photoUri: String)
         fun changeContactText(textRes: Int)
+        fun setReturned(isReturned: Boolean)
         fun setRemember(remember: Boolean)
         fun requiredFieldsEmpty()
         fun openDatePicker(returnDate: Calendar)

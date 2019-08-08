@@ -31,6 +31,9 @@ class DataSourceLocal(val database: EmprestadoDatabase) : DataSource {
         }
     }
 
+    override fun getItemById(id: Int): Single<Item> {
+        return database.dataDAO().loadItemById(id)
+    }
     override fun getAllItems(): Single<List<Item>> {
         return database.dataDAO().loadAllItems()
     }

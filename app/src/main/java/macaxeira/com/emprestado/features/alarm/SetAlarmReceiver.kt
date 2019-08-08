@@ -6,10 +6,12 @@ import android.content.Intent
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.DataRepository
 import macaxeira.com.emprestado.data.entities.Item
+import macaxeira.com.emprestado.utils.Constants
 import macaxeira.com.emprestado.utils.Utils
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
@@ -41,6 +43,14 @@ class SetAlarmReceiver : BroadcastReceiver(), KoinComponent {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(so)
+        } else if (intent.action == Constants.ACTION_RETURNED) {
+            val id = intent.getIntExtra(Constants.NOTIFICATION_ITEM_RETURNED, -1)
+            repository.getItemById(id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe( Consumer {
+                        updateItemReturned(it)
+                    })
         }
     }
 
@@ -58,5 +68,10 @@ class SetAlarmReceiver : BroadcastReceiver(), KoinComponent {
                 NotificationScheduler.setAlarm(context, item.id!!.toInt(), date, text)
             }
         }
+    }
+
+    private fun updateItemReturned(item: Item) {
+        item.isReturned = true
+        repository.updateItems(listOf(item))
     }
 }

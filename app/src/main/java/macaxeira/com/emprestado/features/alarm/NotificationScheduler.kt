@@ -15,7 +15,7 @@ object NotificationScheduler {
 
     @JvmStatic
     fun setAlarm(context: Context, id: Int, time: Long, text: String) {
-        val notification = createNotification(context, text)
+        val notification = createNotification(context, id, text)
 
         val notificationIntent = Intent(context, AlarmTriggeredReceiver::class.java)
         notificationIntent.putExtra(Constants.NOTIFICATION_ID, id)
@@ -36,20 +36,27 @@ object NotificationScheduler {
         alarmManager.cancel( pi)
     }
 
-    private fun createNotification(context: Context, text: String) : Notification {
+    private fun createNotification(context: Context, id: Int, text: String) : Notification {
         val itemIntent = Intent(context, ItemDetailActivity::class.java)
         val pendingItemIntent: PendingIntent? = TaskStackBuilder.create(context).run {
             addNextIntentWithParentStack(itemIntent)
             getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
+        val returnedIntent = Intent(context, SetAlarmReceiver::class.java).apply {
+            action = Constants.ACTION_RETURNED
+            putExtra(Constants.NOTIFICATION_ITEM_RETURNED, id)
+        }
+        val returnedPendingIntent = PendingIntent.getBroadcast(context, 0, returnedIntent, 0)
+
         val builder = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID).apply {
             setContentIntent(pendingItemIntent)
+            setSmallIcon(R.drawable.ic_checked)
+            setContentTitle(context.getString(R.string.return_date))
+            setContentText(text)
+            setAutoCancel(true)
+            addAction(R.drawable.ic_checked, context.getString(R.string.returned), returnedPendingIntent)
         }
-
-        builder.setSmallIcon(R.drawable.ic_checked)
-                .setContentTitle(context.getString(R.string.return_date))
-                .setContentText(text)
 
         return builder.build()
     }

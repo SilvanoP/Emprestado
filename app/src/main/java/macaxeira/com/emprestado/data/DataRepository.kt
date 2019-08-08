@@ -48,10 +48,12 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
 
     fun updateItems(items: List<Item>): Completable {
         return dataSourceLocal.updateItems(items).doOnComplete {
-            for (item in items) {
-                val index = cachedItems.indexOf(item)
-                cachedItems.removeAt(index)
-                cachedItems.add(index, item)
+            if (cachedItems.isNotEmpty()) {
+                for (item in items) {
+                    val index = cachedItems.indexOf(item)
+                    cachedItems.removeAt(index)
+                    cachedItems.add(index, item)
+                }
             }
         }
     }
@@ -84,6 +86,10 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         if (selectedItem == null)
             selectedItem = Item()
         return selectedItem
+    }
+
+    fun getItemById(id: Int): Single<Item> {
+        return dataSourceLocal.getItemById(id)
     }
 
     fun getItemsByFilter(filter: Int): Single<List<Item>> {

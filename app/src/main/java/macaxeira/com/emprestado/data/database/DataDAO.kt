@@ -19,6 +19,8 @@ interface DataDAO {
     @Delete
     fun removeItems(vararg items: Item)
 
+    @Query("SELECT * FROM Item Where id = :id")
+    fun loadItemById(id: Int): Single<Item>
     @Query("SELECT * FROM Item")
     fun loadAllItems(): Single<List<Item>>
     @Query("SELECT * FROM Item WHERE is_mine = :isMine")

@@ -1,11 +1,9 @@
 package macaxeira.com.emprestado.data.entities
 
-import android.graphics.Bitmap
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Ignore
-import kotlinx.android.parcel.Parcelize
 
 data class Person(
     var name: String,

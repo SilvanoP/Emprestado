@@ -59,6 +59,10 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         itemDetailLendToggle.setOnCheckedChangeListener { _, isChecked ->
             presenter.isMineSelected(isChecked)
         }
+
+        itemDetailReturnedCheck.setOnCheckedChangeListener { _, isChecked ->
+            presenter.isReturnedSelected(isChecked)
+        }
     }
 
     override fun setBorrow(isBorrowed: Boolean) {
@@ -101,6 +105,10 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
 
     override fun changeContactText(textRes: Int) {
         itemDetailContactText.text = getString(textRes)
+    }
+
+    override fun setReturned(isReturned: Boolean) {
+        itemDetailReturnedCheck.isChecked = isReturned
     }
 
     override fun setRemember(remember: Boolean) {
