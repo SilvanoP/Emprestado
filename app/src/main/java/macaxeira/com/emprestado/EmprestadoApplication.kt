@@ -2,13 +2,17 @@ package macaxeira.com.emprestado
 
 import android.app.Application
 import macaxeira.com.emprestado.di.emprestadoModules
-import org.koin.android.ext.android.startKoin
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 class EmprestadoApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-        startKoin(this, emprestadoModules)
+        startKoin {
+            androidContext(this@EmprestadoApplication)
+            modules(emprestadoModules)
+        }
     }
 }

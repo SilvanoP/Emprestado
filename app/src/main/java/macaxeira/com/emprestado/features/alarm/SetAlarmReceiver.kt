@@ -13,8 +13,8 @@ import macaxeira.com.emprestado.data.DataRepository
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.utils.Constants
 import macaxeira.com.emprestado.utils.Utils
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class SetAlarmReceiver : BroadcastReceiver(), KoinComponent {
 
