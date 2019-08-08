@@ -13,6 +13,9 @@ import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.Person
 import macaxeira.com.emprestado.utils.Constants
+import macaxeira.com.emprestado.utils.Utils
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DataRepository(private val context: Context, private val dataSourceLocal: DataSource, private val prefs: SharedPreferences) {
 
@@ -20,6 +23,9 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
     private var selectedItem: Item? = null
 
     fun saveItem(item: Item): Single<Long> {
+        if (item.createdDate.isEmpty()) {
+            item.createdDate = Utils.fromCalendarToString(Calendar.getInstance())
+        }
         return dataSourceLocal.saveItem(item).doOnSuccess {
             val index = cachedItems.indexOf(selectedItem!!)
             if (index != -1) {
