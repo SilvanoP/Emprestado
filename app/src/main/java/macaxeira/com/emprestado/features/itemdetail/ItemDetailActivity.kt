@@ -63,6 +63,10 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         itemDetailReturnedCheck.setOnCheckedChangeListener { _, isChecked ->
             presenter.isReturnedSelected(isChecked)
         }
+
+        itemDetailRememberSwitch.setOnCheckedChangeListener { _, isChecked ->
+            presenter.shouldRemember(isChecked)
+        }
     }
 
     override fun setBorrow(isBorrowed: Boolean) {

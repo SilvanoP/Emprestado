@@ -46,6 +46,10 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         }
     }
 
+    fun updateItem(item: Item): Completable {
+        return dataSourceLocal.updateItems(listOf(item))
+    }
+
     fun updateItems(items: List<Item>): Completable {
         return dataSourceLocal.updateItems(items).doOnComplete {
             if (cachedItems.isNotEmpty()) {

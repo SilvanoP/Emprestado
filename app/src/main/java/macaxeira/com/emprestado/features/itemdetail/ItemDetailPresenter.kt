@@ -19,9 +19,11 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
         if (item?.id != null ) {
             view.get()?.setBorrow(!item.isMine)
             view.get()?.setLent(item.isMine)
+            view.get()?.setDescription(item.description)
             if (item.returnDate.isNotEmpty())
                 view.get()?.setReturnedDate(item.returnDate)
             if (item.person != null) {
+                view.get()?.showPerson(true)
                 val person: Person = item.person!!
                 view.get()?.setPersonName(person.name)
                 view.get()?.setPersonPhoto(person.photoUri)
@@ -86,6 +88,7 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {
+                            view.get()?.showPerson(true)
                             view.get()?.setPersonName(it.name)
                             view.get()?.setPersonPhoto(it.photoUri)
                         }, {
@@ -109,7 +112,7 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
                                             val alarmTime = "${item.returnDate} 10:00"
                                             val date = Utils.fromStringToTime(alarmTime)
 
-                                            if (item.remember && item.person != null) {
+                                            if (item.remember && item.person != null && !item.isReturned) {
                                                 view.get()?.createAlarm(it.toInt(), date, item.person!!.name)
                                             } else {
                                                 view.get()?.cancelAlarm(it.toInt())

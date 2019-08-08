@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.features.itemdetail.ItemDetailActivity
@@ -36,26 +37,36 @@ object NotificationScheduler {
         alarmManager.cancel( pi)
     }
 
+    @JvmStatic
+    fun dismissNotification(context: Context, id: Int) {
+        val manager = NotificationManagerCompat.from(context)
+        manager.cancel(id)
+    }
+
     private fun createNotification(context: Context, id: Int, text: String) : Notification {
+        // Intent on click
         val itemIntent = Intent(context, ItemDetailActivity::class.java)
         val pendingItemIntent: PendingIntent? = TaskStackBuilder.create(context).run {
             addNextIntentWithParentStack(itemIntent)
             getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
+        // Intent action returned
         val returnedIntent = Intent(context, SetAlarmReceiver::class.java).apply {
             action = Constants.ACTION_RETURNED
             putExtra(Constants.NOTIFICATION_ITEM_RETURNED, id)
         }
         val returnedPendingIntent = PendingIntent.getBroadcast(context, 0, returnedIntent, 0)
 
+        // Notification
         val builder = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID).apply {
             setContentIntent(pendingItemIntent)
             setSmallIcon(R.drawable.ic_checked)
             setContentTitle(context.getString(R.string.return_date))
             setContentText(text)
-            setAutoCancel(true)
+            priority = NotificationCompat.PRIORITY_DEFAULT
             addAction(R.drawable.ic_checked, context.getString(R.string.returned), returnedPendingIntent)
+            setAutoCancel(true)
         }
 
         return builder.build()

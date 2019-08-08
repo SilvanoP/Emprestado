@@ -49,7 +49,7 @@ class SetAlarmReceiver : BroadcastReceiver(), KoinComponent {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe( Consumer {
-                        updateItemReturned(it)
+                        updateItemReturned(context, it)
                     })
         }
     }
@@ -70,8 +70,13 @@ class SetAlarmReceiver : BroadcastReceiver(), KoinComponent {
         }
     }
 
-    private fun updateItemReturned(item: Item) {
+    private fun updateItemReturned(context: Context, item: Item) {
         item.isReturned = true
-        repository.updateItems(listOf(item))
+        repository.updateItem(item)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+
+        NotificationScheduler.dismissNotification(context, item.id!!.toInt())
     }
 }
