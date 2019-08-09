@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.ContactsContract
+import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -27,13 +28,7 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
             item.createdDate = Utils.fromCalendarToString(Calendar.getInstance())
         }
         return dataSourceLocal.saveItem(item).doOnSuccess {
-            val index = cachedItems.indexOf(selectedItem!!)
-            if (index != -1) {
-                cachedItems.removeAt(index)
-                cachedItems.add(index, selectedItem!!)
-            } else {
-                cachedItems.add(selectedItem!!)
-            }
+            updateCachedItems(listOf(item))
         }
     }
 
@@ -42,27 +37,33 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
             return Single.error(UnsupportedOperationException("No item selected!"))
 
         return dataSourceLocal.saveItem(selectedItem!!).doOnSuccess {
-            val index = cachedItems.indexOf(selectedItem!!)
-            if (index != -1) {
-                cachedItems.removeAt(index)
-                cachedItems.add(index, selectedItem!!)
-            } else {
-                cachedItems.add(selectedItem!!)
-            }
+            updateCachedItems(listOf(selectedItem!!))
         }
     }
 
     fun updateItem(item: Item): Completable {
-        return dataSourceLocal.updateItems(listOf(item))
+        Log.d("DataRepository", "Updating item from notification")
+        return dataSourceLocal.updateItems(listOf(item)).doFinally {
+            selectedItem = item
+            updateCachedItems(listOf(item))
+        }
     }
 
     fun updateItems(items: List<Item>): Completable {
         return dataSourceLocal.updateItems(items).doOnComplete {
-            if (cachedItems.isNotEmpty()) {
-                for (item in items) {
-                    val index = cachedItems.indexOf(item)
+            updateCachedItems(items)
+        }
+    }
+
+    private fun updateCachedItems(items: List<Item>) {
+        if (cachedItems.isNotEmpty()) {
+            for (i in items) {
+                val index = cachedItems.indexOf(i)
+                if (index != -1) {
                     cachedItems.removeAt(index)
-                    cachedItems.add(index, item)
+                    cachedItems.add(index, i)
+                } else {
+                    cachedItems.add(i)
                 }
             }
         }
