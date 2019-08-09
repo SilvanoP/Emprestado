@@ -36,6 +36,12 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
         repository.setIsMine(isMine)
         val textRes = if (isMine) R.string.lend_to else R.string.borrow_from
         view.get()?.changeContactText(textRes)
+
+        if (isMine) {
+            view.get()?.setBorrow(false)
+        } else {
+            view.get()?.setLent(true)
+        }
     }
 
     override fun isReturnedSelected(isReturned: Boolean) {
