@@ -62,7 +62,7 @@ object NotificationScheduler {
         // Notification
         val builder = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID).apply {
             setContentIntent(pendingItemIntent)
-            setSmallIcon(R.drawable.ic_checked)
+            setSmallIcon(R.drawable.ic_logo_notification)
             setContentTitle(context.getString(R.string.return_date))
             setContentText(text)
             priority = NotificationCompat.PRIORITY_DEFAULT
