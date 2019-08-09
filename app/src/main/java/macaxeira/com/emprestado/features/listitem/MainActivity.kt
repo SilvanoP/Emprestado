@@ -27,6 +27,7 @@ import macaxeira.com.emprestado.features.alarm.AlarmTriggeredReceiver
 import macaxeira.com.emprestado.features.itemdetail.ItemDetailActivity
 import macaxeira.com.emprestado.utils.Constants
 import org.koin.android.ext.android.inject
+import org.koin.androidx.scope.currentScope
 
 class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.ItemsAdapterListener,
         RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, FilterDialog.FilterDialogListener {
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity(), ListItemContract.View, ItemsAdapter.It
         private const val MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1001
     }
 
-    private val presenter: ListItemContract.Presenter by inject()
+    private val presenter: ListItemContract.Presenter by currentScope.inject()
 
     private var actionMode: ActionMode? = null
     private var actionModeCallback = ActionModeCallback()

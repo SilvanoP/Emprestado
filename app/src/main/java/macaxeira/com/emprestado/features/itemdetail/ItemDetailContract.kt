@@ -29,7 +29,8 @@ interface ItemDetailContract {
 
     interface Presenter: BasePresenter<View> {
         fun loadData()
-        fun isMineSelected(isMine: Boolean)
+        fun isBorrowPressed(isBorrow: Boolean)
+        fun isLentPressed(isLent: Boolean)
         fun returnDatePressed()
         fun returnDateSelected(year: Int, month: Int, dayOfMonth: Int)
         fun searchContacts()

@@ -22,16 +22,17 @@ val dbName = "emprestado_db"
 
 val EmprestadoModule = module {
     scope(named<MainActivity>()) {
-        scoped<ListItemContract.Presenter> { ListItemPresenter(get()) }
+        scoped { ListItemPresenter(get()) as ListItemContract.Presenter }
     }
+    factory<ListItemContract.Presenter> { ListItemPresenter(get()) }
     scope(named<ItemDetailActivity>()) {
-        scoped<ItemDetailContract.Presenter> { ItemDetailPresenter(get()) }
+        scoped { ItemDetailPresenter(get()) as ItemDetailContract.Presenter }
     }
-    single { androidContext().getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE) as SharedPreferences}
 }
 
 val RepositoryModule = module {
-    single { DataRepository(androidContext(), get(), get()) }
+    single { DataRepository(androidContext(), get(named("dataSourceLocal")), get()) }
+    single { androidContext().getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE) as SharedPreferences}
     single { Room.databaseBuilder(androidContext(), EmprestadoDatabase::class.java, dbName).build() }
     single(named("dataSourceLocal")) { DataSourceLocal(get()) as DataSource}
 }

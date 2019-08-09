@@ -23,8 +23,7 @@ import kotlinx.android.synthetic.main.activity_item_detail.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.features.alarm.NotificationScheduler
 import macaxeira.com.emprestado.utils.CircleTransform
-import org.koin.android.ext.android.inject
-import java.text.SimpleDateFormat
+import org.koin.androidx.scope.currentScope
 import java.util.*
 
 class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.OnClickListener,
@@ -36,7 +35,7 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         private const val MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1002
     }
 
-    private val presenter: ItemDetailContract.Presenter by inject()
+    private val presenter: ItemDetailContract.Presenter by currentScope.inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,10 +53,10 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         itemDetailDescriptionEdit.onFocusChangeListener = this
 
         itemDetailBorrowToggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter.isMineSelected(!isChecked)
+            presenter.isBorrowPressed(isChecked)
         }
         itemDetailLendToggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter.isMineSelected(isChecked)
+            presenter.isLentPressed(isChecked)
         }
 
         itemDetailReturnedCheck.setOnCheckedChangeListener { _, isChecked ->
@@ -70,15 +69,11 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
     }
 
     override fun setBorrow(isBorrowed: Boolean) {
-        if (itemDetailBorrowToggle.isChecked != isBorrowed) {
-            itemDetailBorrowToggle.isChecked = isBorrowed
-        }
+        itemDetailBorrowToggle.isChecked = isBorrowed
     }
 
     override fun setLent(isLent: Boolean) {
-        if (itemDetailLendToggle.isChecked != isLent) {
-            itemDetailLendToggle.isChecked = isLent
-        }
+        itemDetailLendToggle.isChecked = isLent
     }
 
     override fun setDescription(description: String) {

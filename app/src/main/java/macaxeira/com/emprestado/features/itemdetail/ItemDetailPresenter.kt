@@ -28,20 +28,23 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
                 view.get()?.setPersonName(person.name)
                 view.get()?.setPersonPhoto(person.photoUri)
             }
+            view.get()?.setReturned(item.isReturned)
             view.get()?.setRemember(item.remember)
         }
     }
 
-    override fun isMineSelected(isMine: Boolean) {
-        repository.setIsMine(isMine)
-        val textRes = if (isMine) R.string.lend_to else R.string.borrow_from
+    override fun isBorrowPressed(isBorrow: Boolean) {
+        repository.setIsMine(!isBorrow)
+        val textRes = if (isBorrow) R.string.borrow_from else R.string.lend_to
         view.get()?.changeContactText(textRes)
+        view.get()?.setLent(!isBorrow)
+    }
 
-        if (isMine) {
-            view.get()?.setBorrow(false)
-        } else {
-            view.get()?.setLent(true)
-        }
+    override fun isLentPressed(isLent: Boolean) {
+        repository.setIsMine(isLent)
+        val textRes = if (isLent) R.string.lend_to else R.string.borrow_from
+        view.get()?.changeContactText(textRes)
+        view.get()?.setBorrow(!isLent)
     }
 
     override fun isReturnedSelected(isReturned: Boolean) {
