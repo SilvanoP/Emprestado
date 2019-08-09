@@ -2,11 +2,8 @@ package macaxeira.com.emprestado.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.ContactsContract
-import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -15,7 +12,6 @@ import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.Person
 import macaxeira.com.emprestado.utils.Constants
 import macaxeira.com.emprestado.utils.Utils
-import java.text.SimpleDateFormat
 import java.util.*
 
 class DataRepository(private val context: Context, private val dataSourceLocal: DataSource, private val prefs: SharedPreferences) {
@@ -42,10 +38,10 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
     }
 
     fun updateItem(item: Item): Completable {
-        Log.d("DataRepository", "Updating item from notification")
         return dataSourceLocal.updateItems(listOf(item)).doFinally {
             selectedItem = item
-            updateCachedItems(listOf(item))
+            //updateCachedItems(listOf(item))
+            onRefreshCachedItems()
         }
     }
 

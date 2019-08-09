@@ -5,6 +5,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
@@ -56,7 +57,7 @@ object NotificationScheduler {
             action = Constants.ACTION_RETURNED
             putExtra(Constants.NOTIFICATION_ITEM_RETURNED, id)
         }
-        val returnedPendingIntent = PendingIntent.getBroadcast(context, 0, returnedIntent, 0)
+        val returnedPendingIntent = PendingIntent.getBroadcast(context, 0, returnedIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         // Notification
         val builder = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID).apply {

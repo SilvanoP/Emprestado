@@ -3,7 +3,6 @@ package macaxeira.com.emprestado.features.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -46,7 +45,6 @@ class SetAlarmReceiver : BroadcastReceiver(), KoinComponent {
                     .subscribe(so)
         } else if (intent.action == Constants.ACTION_RETURNED) {
             val id = intent.getIntExtra(Constants.NOTIFICATION_ITEM_RETURNED, -1)
-            Log.d("SetAlarmReceiver", "Return item $id")
             repository.getItemById(id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -73,7 +71,6 @@ class SetAlarmReceiver : BroadcastReceiver(), KoinComponent {
     }
 
     private fun updateItemReturned(context: Context, item: Item) {
-        Log.d("SetAlarmReceiver", "Updating item ${item.id}")
         item.isReturned = true
         repository.updateItem(item)
                 .subscribeOn(Schedulers.io())
@@ -81,6 +78,5 @@ class SetAlarmReceiver : BroadcastReceiver(), KoinComponent {
                 .subscribe()
 
         NotificationScheduler.dismissNotification(context, item.id!!.toInt())
-        Log.d("SetAlarmReceiver", "Updated, now dismiss notification")
     }
 }
