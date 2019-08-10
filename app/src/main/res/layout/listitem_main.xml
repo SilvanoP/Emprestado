@@ -113,8 +113,8 @@
                 android:contentDescription="@string/date_image"
                 android:src="@drawable/ic_date"
                 app:layout_constraintBottom_toTopOf="@+id/listItemMainReturnDate"
-                app:layout_constraintEnd_toEndOf="@+id/listItemMainReturnDate"
-                app:layout_constraintStart_toStartOf="@+id/listItemMainReturnDate"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/listItemMainGuideline"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed" />
 
@@ -126,16 +126,17 @@
                 android:layout_marginEnd="@dimen/margin_default"
                 android:layout_marginStart="@dimen/margin_default"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/listItemDateImage"
+                app:layout_constraintEnd_toEndOf="@+id/listItemDateImage"
                 app:layout_constraintTop_toBottomOf="@+id/listItemDateImage"
                 tools:text="@string/tools_date" />
 
-            <androidx.constraintlayout.widget.Barrier
+            <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/listItemMainGuideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:barrierDirection="start"
-                app:constraint_referenced_ids="listItemDateImage, listItemMainReturnDate" />
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.73" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
