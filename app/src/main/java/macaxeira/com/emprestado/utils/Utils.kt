@@ -18,9 +18,14 @@ object Utils {
 
     @JvmStatic
     fun fromStringToTime(date: String): Long {
-        val timestamp = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).parse(date)
+        val timestamp = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(date)
 
-        return timestamp.time
+        val cal = Calendar.getInstance()
+        cal.time = timestamp
+        cal.set(Calendar.HOUR_OF_DAY, 10)
+        cal.set(Calendar.MINUTE, 0)
+
+        return cal.timeInMillis
     }
 
     @JvmStatic
