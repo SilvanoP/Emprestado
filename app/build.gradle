@@ -4,14 +4,23 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('D:\\Dev\\Git\\Emprestado\\upload-keystore.jks')
+            storePassword store_password
+            keyAlias = key_alias
+            keyPassword key_password
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "macaxeira.com.emprestado"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 220010000
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
     buildTypes {
         release {
