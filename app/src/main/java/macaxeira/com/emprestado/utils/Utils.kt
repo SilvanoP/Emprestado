@@ -3,6 +3,8 @@ package macaxeira.com.emprestado.utils
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.util.SparseArray
 import android.view.View
 import macaxeira.com.emprestado.R
@@ -10,6 +12,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object Utils {
+
+    @JvmStatic
+    fun isOnline(context: Context): Boolean {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+        return activeNetwork?.isConnected == true
+    }
 
     @JvmStatic
     fun fromCalendarToString(calendar: Calendar): String {

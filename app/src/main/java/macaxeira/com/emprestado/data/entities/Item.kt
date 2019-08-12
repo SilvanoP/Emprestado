@@ -4,7 +4,12 @@ import androidx.room.*
 import android.os.Parcel
 import android.os.Parcelable
 
-@Entity
+@Entity(foreignKeys = [ForeignKey(
+        entity = User::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("user_id"),
+        onDelete = ForeignKey.CASCADE)]
+)
 data class Item(
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null,
@@ -23,7 +28,9 @@ data class Item(
     @ColumnInfo(name = "remember")
     var remember: Boolean = false,
     @Embedded
-    var person: Person? = null
+    var person: Person? = null,
+    @ColumnInfo(name = "user_id")
+    var userId: Long? = null
     ) : Parcelable {
 
     override fun describeContents(): Int {
@@ -32,7 +39,7 @@ data class Item(
 
     @Ignore
     constructor(parcel: Parcel) : this(
-            parcel.readLong(),
+            parcel.readValue(Long::class.java.classLoader) as Long?,
             parcel.readString()!!,
             parcel.readInt(),
             parcel.readInt() != 0,
@@ -41,11 +48,12 @@ data class Item(
             parcel.readInt() != 0,
             parcel.readString()!!,
             parcel.readInt() != 0,
-            parcel.readParcelable(Person::class.java.classLoader)
+            parcel.readParcelable(Person::class.java.classLoader),
+            parcel.readValue(Long::class.java.classLoader) as Long?
     )
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeLong(id ?: -1)
+        dest?.writeValue(id)
         dest?.writeString(description)
         dest?.writeInt(quantity)
         dest?.writeInt(if (isMine) 1 else 0)
@@ -55,6 +63,7 @@ data class Item(
         dest?.writeString(contactUri)
         dest?.writeInt(if (remember) 1 else 0)
         dest?.writeParcelable(person, flags)
+        dest?.writeValue(userId)
     }
 
     companion object CREATOR : Parcelable.Creator<Item> {

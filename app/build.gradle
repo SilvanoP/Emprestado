@@ -7,7 +7,7 @@ apply plugin: 'kotlin-kapt'
 android {
     signingConfigs {
         release {
-            storeFile file('D:\\Dev\\Git\\Emprestado\\upload-keystore.jks')
+            storeFile file("$rootDir\\upload-keystore.jks")
             storePassword store_password
             keyAlias = key_alias
             keyPassword key_password
@@ -50,7 +50,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'org.mockito:mockito-core:2.23.4'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
