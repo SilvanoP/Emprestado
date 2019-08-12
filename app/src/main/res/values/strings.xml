@@ -3,6 +3,7 @@
 
     <string name="accept">Accept</string>
     <string name="all_loans">All Loans</string>
+    <string name="alternate_login">Or login with</string>
     <string name="borrow">Borrow</string>
     <string name="borrow_from">Borrow from</string>
     <string name="borrowed">Borrowed</string>
@@ -25,12 +26,14 @@
     <string name="lend">Lend</string>
     <string name="lend_to">Lend to</string>
     <string name="lent">Lent</string>
+    <string name="login">Login</string>
     <string name="filter">Filter</string>
     <string name="from">From</string>
     <string name="name">Name</string>
     <string name="notification_return_borrowed">Today is the last day to return %1$s to %2$s.</string>
     <string name="notification_return_lent">Today is the last day to receive %1$s to %2$s.</string>
     <string name="ok">OK</string>
+    <string name="password">Password</string>
     <string name="phone_number">Phone Number</string>
     <string name="remember_switch">Send remember notification</string>
     <string name="return_date">Return Date</string>
@@ -43,6 +46,7 @@
     <string name="to">To</string>
     <string name="undo">UNDO</string>
     <string name="user_photo">User photo</string>
+    <string name="username">Username</string>
 
     <!-- Item Type -->
     <string name="book">Book</string>

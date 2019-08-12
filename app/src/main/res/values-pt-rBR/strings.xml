@@ -4,6 +4,7 @@
 
     <string name="accept">Aceitar</string>
     <string name="all_loans">Todos os empréstimos</string>
+    <string name="alternate_login">Ou entre com</string>
     <string name="borrow">Pegar emprestado</string>
     <string name="borrow_from">Pegar emprestado de</string>
     <string name="borrowed">Peguei emprestado</string>
@@ -24,12 +25,14 @@
     <string name="lend">Emprestado</string>
     <string name="lend_to">Emprestado para</string>
     <string name="lent">Emprestei</string>
+    <string name="login">Entrar</string>
     <string name="filter">Filtro</string>
     <string name="from">De</string>
     <string name="name">Nome</string>
     <string name="notification_return_borrowed">Hoje é o último dia para devolver %1$s para %2$s.</string>
     <string name="notification_return_lent">Hoje você marcou de receber %1$s de %2$s.</string>
     <string name="ok">OK</string>
+    <string name="password">Password</string>
     <string name="phone_number">Telefone</string>
     <string name="remember_switch">Envie notificação de lembrança</string>
     <string name="return_date">Data de retorno</string>
@@ -42,6 +45,7 @@
     <string name="to">Para</string>
     <string name="undo">Desfazer</string>
     <string name="user_photo">Foto do usuário</string>
+    <string name="username">Usuário</string>
 
     <!-- Item Type -->
     <string name="book">Livro</string>
