@@ -1,6 +1,5 @@
 package macaxeira.com.emprestado.features.itemdetail
 
-import macaxeira.com.emprestado.data.entities.Person
 import macaxeira.com.emprestado.features.shared.BasePresenter
 import macaxeira.com.emprestado.features.shared.BaseView
 import java.util.*

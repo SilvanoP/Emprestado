@@ -3,11 +3,6 @@ package macaxeira.com.emprestado.features.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import io.reactivex.SingleObserver
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.DataRepository
 import macaxeira.com.emprestado.data.entities.Item
@@ -27,30 +22,18 @@ class SetAlarmReceiver : BroadcastReceiver(), KoinComponent {
     override fun onReceive(context: Context, intent: Intent) {
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         if (intent.action == "android.intent.action.BOOT_COMPLETED") {
-            val so: SingleObserver<List<Item>> = object :SingleObserver<List<Item>> {
-                override fun onSuccess(t: List<Item>) {
-                    setNotifications(t, context)
-                }
-
-                override fun onError(e: Throwable) {
-                    e.printStackTrace()
-                }
-
-                override fun onSubscribe(d: Disposable) {}
-            }
-
-            repository.getItemsByFilter(NO_FILTER)
+            /*repository.getItemsByFilter(NO_FILTER)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(so)
+                    .subscribe(so)*/
         } else if (intent.action == Constants.ACTION_RETURNED) {
             val id = intent.getIntExtra(Constants.NOTIFICATION_ITEM_RETURNED, -1)
-            repository.getItemById(id)
+           /* repository.getItemById(id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe( Consumer {
                         updateItemReturned(context, it)
-                    })
+                    })*/
         }
     }
 
@@ -58,10 +41,9 @@ class SetAlarmReceiver : BroadcastReceiver(), KoinComponent {
         for (item in items) {
             if (item.remember && !item.isReturned) {
                 val text: String = if (item.isMine)
-                    context.getString(R.string.notification_return_lent, item.description, item.person?.name)
+                    context.getString(R.string.notification_return_lent, item.description, item.personName)
                 else
-                    context.getString(R.string.notification_return_borrowed, item.description,
-                            item.person?.name)
+                    context.getString(R.string.notification_return_borrowed, item.description, item.personName)
 
                 val date = Utils.fromStringToTime(item.returnDate)
 
@@ -72,10 +54,10 @@ class SetAlarmReceiver : BroadcastReceiver(), KoinComponent {
 
     private fun updateItemReturned(context: Context, item: Item) {
         item.isReturned = true
-        repository.updateItem(item)
+        /*repository.updateItem(item)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe()
+                .subscribe()*/
 
         NotificationScheduler.dismissNotification(context, item.id!!.toInt())
     }

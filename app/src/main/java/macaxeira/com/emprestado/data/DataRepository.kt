@@ -2,24 +2,165 @@ package macaxeira.com.emprestado.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
-import android.provider.ContactsContract
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import macaxeira.com.emprestado.R
+import macaxeira.com.emprestado.data.database.ItemMapper
 import macaxeira.com.emprestado.data.entities.Item
-import macaxeira.com.emprestado.data.entities.Person
+import macaxeira.com.emprestado.data.entities.User
+import macaxeira.com.emprestado.features.listitem.ListItemCallback
 import macaxeira.com.emprestado.utils.Constants
-import macaxeira.com.emprestado.utils.Utils
-import java.util.*
 
-class DataRepository(private val context: Context, private val dataSourceLocal: DataSource, private val prefs: SharedPreferences) {
+class DataRepository(private val context: Context, private val database: FirebaseFirestore, private val prefs: SharedPreferences) {
 
-    private var cachedItems: MutableList<Item> = mutableListOf()
+    private var source = Source.CACHE
     private var selectedItem: Item? = null
+    private var user: User? = null
 
-    fun saveItem(item: Item): Single<Long> {
+    fun setUser(user: User?) {
+        this.user = user
+    }
+
+    // SHARED PREFERENCE METHODS
+
+    fun getFilterPreference(): Int {
+        return prefs.getInt(Constants.PREFS_FILTER, -1)
+    }
+
+    fun saveFilterPreference(filter: Int) {
+        prefs.edit()
+                .putInt(Constants.PREFS_FILTER, filter)
+                .apply()
+    }
+
+    // LIST ITEM
+
+    fun onRefreshCachedItems() {
+        source = Source.SERVER
+    }
+
+    private fun onCachedUpdated() {
+        if (source == Source.SERVER)
+            source = Source.CACHE
+    }
+
+    fun onItemSelected(item: Item) {
+        selectedItem = item
+    }
+
+    fun onRefreshSelectedItem() {
+        selectedItem = null
+    }
+
+    fun getItemsByFilter(filter: Int, callback: ListItemCallback) {
+        when (filter) {
+            R.id.dialogFilterButtonBorrowed ->
+                getItemsByOwner(callback,false)
+            R.id.dialogFilterButtonLent ->
+                getItemsByOwner(callback,true)
+            R.id.dialogFilterButtonReturned ->
+                getItemsByReturned(callback)
+            R.id.dialogFilterButtonAll ->
+                getAllItemsByUser(callback)
+        }
+    }
+
+    private fun getAllItemsByUser(callback: ListItemCallback) {
+        database.collection(Constants.Database.COLLECTION_ITEM)
+                .whereEqualTo("userId", user?.id)
+                .orderBy("createdDate")
+                .get(source)
+                .addOnSuccessListener {
+                    onCachedUpdated()
+                    val items = ItemMapper.fromDocumentsToItems(it)
+                    callback.returnItems(items)
+                }
+                .addOnFailureListener {
+                    callback.error(it)
+                }
+    }
+
+    private fun getItemsByOwner(callback: ListItemCallback, isMine: Boolean) {
+        database.collection(Constants.Database.COLLECTION_ITEM)
+                .whereEqualTo("userId", user?.id)
+                .whereEqualTo("isMine", isMine)
+                .get(source)
+                .addOnSuccessListener {
+                    onCachedUpdated()
+                    val items = ItemMapper.fromDocumentsToItems(it)
+                    callback.returnItems(items)
+                }
+                .addOnFailureListener {
+                    callback.error(it)
+                }
+    }
+
+    private fun getItemsByReturned(callback: ListItemCallback) {
+        database.collection(Constants.Database.COLLECTION_ITEM)
+                .whereEqualTo("userId", user?.id)
+                .whereEqualTo("isReturned", true)
+                .get(source)
+                .addOnSuccessListener {
+                    onCachedUpdated()
+                    val items = ItemMapper.fromDocumentsToItems(it)
+                    callback.returnItems(items)
+                }
+                .addOnFailureListener {
+                    callback.error(it)
+                }
+    }
+
+    fun removeItem(item: Item, callback: ListItemCallback) {
+        database.collection(Constants.Database.COLLECTION_ITEM)
+                .document(item.id)
+                .delete()
+                .addOnFailureListener {
+            callback.error(it)
+        }
+    }
+
+    fun removeItems(items: List<Item>, callback: ListItemCallback) {
+        val batch = database.batch()
+        for (item in items) {
+            val document = database.collection(Constants.Database.COLLECTION_ITEM).document(item.id)
+            batch.delete(document)
+        }
+
+        batch.commit()
+                .addOnSuccessListener {
+                    callback.returnItems(items)
+                }
+                .addOnFailureListener {
+                    callback.error(it)
+                }
+    }
+
+    fun restoreItem(item: Item, callback: ListItemCallback) {
+        val data = ItemMapper.fromItemToDocument(item)
+        database.collection(Constants.Database.COLLECTION_ITEM)
+                .document(item.id)
+                .set(data)
+                .addOnFailureListener {
+                    callback.error(it)
+                }
+    }
+
+    fun onItemsReturned(items: List<Item>, callback: ListItemCallback) {
+        val batch = database.batch()
+        for (item in items) {
+            val document = database.collection(Constants.Database.COLLECTION_ITEM).document(item.id)
+            batch.update(document, "isReturned", true)
+        }
+
+        batch.commit()
+                .addOnSuccessListener {
+                    callback.returnItems(items)
+                }
+                .addOnFailureListener {
+                    callback.error(it)
+                }
+    }
+/*    fun saveItem(item: Item): Single<Long> {
         if (item.createdDate.isEmpty()) {
             item.createdDate = Utils.fromCalendarToString(Calendar.getInstance())
         }
@@ -69,27 +210,9 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         return dataSourceLocal.removeItem(item).doOnComplete {
             cachedItems.remove(item)
         }
-    }
+    }*/
 
-    fun removeItems(items: List<Item>): Completable {
-        return dataSourceLocal.removeItems(items).doOnComplete {
-            cachedItems.removeAll(items)
-        }
-    }
-
-    fun onItemSelected(item: Item) {
-        selectedItem = item
-    }
-
-    fun onRefreshSelectedItem() {
-        selectedItem = null
-    }
-
-    fun onRefreshCachedItems() {
-        cachedItems.clear()
-    }
-
-    fun getSelectedItem(): Item? {
+    /*fun getSelectedItem(): Item? {
         if (selectedItem == null)
             selectedItem = Item()
         return selectedItem
@@ -97,63 +220,6 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
 
     fun getItemById(id: Int): Single<Item> {
         return dataSourceLocal.getItemById(id)
-    }
-
-    fun getItemsByFilter(filter: Int): Single<List<Item>> {
-        when (filter) {
-            R.id.dialogFilterButtonBorrowed ->
-                return getItemsByOwner(false)
-            R.id.dialogFilterButtonLent ->
-                return getItemsByOwner(true)
-            R.id.dialogFilterButtonReturned ->
-                return getItemsByReturned()
-        }
-
-        return getAllItems()
-    }
-
-    private fun getAllItems(): Single<List<Item>> {
-        if (cachedItems.size > 0) {
-            return Single.just(cachedItems)
-        }
-
-        return dataSourceLocal.getAllItems()
-                .doAfterSuccess {
-                    cachedItems = it.toMutableList()
-                }
-    }
-
-    private fun getItemsByOwner(isMine: Boolean): Single<List<Item>> {
-        if (cachedItems.size > 0) {
-            return Observable.fromIterable(cachedItems).flatMap {
-                Observable.just(it)
-            }.filter {
-                it.isMine == isMine
-            }.toList()
-        }
-
-        return dataSourceLocal.getItemsByOwner(isMine)
-    }
-
-    private fun getItemsByReturned(): Single<List<Item>> {
-        if (cachedItems.size > 0) {
-            return Observable.fromIterable(cachedItems).flatMap {
-                Observable.just(it)
-            }.filter {
-                it.isReturned
-            }.toList()
-        }
-
-        return dataSourceLocal.getItemsByReturned(true)
-                .toObservable()
-                .flatMap { Observable.fromIterable(it)}
-                .flatMap { item ->
-                    if (!item.contactUri.isEmpty()) {
-                        item.person = queryContactByUri(item.contactUri)
-                    }
-                    Observable.just(item)
-                }
-                .toList()
     }
 
     fun getPersonByUri(personUri: String): Single<Person> {
@@ -189,19 +255,9 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
         }
 
         return selectedItem?.person
-    }
+    }*/
 
-    fun getFilterPreference(): Int {
-        return prefs.getInt(Constants.PREFS_FILTER, -1)
-    }
-
-    fun saveFilterPreference(filter: Int) {
-        prefs.edit()
-                .putInt(Constants.PREFS_FILTER, filter)
-                .apply()
-    }
-
-    // Item Detail
+    /*// Item Detail
 
     fun setIsMine(isMine: Boolean) {
         selectedItem?.isMine = isMine
@@ -221,5 +277,5 @@ class DataRepository(private val context: Context, private val dataSourceLocal: 
 
     fun setShouldRemember(shouldRemember: Boolean) {
         selectedItem?.remember = shouldRemember
-    }
+    }*/
 }

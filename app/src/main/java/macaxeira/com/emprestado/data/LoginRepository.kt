@@ -3,19 +3,13 @@ package macaxeira.com.emprestado.data
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.firebase.auth.FirebaseAuth
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
-import macaxeira.com.emprestado.data.entities.User
-import macaxeira.com.emprestado.utils.Utils
 
 class LoginRepository(private val context: Context,
                       private val firebaseAuth: FirebaseAuth,
                       private val dataSourceLocal: DataSource,
                       private val prefs: SharedPreferences) {
 
-    fun saveUser(username: String, password:String, email:String, isGoogleAccount: Boolean): Single<Long> {
+    /*fun saveUser(username: String, password:String, email:String, isGoogleAccount: Boolean): Single<Long> {
         val user = User(null, username, password, email, isGoogleAccount)
         return dataSourceLocal.saveUser(user)
     }
@@ -45,7 +39,7 @@ class LoginRepository(private val context: Context,
 
     fun isLoggedIn(): Single<User> {
         if (Utils.isOnline(context)) {
-            TODO("Implement firebase")
+            //firebaseAuth.currentUser
         }
 
         return Single.just(null)
@@ -54,11 +48,11 @@ class LoginRepository(private val context: Context,
     fun loginWithUsernameAndPassword(username: String, password: String): Maybe<User> {
         if (Utils.isOnline(context)) {
             TODO("Implement firebase")
-            /*firebaseAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener {
+            *//*firebaseAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener {
                 if (it.isSuccessful) {
 
                 }
-            }*/
+            }*//*
         }
 
         return dataSourceLocal.verifyLogin(username, password)
@@ -70,5 +64,5 @@ class LoginRepository(private val context: Context,
         }
 
         return Single.error(UnsupportedOperationException("Not supported while offline"))
-    }
+    }*/
 }

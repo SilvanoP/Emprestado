@@ -2,24 +2,22 @@ package macaxeira.com.emprestado.features.listitem
 
 import android.content.Context
 import android.net.Uri
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.SparseBooleanArray
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_item_detail.*
 import kotlinx.android.synthetic.main.listitem_main.view.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.entities.Item
-import macaxeira.com.emprestado.data.entities.Person
 import macaxeira.com.emprestado.utils.CircleTransform
 import macaxeira.com.emprestado.utils.Utils
 
 class ItemsAdapter(private val context: Context, var items: MutableList<Item>, private val listener: ItemsAdapterListener) :
-        androidx.recyclerview.widget.RecyclerView.Adapter<ItemsAdapter.ItemViewHolder>() {
+        RecyclerView.Adapter<ItemsAdapter.ItemViewHolder>() {
 
     val selectedItems = SparseBooleanArray()
 
@@ -83,7 +81,7 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
         notifyItemInserted(position)
     }
 
-    inner class ItemViewHolder(itemView: View): androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+    inner class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: Item) {
             itemView.listItemDescriptionText.text = item.description
@@ -96,16 +94,15 @@ class ItemsAdapter(private val context: Context, var items: MutableList<Item>, p
             }
 
             itemView.listItemMainReturnDate.text = returnedText
-            val person: Person? = item.person
 
-            val personName = person?.name ?: ""
+            val personName = item.personName
             var personText: String = if (item.isMine) context.getString(R.string.to) else context.getString(R.string.from)
             personText += ": $personName"
 
             itemView.listItemPersonText.text = personText
 
-            if (person != null && person.photoUri.isNotEmpty()) {
-                Picasso.get().load(Uri.parse(person.photoUri))
+            if (item.photoUri.isNotEmpty()) {
+                Picasso.get().load(Uri.parse(item.photoUri))
                         .transform(CircleTransform())
                         .into(itemView.listItemPersonPhotoImage)
             } else {

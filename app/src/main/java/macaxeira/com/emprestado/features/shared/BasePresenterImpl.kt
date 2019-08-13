@@ -1,11 +1,9 @@
 package macaxeira.com.emprestado.features.shared
 
-import io.reactivex.disposables.CompositeDisposable
 import java.lang.ref.WeakReference
 
 abstract class BasePresenterImpl<V: BaseView> :BasePresenter<V> {
 
-    protected var disposable = CompositeDisposable()
     protected lateinit var view: WeakReference<V>
 
     override fun setView(view: V) {
@@ -13,6 +11,6 @@ abstract class BasePresenterImpl<V: BaseView> :BasePresenter<V> {
     }
 
     override fun onDispose() {
-        disposable.dispose()
+        // TODO Not needed anymore?
     }
 }

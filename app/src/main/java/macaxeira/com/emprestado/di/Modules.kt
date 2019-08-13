@@ -2,14 +2,10 @@ package macaxeira.com.emprestado.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import macaxeira.com.emprestado.data.DataRepository
-import macaxeira.com.emprestado.data.DataSource
 import macaxeira.com.emprestado.data.LoginRepository
-import macaxeira.com.emprestado.data.database.DataSourceLocal
-import macaxeira.com.emprestado.data.database.EmprestadoDatabase
-import macaxeira.com.emprestado.data.database.emprestadoMigrations
 import macaxeira.com.emprestado.features.itemdetail.ItemDetailActivity
 import macaxeira.com.emprestado.features.itemdetail.ItemDetailContract
 import macaxeira.com.emprestado.features.itemdetail.ItemDetailPresenter
@@ -35,14 +31,13 @@ val EmprestadoModule = module {
 
 val FirebaseModule = module {
     single { FirebaseAuth.getInstance() }
+    single { FirebaseFirestore.getInstance() }
 }
 
 val RepositoryModule = module {
     single { LoginRepository(androidContext(), get(), get(), get())}
     single { DataRepository(androidContext(), get(), get()) }
     single { androidContext().getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE) as SharedPreferences}
-    single { Room.databaseBuilder(androidContext(), EmprestadoDatabase::class.java, dbName).addMigrations(*emprestadoMigrations).build() }
-    single { DataSourceLocal(get()) as DataSource}
 }
 
 val emprestadoModules = listOf(FirebaseModule, RepositoryModule, EmprestadoModule)
