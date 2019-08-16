@@ -2,67 +2,52 @@ package macaxeira.com.emprestado.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.provider.SyncStateContract
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import macaxeira.com.emprestado.data.database.UserMapper
+import macaxeira.com.emprestado.data.entities.User
+import macaxeira.com.emprestado.features.shared.UserCallback
+import macaxeira.com.emprestado.utils.Constants
 
 class LoginRepository(private val context: Context,
                       private val firebaseAuth: FirebaseAuth,
-                      private val dataSourceLocal: DataSource,
+                      private val database: FirebaseFirestore,
                       private val prefs: SharedPreferences) {
 
-    /*fun saveUser(username: String, password:String, email:String, isGoogleAccount: Boolean): Single<Long> {
-        val user = User(null, username, password, email, isGoogleAccount)
-        return dataSourceLocal.saveUser(user)
+    fun saveUser(username: String, password:String, email:String, isGoogleAccount: Boolean) {
+        val user = User("", username, password, email, isGoogleAccount)
+        val userData = UserMapper.fromUserToData(user)
+        database.collection(Constants.Database.COLLECTION_USER).add(userData)
+                .addOnSuccessListener {
+                    user.id = it.id
+                }
     }
 
-    fun updateUser(user:User, email:String): Single<Long> {
+    fun updateUser(user:User, email:String) {
         user.email = email
-        return dataSourceLocal.saveUser(user)
+
     }
 
-    fun removeUser(user: User): Completable {
-        return dataSourceLocal.removeUser(user)
+    fun removeUser(user: User) {
+
     }
 
-    fun updateItemsToUser(user: User): Completable {
-        return dataSourceLocal.getItemsWithoutUser()
-                .toObservable()
-                .flatMap {
-                    Observable.fromIterable(it)
-                }.flatMap {
-                    it.userId = user.id
-                    Observable.just(it)
-                }.toList()
-                .flatMapCompletable {
-                    dataSourceLocal.updateItems(it)
-                }
+    fun updateItemsToUser(user: User) {
+
     }
 
-    fun isLoggedIn(): Single<User> {
-        if (Utils.isOnline(context)) {
-            //firebaseAuth.currentUser
-        }
-
-        return Single.just(null)
+    fun isLoggedIn(): User? {
+        val user = firebaseAuth.currentUser
+        user ?: return null
+        return UserMapper.fromFirebaseUserToUser(user)
     }
 
-    fun loginWithUsernameAndPassword(username: String, password: String): Maybe<User> {
-        if (Utils.isOnline(context)) {
-            TODO("Implement firebase")
-            *//*firebaseAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener {
-                if (it.isSuccessful) {
+    fun loginWithUsernameAndPassword(username: String, password: String) {
 
-                }
-            }*//*
-        }
-
-        return dataSourceLocal.verifyLogin(username, password)
     }
 
-    fun loginWithGoogle(): Single<User> {
-        if (Utils.isOnline(context)) {
-            TODO("Implement firebase")
-        }
+    fun loginWithGoogle() {
 
-        return Single.error(UnsupportedOperationException("Not supported while offline"))
-    }*/
+    }
 }
