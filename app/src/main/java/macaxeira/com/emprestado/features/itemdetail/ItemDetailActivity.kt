@@ -197,21 +197,6 @@ class ItemDetailActivity : AppCompatActivity(), ItemDetailContract.View, View.On
         }
     }
 
-    override fun createAlarm(id: Int, time: Long, personName: String) {
-        val text: String = if (itemDetailLendToggle.isChecked)
-            getString(R.string.notification_return_lent, itemDetailDescriptionEdit.text.toString(),
-                    personName)
-        else
-            getString(R.string.notification_return_borrowed, itemDetailDescriptionEdit.text.toString(),
-                    personName)
-
-        NotificationScheduler.setAlarm(this, id, time, text)
-    }
-
-    override fun cancelAlarm(id: Int) {
-        NotificationScheduler.cancelAlarm(this, id)
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             MY_PERMISSIONS_REQUEST_READ_CONTACTS ->

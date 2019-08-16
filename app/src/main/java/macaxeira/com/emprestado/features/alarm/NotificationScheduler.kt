@@ -15,12 +15,13 @@ import macaxeira.com.emprestado.utils.Constants
 object NotificationScheduler {
 
     @JvmStatic
-    fun setAlarm(context: Context, id: Int, time: Long, text: String) {
+    fun setAlarm(context: Context, id: Int, itemId: String, time: Long, text: String) {
         val notification = createNotification(context, id, text)
 
         val notificationIntent = Intent(context, AlarmTriggeredReceiver::class.java)
         notificationIntent.putExtra(Constants.NOTIFICATION_ID, id)
         notificationIntent.putExtra(Constants.NOTIFICATION, notification)
+        notificationIntent.putExtra(Constants.ITEM_ID, itemId)
         val pi = PendingIntent.getBroadcast(context, id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager

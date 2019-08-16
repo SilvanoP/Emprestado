@@ -2,14 +2,20 @@ package macaxeira.com.emprestado.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
+import android.provider.ContactsContract
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
+import kotlinx.coroutines.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.database.ItemMapper
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.User
+import macaxeira.com.emprestado.features.alarm.NotificationScheduler
 import macaxeira.com.emprestado.features.listitem.ListItemCallback
 import macaxeira.com.emprestado.utils.Constants
+import macaxeira.com.emprestado.utils.Utils
+import java.util.*
 
 class DataRepository(private val context: Context, private val database: FirebaseFirestore, private val prefs: SharedPreferences) {
 
@@ -160,15 +166,102 @@ class DataRepository(private val context: Context, private val database: Firebas
                     callback.error(it)
                 }
     }
-/*    fun saveItem(item: Item): Single<Long> {
-        if (item.createdDate.isEmpty()) {
-            item.createdDate = Utils.fromCalendarToString(Calendar.getInstance())
-        }
-        return dataSourceLocal.saveItem(item).doOnSuccess {
-            updateCachedItems(listOf(item))
+
+    // ITEM DETAIL
+
+    fun getSelectedItem(): Item? {
+        return selectedItem
+    }
+
+    fun setIsMine(isMine: Boolean) {
+        selectedItem?.isMine = isMine
+    }
+
+    fun setReturned(isReturned: Boolean) {
+        selectedItem?.isReturned = isReturned
+    }
+
+    fun setShouldRemember(shouldRemember: Boolean) {
+        selectedItem?.remember = shouldRemember
+    }
+
+    fun setReturnedDate(date: String) {
+        selectedItem?.returnDate = date
+    }
+
+    suspend fun getPersonByUri(uri: String) = withContext(Dispatchers.IO) {
+            async {
+                queryContactByUri(uri)
+                selectedItem
+            }
+    }
+
+    private fun queryContactByUri(personUri: String) {
+        val uri = Uri.parse(personUri)
+
+        val name: String
+        var photoUri: String?
+
+        val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI,
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+        uri.also { contactUri ->
+            context.contentResolver.query(contactUri, projection, null, null, null)?.apply {
+                moveToFirst()
+
+                val nameCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                name = getString(nameCol)
+
+                val photoCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)
+                photoUri = if (getString(photoCol) == null) "" else getString(photoCol)
+
+                selectedItem?.personName = name
+                selectedItem?.photoUri = photoUri!!
+                close()
+            }
         }
     }
 
+    fun saveItem() {
+        if (selectedItem != null) {
+            if (selectedItem!!.createdDate.isEmpty()) {
+                val createdDate = Utils.fromCalendarToStringTimestamp(Calendar.getInstance())
+                selectedItem!!.createdDate = createdDate
+            }
+
+            val itemData = ItemMapper.fromItemToDocument(selectedItem!!)
+            database.collection(Constants.Database.COLLECTION_ITEM).add(itemData)
+                    .addOnSuccessListener {
+                        val notificationId = Utils.fromStringTimestampToInt(selectedItem!!.createdDate)
+                        if (selectedItem!!.remember) {
+                            createAlarm(notificationId, it.id)
+                        } else if (selectedItem!!.id.isNotEmpty()) {
+                            cancelAlarm(notificationId)
+                        }
+
+                        selectedItem!!.id = it.id
+                    }
+        }
+    }
+
+    private fun createAlarm(id: Int, itemId: String) {
+        val alarmTime = "${selectedItem!!.returnDate} 10:00"
+        val date = Utils.fromStringToTime(alarmTime)
+        val text: String = if (selectedItem!!.isMine)
+            context.getString(R.string.notification_return_lent, selectedItem?.description,
+                    selectedItem!!.personName)
+        else
+            context.getString(R.string.notification_return_borrowed, selectedItem?.description,
+                    selectedItem!!.personName)
+
+        NotificationScheduler.setAlarm(context, id, itemId, date, text)
+    }
+
+    private fun cancelAlarm(id: Int) {
+        NotificationScheduler.cancelAlarm(context, id)
+    }
+
+    
+/*
     fun saveSelectedItem(): Single<Long> {
         if (selectedItem == null)
             return Single.error(UnsupportedOperationException("No item selected!"))
@@ -212,12 +305,7 @@ class DataRepository(private val context: Context, private val database: Firebas
         }
     }*/
 
-    /*fun getSelectedItem(): Item? {
-        if (selectedItem == null)
-            selectedItem = Item()
-        return selectedItem
-    }
-
+    /*
     fun getItemById(id: Int): Single<Item> {
         return dataSourceLocal.getItemById(id)
     }
@@ -230,52 +318,5 @@ class DataRepository(private val context: Context, private val database: Firebas
             queryContactByUri(personUri)
         }
     }
-
-    private fun queryContactByUri(personUri: String) : Person? {
-        val uri = Uri.parse(personUri)
-
-        val name: String
-        var photoUri: String?
-
-        val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI,
-                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-        uri.also { contactUri ->
-            context.contentResolver.query(contactUri, projection, null, null, null)?.apply {
-                moveToFirst()
-
-                val nameCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-                name = getString(nameCol)
-
-                val photoCol = getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)
-                photoUri = if (getString(photoCol) == null) "" else getString(photoCol)
-
-                selectedItem?.person = Person(name, photoUri!!)
-                close()
-            }
-        }
-
-        return selectedItem?.person
-    }*/
-
-    /*// Item Detail
-
-    fun setIsMine(isMine: Boolean) {
-        selectedItem?.isMine = isMine
-    }
-
-    fun setDescription(description: String) {
-        selectedItem?.description = description
-    }
-
-    fun setReturnedDate(returnedDate: String) {
-        selectedItem?.returnDate = returnedDate
-    }
-
-    fun setReturned(isReturned: Boolean) {
-        selectedItem?.isReturned = isReturned
-    }
-
-    fun setShouldRemember(shouldRemember: Boolean) {
-        selectedItem?.remember = shouldRemember
-    }*/
+    */
 }

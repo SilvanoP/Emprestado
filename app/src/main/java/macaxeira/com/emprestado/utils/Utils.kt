@@ -26,6 +26,18 @@ object Utils {
     }
 
     @JvmStatic
+    fun fromCalendarToStringTimestamp(calendar: Calendar): String {
+        return SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault()).format(calendar.time)
+    }
+
+    @JvmStatic
+    fun fromStringTimestampToInt(timestamp: String): Int {
+        val date = SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault()).parse(timestamp)
+        val dateLong = (date.time / 1000)
+        return dateLong.toInt()
+    }
+
+    @JvmStatic
     fun fromStringToTime(date: String): Long {
         val timestamp = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(date)
 

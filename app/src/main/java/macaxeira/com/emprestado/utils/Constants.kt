@@ -2,6 +2,7 @@ package macaxeira.com.emprestado.utils
 
 object Constants {
     const val ACTION_RETURNED ="android.intent.action.ACTION_RETURNED"
+    const val ITEM_ID = "ITEM_ID"
     const val NOTIFICATION = "NOTIFICATION"
     const val NOTIFICATION_CHANNEL_ID = "RETURN_DATE_NOTIFICATION"
     const val NOTIFICATION_ID = "NOTIFICATION_ID"

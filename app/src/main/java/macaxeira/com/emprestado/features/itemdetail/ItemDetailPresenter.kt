@@ -1,57 +1,61 @@
 package macaxeira.com.emprestado.features.itemdetail
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.DataRepository
 import macaxeira.com.emprestado.features.shared.BasePresenterImpl
 import macaxeira.com.emprestado.utils.Utils
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ItemDetailPresenter(private val repository: DataRepository) : BasePresenterImpl<ItemDetailContract.View>(),
         ItemDetailContract.Presenter {
 
     override fun loadData() {
-        /*val item = repository.getSelectedItem()
+        val item = repository.getSelectedItem()
         if (item?.id != null ) {
             view.get()?.setBorrow(!item.isMine)
             view.get()?.setLent(item.isMine)
             view.get()?.setDescription(item.description)
             if (item.returnDate.isNotEmpty())
                 view.get()?.setReturnedDate(item.returnDate)
-            if (item.person != null) {
+            if (item.personName.isNotEmpty()) {
                 view.get()?.showPerson(true)
-                val person: Person = item.person!!
-                view.get()?.setPersonName(person.name)
-                view.get()?.setPersonPhoto(person.photoUri)
+                view.get()?.setPersonName(item.personName)
+                view.get()?.setPersonPhoto(item.photoUri)
             }
             view.get()?.setReturned(item.isReturned)
             view.get()?.setRemember(item.remember)
-        }*/
+        }
     }
 
     override fun isBorrowPressed(isBorrow: Boolean) {
-        //repository.setIsMine(!isBorrow)
+        repository.setIsMine(!isBorrow)
         val textRes = if (isBorrow) R.string.borrow_from else R.string.lend_to
         view.get()?.changeContactText(textRes)
         view.get()?.setLent(!isBorrow)
     }
 
     override fun isLentPressed(isLent: Boolean) {
-        //repository.setIsMine(isLent)
+        repository.setIsMine(isLent)
         val textRes = if (isLent) R.string.lend_to else R.string.borrow_from
         view.get()?.changeContactText(textRes)
         view.get()?.setBorrow(!isLent)
     }
 
     override fun isReturnedSelected(isReturned: Boolean) {
-        //repository.setReturned(isReturned)
+        repository.setReturned(isReturned)
     }
 
     override fun shouldRemember(shouldRemember: Boolean) {
-        //repository.setShouldRemember(shouldRemember)
+        repository.setShouldRemember(shouldRemember)
     }
 
     override fun returnDatePressed() {
-        /*val item = repository.getSelectedItem()
+        val item = repository.getSelectedItem()
         val date = item?.returnDate
         val cal = Calendar.getInstance()
 
@@ -59,7 +63,7 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
             cal.time = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(date)
         }
 
-        view.get()?.openDatePicker(cal)*/
+        view.get()?.openDatePicker(cal)
     }
 
     override fun returnDateSelected(year: Int, month: Int, dayOfMonth: Int) {
@@ -69,7 +73,7 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
         val date = Utils.fromCalendarToString(cal)
-        //repository.setReturnedDate(date)
+        repository.setReturnedDate(date)
         view.get()?.setReturnedDate(date)
     }
 
@@ -85,26 +89,23 @@ class ItemDetailPresenter(private val repository: DataRepository) : BasePresente
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun getPersonByUri(uri: String) {
-        /*if (!uri.isEmpty())
-            disposable.add(repository.getPersonByUri(uri)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
-                            view.get()?.showPerson(true)
-                            view.get()?.setPersonName(it.name)
-                            view.get()?.setPersonPhoto(it.photoUri)
-                        }, {
-                    view.get()?.showErrorMessage(it)
-                })
-            )*/
+        if (!uri.isEmpty()) {
+            jobs add launch(coroutineContext) {
+                val item = repository.getPersonByUri(uri).getCompleted()
+                view.get()?.setPersonName(item!!.personName)
+                view.get()?.setPersonName(item!!.photoUri)
+                view.get()?.showPerson(true)
+            }
+        }
     }
 
     override fun saveItem(description: String) {
         if (description.isEmpty()) {
             view.get()?.requiredFieldsEmpty()
         } else {
+            repository.saveItem()
             /*repository.setDescription(description)
             disposable.add(repository.saveSelectedItem()
                             .subscribeOn(Schedulers.io())
