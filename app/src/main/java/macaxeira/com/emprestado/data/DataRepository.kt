@@ -9,10 +9,13 @@ import com.google.firebase.firestore.Source
 import kotlinx.coroutines.*
 import macaxeira.com.emprestado.R
 import macaxeira.com.emprestado.data.database.ItemMapper
+import macaxeira.com.emprestado.data.database.UserMapper
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.User
 import macaxeira.com.emprestado.features.alarm.NotificationScheduler
 import macaxeira.com.emprestado.features.listitem.ListItemCallback
+import macaxeira.com.emprestado.features.shared.ItemCallback
+import macaxeira.com.emprestado.features.shared.UserCallback
 import macaxeira.com.emprestado.utils.Constants
 import macaxeira.com.emprestado.utils.Utils
 import java.util.*
@@ -25,6 +28,15 @@ class DataRepository(private val context: Context, private val database: Firebas
 
     fun setUser(user: User?) {
         this.user = user
+    }
+
+    fun getUserFromPreference(callback: UserCallback) {
+        val userId = prefs.getString(Constants.PREFS_USER_ID, "")!!
+        database.collection(Constants.Database.COLLECTION_USER).document(userId).get()
+                .addOnSuccessListener {
+                    val user = UserMapper.fromDocumentSnapshotToUSer(it)
+                    callback.receiveUser(user)
+                }
     }
 
     // SHARED PREFERENCE METHODS
@@ -66,7 +78,7 @@ class DataRepository(private val context: Context, private val database: Firebas
                 getItemsByOwner(callback,true)
             R.id.dialogFilterButtonReturned ->
                 getItemsByReturned(callback)
-            R.id.dialogFilterButtonAll ->
+            else ->
                 getAllItemsByUser(callback)
         }
     }
@@ -78,7 +90,7 @@ class DataRepository(private val context: Context, private val database: Firebas
                 .get(source)
                 .addOnSuccessListener {
                     onCachedUpdated()
-                    val items = ItemMapper.fromDocumentsToItems(it)
+                    val items = ItemMapper.fromQueryDocumentsToItems(it)
                     callback.returnItems(items)
                 }
                 .addOnFailureListener {
@@ -93,7 +105,7 @@ class DataRepository(private val context: Context, private val database: Firebas
                 .get(source)
                 .addOnSuccessListener {
                     onCachedUpdated()
-                    val items = ItemMapper.fromDocumentsToItems(it)
+                    val items = ItemMapper.fromQueryDocumentsToItems(it)
                     callback.returnItems(items)
                 }
                 .addOnFailureListener {
@@ -108,7 +120,7 @@ class DataRepository(private val context: Context, private val database: Firebas
                 .get(source)
                 .addOnSuccessListener {
                     onCachedUpdated()
-                    val items = ItemMapper.fromDocumentsToItems(it)
+                    val items = ItemMapper.fromQueryDocumentsToItems(it)
                     callback.returnItems(items)
                 }
                 .addOnFailureListener {
@@ -260,7 +272,20 @@ class DataRepository(private val context: Context, private val database: Firebas
         NotificationScheduler.cancelAlarm(context, id)
     }
 
-    
+    // ALARM
+
+    fun getItemById(itemId: String, callback: ItemCallback) {
+        database.collection(Constants.Database.COLLECTION_ITEM).document(itemId).get()
+                .addOnSuccessListener {
+                    val item = ItemMapper.fromDocumentSnapshotToItem(it)
+                    callback.receiveItem(item)
+                }
+    }
+
+    fun updateItemReturned(item: Item) {
+        database.collection(Constants.Database.COLLECTION_ITEM).document(item.id)
+                .update("isReturned", item.isReturned)
+    }
 /*
     fun saveSelectedItem(): Single<Long> {
         if (selectedItem == null)
