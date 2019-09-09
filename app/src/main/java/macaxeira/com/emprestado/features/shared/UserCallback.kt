@@ -4,4 +4,5 @@ import macaxeira.com.emprestado.data.entities.User
 
 interface UserCallback {
     fun receiveUser(user: User)
+    fun loginFailed()
 }

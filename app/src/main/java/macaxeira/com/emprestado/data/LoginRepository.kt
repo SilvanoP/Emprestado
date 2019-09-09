@@ -15,26 +15,20 @@ class LoginRepository(private val context: Context,
                       private val database: FirebaseFirestore,
                       private val prefs: SharedPreferences) {
 
-    fun saveUser(username: String, password:String, email:String, isGoogleAccount: Boolean) {
+    fun saveUser(username: String, password:String, email:String, isGoogleAccount: Boolean, userCallback: UserCallback) {
         val user = User("", username, password, email, isGoogleAccount)
         val userData = UserMapper.fromUserToData(user)
         database.collection(Constants.Database.COLLECTION_USER).add(userData)
                 .addOnSuccessListener {
                     user.id = it.id
+                    userCallback.receiveUser(user)
                 }
     }
 
     fun updateUser(user:User, email:String) {
         user.email = email
-
-    }
-
-    fun removeUser(user: User) {
-
-    }
-
-    fun updateItemsToUser(user: User) {
-
+        database.collection(Constants.Database.COLLECTION_USER).document(user.id)
+                .update("email", email)
     }
 
     fun isLoggedIn(): User? {
@@ -43,8 +37,28 @@ class LoginRepository(private val context: Context,
         return UserMapper.fromFirebaseUserToUser(user)
     }
 
-    fun loginWithUsernameAndPassword(username: String, password: String) {
+    fun createUserWithEmailPassword(email: String, password: String, callback: UserCallback) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val user = UserMapper.fromFirebaseUserToUser(firebaseAuth.currentUser!!)
+                        callback.receiveUser(user)
+                    } else {
+                        callback.loginFailed()
+                    }
+                }
+    }
 
+    fun loginWithUsernameAndPassword(email: String, password: String, callback: UserCallback) {
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val user = UserMapper.fromFirebaseUserToUser(firebaseAuth.currentUser!!)
+                        callback.receiveUser(user)
+                    } else {
+                        callback.loginFailed()
+                    }
+                }
     }
 
     fun loginWithGoogle() {
