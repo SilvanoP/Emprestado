@@ -1,4 +1,4 @@
-package macaxeira.com.emprestado.data.database
+package macaxeira.com.emprestado.data.database.firebase
 
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot

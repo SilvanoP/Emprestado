@@ -1,7 +1,6 @@
-package macaxeira.com.emprestado.data.database
+package macaxeira.com.emprestado.data.database.firebase
 
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import macaxeira.com.emprestado.data.entities.Item
 

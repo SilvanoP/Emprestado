@@ -2,10 +2,9 @@ package macaxeira.com.emprestado.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.provider.SyncStateContract
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import macaxeira.com.emprestado.data.database.UserMapper
+import macaxeira.com.emprestado.data.database.firebase.UserMapper
 import macaxeira.com.emprestado.data.entities.User
 import macaxeira.com.emprestado.features.shared.UserCallback
 import macaxeira.com.emprestado.utils.Constants

@@ -8,8 +8,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.*
 import macaxeira.com.emprestado.R
-import macaxeira.com.emprestado.data.database.ItemMapper
-import macaxeira.com.emprestado.data.database.UserMapper
+import macaxeira.com.emprestado.data.database.firebase.ItemMapper
+import macaxeira.com.emprestado.data.database.firebase.UserMapper
 import macaxeira.com.emprestado.data.entities.Item
 import macaxeira.com.emprestado.data.entities.User
 import macaxeira.com.emprestado.features.alarm.NotificationScheduler
